@@ -1,0 +1,356 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{{ childview.profile.first_name }}'s Profile{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+	<div id="content">
+		<div class="two_col_block margin_top">
+			<div class="heading short">
+				<div class="heading_left">
+					<h1>{{ childview.profile.first_name }}'s Profile</h1>
+				</div>
+			</div>
+			<div class="main_top">
+				<div class="column">
+					<div class="profile_block">
+						<div class="profile_img">
+                            {% if childview.can_view_child_photos %}
+                            <a href="{% url view_album childview.profile.album.id %}"><img src="{{ childview.profile.medium_profile_pic }}" width="125" height="125"></a><br>
+                            {% else %}
+                            <img src="{{ childview.profile.medium_profile_pic}}" width="125" height="125"><br>
+                            {% endif %}
+                            </div>
+                            
+						<div class="profile_text">
+							<p><strong>Parents: </strong> 
+                            {% for parent in childview.child.parents %}
+                            {% if not forloop.first %}
+                            |
+                            {% endif %}
+                            <a href="{% url view_profile parent.id %}">{{ parent.get_profile.first_name }} {{ parent.get_profile.last_name }}</a>
+                            {% endfor %}
+                            <br>
+                            {% if childview.child.caregivers %}
+
+    							<strong>Caregivers:</strong>
+                                {% for caregiver in childview.child.caregivers %}
+                                {% if not forloop.first %}
+                                |
+                                {% endif %}
+                                <a href="{% url view_profile caregiver.id %}">{{ caregiver.get_profile.first_name }} {{ caregiver.get_profile.last_name }}</a><br />
+                                {% endfor %}
+
+                            {% endif %}
+
+								{{childview.profile.first_name}} is a {{childview.profile.age}}-year-old {{childview.profile.gender}} <br />
+                {% if childview.profile.school %}
+                Attends: 
+								{% if childview.profile.school.pd %} 
+                {{ childview.profile.school.name }}								
+								{% else %}
+								<a href="{% url view_school childview.profile.school.id %}" class="green"> {{ childview.profile.school.name }} </a> 								
+								{% endif %}
+                {% endif %}								
+								</p>
+                                {% if my_child %}
+	    						<span class="link_dark_purple"><a href="{% url list_playdates childview.profile.id %}">View Plans</a></span>
+                                {% else %}
+                  <span class="link_dark_purple"><a href="{% url new_playdate_with_key key %}">Make a Plan</a></span> 
+                                {% endif %}
+          {% if childview.can_view_child_playlist %}
+          <span class="link_dark_purple"><a href="{% url view_playlist childview.profile.id %}">View Friends</a></span>
+          {% endif %}
+                                </div>
+
+
+					</div>
+					<!--profile block end-->
+          <p class="info">
+					<strong>About Me: </strong>
+            <span id="about" {%if my_child%}class="editable" {%endif%}>{{ childview.profile.about|default:"Add About Me" }}</span>
+					  
+          {% if my_child %}
+					<br>
+					<strong>School:</strong>  
+					<span id="school_view" {%if my_child%}class="editable" {%endif%}>{{ childview.profile.school.name|default:"Add School" }}</span>
+          <span id="school_edit" style="display:none;">
+              <input id="fake_id_school" name="schoolname" type="text" class="input_text long school"  value="{{ childview.profile.school.name|default:"" }}"/>
+              <input id="school" name="school" type="hidden" class="input_text long real_school"  value="{{ childview.profile.school.id }}"/>
+              <button id='save_school'><img src="/static/images/btn-savesmall.png"></button>
+              <button id='discard_school'><img src="/static/images/btn-discardsmall.png"></button>
+          </span>					
+					
+					<br>
+					<strong>Grade Level:</strong> <span id="grade_level" {%if my_child%}class="editable" {%endif%}>{{ childview.profile.grade_level }}</span><br>
+          <br>
+					<!--<a href="#">-Remove Child</a><br>--><br>
+					{% endif %}
+					  
+					</p>
+          
+
+				</div>
+<!--				<img src="/static/images/img_grey_box.png" alt="" width="300" height="250" class="img_right" /> --></div>
+			<div class="extend_profile edit">
+				<h1>Extended Profile</h1>
+				<ul>
+          <li><strong>Summer Camp:</strong><span id="summer_camp" {%if my_child%}class="editable" {%endif%}>{{ childview.profile.summer_camp|default:"" }}</span> </li>
+					<li><strong>Favorite Places:</strong><span id="places" {%if my_child%}class="editable" {%endif%}>{{ childview.profile.places|default:"" }}</span> </li>
+					<li><strong>Dietary Restrictions: </strong><span id="diet" {%if my_child%}class="editable" {%endif%}>{{ childview.profile.diet|default:"" }}</span></li>
+					<li><strong>Favorite Foods: </strong><span id="foods" {%if my_child%}class="editable" {%endif%}>{{childview.profile.foods|default:""}}</span></li>
+					<li><strong>Favorite TV Shows, Movies and Books: </strong><span id="shows" {%if my_child%}class="editable" {%endif%}>{{childview.profile.shows|default:""}}</span></li>
+					<li><strong>Favorite Toys &amp; Games: </strong><span id="toys" {%if my_child%}class="editable" {%endif%}>{{childview.profile.toys|default:""}}</span></li>
+					<li><strong>Languages Spoken: </strong><span id="languages" {%if my_child%}class="editable" {%endif%}>{{childview.profile.languages|default:""}}</span></li>
+					<li><strong>Favorite Sports:</strong><span id="sports" {%if my_child%}class="editable" {%endif%}>{{childview.profile.sports|default:""}}</span></li>
+					<li><strong>Other Activities &amp; Interests: </strong><span id="activities" {%if my_child%}class="editable" {%endif%}>{{childview.profile.activites|default:""}}</span></li>
+				</ul>
+			</div>
+      {% if photos %}
+			<div class="photo_list_wrap">
+				<h1>Photos</h1>
+				<ul>
+                    {% for photo in photos %}
+					<li><a href="{% url view_photo photo.id %}"><img src="{{ photo.prof125.url}}" alt="" width="80" height="80" /></a></li>
+                    {% endfor %}
+				</ul>
+<!--				<div class="links"> <span  class="link_blue"><a href="#">Photos Homepage</a></span></div> -->
+			</div>
+      {% endif %}
+		</div>
+	</div>
+
+</div>
+
+
+
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.10.custom.css' />
+
+ <style type="text/css">
+  
+    .editable {
+      padding-right: 20px;
+      background:url(/static/images/pencil.png) no-repeat;
+      background-position:right center;
+      cursor: pointer;
+    }
+
+    .ui-autocomplete-loading { background: white url('/static/images/ui-anim_basic_16x16.gif') right center no-repeat; }
+    #friend { width: 25em; }
+
+  </style>
+
+{% endblock %}
+
+
+{% block extra_body %}
+
+<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script> 
+<script src="/static/js/jquery.editable-1.3.3.js" type="text/javascript" charset="utf-8"></script>
+<script type='text/javascript' src='/static/js/playdation.js'></script> 
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js" type="text/javascript"></script> 
+
+
+<script type="text/javascript"> 
+
+$(document).ready(function() {
+{% if my_child %}
+  var my_child = '{{ my_child }}';
+  if (my_child == 'True') { my_child = true; } else { my_child=false; }  
+
+
+  function in_place_save(field, new_value) {
+    var url = '{% url child_in_place_save childview.profile.id %}';
+    var ds = {
+       'field':field,
+       'value':new_value,            
+    };
+  
+    var response = ajax_call(url, ds);
+    return response;          
+  }
+  
+  function save_places(content) {
+    var field='places';
+    var response = in_place_save(field, content.current);
+  }
+
+
+  function save_summer_camp(content) {
+    var field='summer_camp';
+    var response = in_place_save(field, content.current);
+  }
+
+
+
+  function save_diet(content) {
+    var field='diet';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_foods(content) {
+    var field='foods';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_shows(content) {
+    var field='shows';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_toys(content) {
+    var field='toys';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_languages(content) {
+    var field='languages';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_sports(content) {
+    var field='sports';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_activities(content) {
+    var field='activities';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_about(content) {
+    var field='about';
+    var response = in_place_save(field, content.current);
+  }
+
+  function save_grade_level(content) {
+    console.log(content);
+    var field='grade_level';
+    var response = in_place_save(field, content.current);
+    location.reload();
+  }
+
+  function save_school(content) {
+    var field='school_id';
+    var response = in_place_save(field, content);    
+  }
+
+
+  function create_school_edit(div) {
+      $("#school_view").hide();
+      $("#school_edit").show();
+      var old_div = div.clone(true);
+
+      $("#discard_school").click(function(e) {
+        $("#school_edit").hide();
+        $("#school_view").show();
+      })
+
+      $("#save_school").click(function(e) {
+        var school_name = $("#fake_id_school").val();
+        var school_id = $("#school").val();
+        save_school(school_id);
+
+        $("#school_view").html(school_name);
+        $("#school_edit").hide();
+        $("#school_view").show();        
+        location.reload();
+
+      })
+
+  }
+
+
+  function add_autocomplete(element) {
+    element.autocomplete({
+      source: function( request, response ) {
+        $.ajax({
+          url: "{% url search_school_zip %}",
+          dataType: "json",
+          data: {
+            'q':request.term,
+          },
+          success: function( data ) {
+              response( $.map( data, function( item ) {
+                return {
+                     label: item.label,
+                     value: item.value,
+                }
+              }));
+          },
+        });
+      },
+      minLength: 2,
+      select: function( event, ui ) {
+        event.preventDefault();
+        var real_school = $(this).siblings(".real_school");
+        real_school.val(ui.item.value);
+        $(this).val(ui.item.label);
+        $(this).focusout();
+        // console.log(
+        //   ui.item ?
+        //   "Selected: " + ui.item :
+        //   "Nothing selected, input was " + this.value);
+  
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
+  }
+
+
+  add_autocomplete($("#fake_id_school"));
+
+
+  if (my_child) {
+      $('#places').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_places, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#summer_camp').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_summer_camp, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#diet').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_diet, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+
+      $('#foods').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_foods, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#shows').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_shows, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#toys').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_toys, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#languages').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_languages, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#sports').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_sports, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#activities').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_activities, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#about').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_about, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+      $('#grade_level').editable({type:'select', 
+                                  onSubmit:save_grade_level, 
+                                  options:{ 
+                                    '':'Not in school',
+                                    'PS':'Preschool',
+                                    'PK':'Pre-Kindergarten',
+                                    'K':'Kindergarten', 
+                                    '1':'First Grade',
+                                    '2':'Second Grade',
+                                    '3':'Third Grade',
+                                    '4':'Fourth Grade',
+                                    '5':'Fifth Grade',
+                                    '6':'Sixth Grade'
+                                  }, cancel:'<img src="/static/images/btn-discardsmall.png">', submit:'<img src="/static/images/btn-savesmall.png">' })
+
+     $('#school_view').click(function(e) { e.preventDefault(); create_school_edit($('#school_view'));  });
+  }
+
+{% endif %}
+
+
+});
+
+
+
+</script>
+
+{% endblock %}

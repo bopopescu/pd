@@ -1,0 +1,154 @@
+{% extends site_base %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Privacy Policy{% endblock %}
+
+{% block body %}
+  <div id="content">
+  <div class="one_col_block">
+     <div class="heading short">
+ 	<div class="heading_left">
+        <h1>Frequently Asked Questions</h1>
+      </div>
+      </div>
+      <!--heading end-->
+      <div class="maincontent_wrap">
+        <div class="faq_wrap_left">
+          <ul class="question_lists">
+            <li><a href="#why_add_child">Why am I required to add a child as part of the signup process?</a></li>
+            <li><a href="#fb_benefits">Are there benefits to using Facebook Connect to signup?</a></li>
+            <li><a href="#find_friends">How do I find friends on Playdation?</a></li>
+            <li><a href="#adding_friend">When adding a friend, why do I need to indicate which of my children the friend is connected to?</a></li>
+            <li><a href="#playdate_kinds">How do status updates on the home page work?</a> </li>
+            <li><a href="#planned_playdate">How do I schedule a playdate?</a> </li>
+            <li><a href="#planned_playdate_who">Who can I invite on a playdate?</a> </li>
+            <li><a href="#post_playdate">Does Playdation offer any functionality for the post-playdate experience?</a> </li>
+            <li><a href="#privacy_best_practices">Are there any best practices as it relates to safety/privacy?</a></li>
+            <li><a href="#pd_privacy_settings">Can you explain Playdation's privacy settings?</a></li>
+            <li><a href="#other_user_see">If a Playdation user is not connected with any of my children and stumbles upon my profile, what will he/she see?</a></li>
+            <li><a href="#add_child">How do I add a child?</a></li>
+            <li><a href="#edit_profile">I'd like to edit my child's profile. How can I do this?</a></li>
+            <li><a href="#contacts">Is there a centralized place where I can see all of my childrens' Playdation friends, anyone I invited to a playdate, and anyone I invited to Playdation?</a></li>
+            <li><a href="#modify_communications">I'd like to modify my preferences for when I receive Playdation email. How do I change this?</a></li>
+            <li><a href="#school_page">I'm on the page for a school and I see the associated parents listed.  Are parent associations viewable outside Playdation?</a></li>
+            <li><a href="#mailbox">What kind of communication is shown in my Mailbox?</a></li>
+            <li><a href="#spouse">Can my spouse or caregiver access my account as well?</a></li>
+            <li><a href="#mobile">Can I use Playdation on my mobile device?</a></li>
+            <li><a href="#question">I have a question or suggestion that has not been addressed here. How do I reach out to the Playdation team directly?</a></li>
+          </ul>
+          <ul class="answer_list">
+            <li id="why_add_child">
+              <h3>Why am I required to add a child as part of the signup process?</h3>
+              <p>Our focus is to assist parents with the management of their child's social schedule. Without adding your child, the utility provided by Playdation is limited.</p>
+            </li>
+            <li id="fb_benefits">
+              <h3>Are there benefits to using Facebook Connect to signup?</h3>
+              <p>Yes. First of all, the use of Facebook Connect makes the signup process quicker. Second, when you signup using Connect, we will use your existing social graph to tell you which of your Facebook friends already uses Playdation. Locating friends and making connections then becomes easier.</p>
+            </li>
+            <li id="find_friends">
+              <h3>How do I find friends on Playdation?</h3>
+              <p>If you sign up using Facebook Connect, provided that at least one of your Facebook friends is already a Playdation member, we prompt you with these individuals during the signup process. 
+Another way to find friends is to use our “Possible Friends” feature, which is located on your Home page. Finally, a third approach is to use the search bar and find a specific friend by searching via first/last name.</p>
+            </li>
+            <li id="adding_friend">
+              <h3>When adding a friend, why do I need to indicate which of my children the friend is connected to?</h3>
+              <p>One of our goals is to help you organize your children's social connections. If you have multiple children, each child will have a different set of friends (depending on age, school, and other factors).  As a result, to effectively organize your children's connections, when adding a friend, you need to indicate which of your children the friend is associated with. </p>
+            </li>
+            <li id="playdate_kinds">
+              <h3>How do status updates on the homepage work?</h3>
+              <p>On your Home page, you will see a field to answer the question: “What are you doing for fun with the kids today?” When you reply to this question, your answer can be seen by any of the parents that you're associated with via all of the friends of the children that you select for this update.  Please note there is currently no RSVP associated with these status updates.</p>
+            </li>
+            <li id="planned_playdate">
+              <h3>How do I schedule a playdate?</h3>
+              <p>From your Home page, simply click on the Schedule Playdate button. From there, you'll be able to indicate who is attending, the time and location, as well as additional details for the playdate.  Please note that there is an RSVP process associated with this type of playdate.</p>
+            </li>
+            <li id="planned_playdate_who">
+              <h3>Who can I invite on a playdate?</h3>
+              <p>You can invite any Playdation friend, you can invite someone by email who does not currently use Playdation, and, finally, you can invite any Facebook friend (if you've connected your Facebook account).</p>
+            </li>
+            <li id="post_playdate">
+              <h3>Does Playdation offer any functionality for the post-playdate experience?</h3>
+              <p>Yes. After you navigate to the details page for a given playdate, you can upload photos for that playdate that are viewable only by the parents associated with that playdate.  In other words, unlike other sites, your photos are privately viewable by a select group of people. We are currently working on adding additional post-playdate functionality for the site as well.</p>
+            </li>
+            <li id="privacy_best_practices">
+              <h3>Are there any best practices as it relates to safety/privacy?</h3>
+              <p>Our settings are structured based on the list of children that your children are friends with.  Accordingly, it is very important that you only friend those individuals who you know on Playdation.  When you receive a friend request, we will indicate how the sender knows you (provided that the sender provided this information when sending the request).  You should only accept those friend requests from people that you know and are comfortable with. </p>
+            </li>
+            <li id="pd_privacy_settings">
+              <h3>Can you explain Playdation's privacy settings?</h3>
+              <p>By default, your child's profile, your child's friends, and your child's photos are visible only to your child's list of approved friends. This information is never public within Playdation. If you would like to make this information even more restrictive, you can independently change each data type to be fully private. </p>
+            </li>
+            <li id="other_user_see">
+              <h3>If a Playdation user is not connected with any of my children and stumbles upon my profile, what will he/she see?</h3>
+              <p>The user will not see any personal information outside of your image, your name and your school associations depending on your settings.  For your children, only their age and gender are displayed (no names, photos or other personally identifiable information is visible for your children).  </p>
+            </li>
+            <li id="add_child">
+              <h3>How do I add a child?</h3>
+              <p>As part of the setup process, we prompt you to add at least one of your children. If you need to add a child at a later point, it's very simple. Go to your Profile page and then click on the “+Add Child” link.</p>
+            </li>
+            <li id="edit_profile">
+              <h3>I'd like to edit my child's profile. How can I do this?</h3>
+              <p>Go to your Profile page by clicking on “Profile” from the menu. In the bottom left module, you will see a photo of your child. Click on the photo.  You are now viewing your child's profile. Simply click on the pencil icon for the information that you'd like to edit. </p>
+            </li>
+            <li id="contacts">
+              <h3>Is there a centralized place where I can see all of my childrens' Playdation friends, anyone I invited to a playdate, and anyone I invited to Playdation?</h3>
+              <p>Yes, just click on the Contacts link, which is located directly below the search bar.</p>
+            </li>
+            <li id="modify_communications">
+              <h3>I'd like to modify my preferences for when I receive Playdation email. How do I change this?</h3>
+              <p>Simple. Click on Settings below the Search box, and then go to Communication. By unchecking any of the boxes and then saving, you are effectively unsubscribing from a given communication.</p>
+            </li>
+            <li id="school_page">
+              <h3>I'm on the page for a school and I see the associated parents listed.  Are parent associations viewable outside Playdation?</h3>
+              <p>The parents associated with a given school are only viewable to Playdation members. The public version of the school page features only basic information about the school (address, grade level, summary, etc). </p>
+            </li>
+            <li id="mailbox">
+              <h3>What kind of communication is shown in my Mailbox?</h3>
+              <p>Your inbox includes friend requests, playdate requests, private parent-to-parent messages, and, occasionally, communication from Playdation itself. Your outbox includes parent-to-parent communication and friend requests that you confirm. </p>
+            </li>
+            <li id="spouse">
+              <h3>Can my spouse or caregiver access my account info as well?</h3>
+              <p>Not yet, but we are working hard on this.  In the meantime you can always share your username and password with those family members who you really, really, really trust.  You can change your password at anytime.</p>
+            </li>
+            <li id="mobile">
+              <h3>Can I use Playdation on my mobile device?</h3>
+              <p>Not yet but this is in the works and will launch very soon.</p>
+            </li>
+            <li id="question">
+              <h3>I have a question or suggestion that has not been addressed here.</h3>
+              <p>How do I reach out to the Playdation team directly? First, please check our customer support page by clicking <a href="https://playdation.uservoice.com/forums/118561-feature-suggestions">here</a>. If you'd still like to reach out, we're happy to hear from you! Please send us a note to info@playdation.com.</p>
+            </li>
+          </ul>
+
+
+          <!-- <div class="yellow_sliding">
+          <p><span>You have no events. <a href="#">link</a></span></p>
+          </div> -->
+        </div>
+        <div class="voice"> <span><img src="/static/images/img_voice.png" alt="" width="238" height="54" /> </span>
+          <h3>Want to voice your idea<br />
+            or report a bug?</h3>
+          <a href="https://playdation.uservoice.com" target="_blank"><img src="/static/images/btn_yes.png" alt="" width="173" height="23" /></a> </div>
+      </div>
+      <!--maincontent wrap end--> 
+    </div>
+    <!--one col block end-->
+  </div>
+
+{% endblock %}  
+
+{% block extra_body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+
+});
+
+</script>
+
+
+{%endblock%}

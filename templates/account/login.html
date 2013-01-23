@@ -1,0 +1,86 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load i18n ifsetting_tag account_tags util_tags %}
+
+{% block head_title %}Playdation Login{% endblock %}
+
+
+{% block body %}
+
+  <div id="content" class="common">
+    <div class="two_col_block margin_top">
+      <div class="main_text">
+      <h1 class="star" style="border-bottom:1px solid #d6d6d6; padding-bottom:20px;">Login via Facebook<span style="padding:0; display:block; float:right; margin:0 60px 0 0;"> <a href="#" onclick="Track.record('Login via FB button on Login page'); FacebookLogin.processLogin('http://{%www_host%}/account/connect_login', null, 'http://{%www_host%}/readmore.html', 'false'); return false;"><img src="/static/images/fblogin.png" border="0" /></a></span></h1>
+        <h1 style="padding-bottom:10px;">Or Login with Email / Password:<span>  <!--<a href="{% url signup_fb %}">Sign up</a></span>--></h1>
+
+        {% if form.errors %}<div class="signup-errors">{% for key,value in form.errors.items %}<p>{{ value.as_text }}</p>{% endfor %}</div> <br><br><br>{% endif %}
+        {% if message %}<div class="signup-errors">{{ message }}</div> <br><br><br>{% endif %}
+
+
+        <form action="{% url acct_login %}" method="post">
+          <fieldset>
+            <div class="wrap_grey">
+              <ul>
+                <li>
+                  <label>Email:</label>
+                  <input id="id_email" type="text" name="email" /> 
+                </li>
+                <li>
+                  <label>Password:</label>
+                  <input id="id_password" type="password" name="password" /> 
+                </li>
+              </ul>
+            </div>
+            <p class="forget_pwd"><a href="{% url acct_passwd_reset %}">Forget Password?</a></p>
+            <p class="remember_me">
+              <input id="id_remember" type="checkbox" name="remember" />
+              <label>Remember me, please.</label>
+            </p>
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <input name="" type="submit" class="done"  value=""/>
+          </fieldset>
+        </form>
+
+      </div>
+      <img src="/static/images/img_login.png" alt="" width="373" height="296" class="img_right"/> </div>
+  </div>
+  <div class="mainbtm">
+    <div class="mbright"> </div>
+  </div>
+<div id="fb-root"></div>
+
+{% endblock %}
+
+{% block extra_body %}
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js'></script> 
+<script type='text/javascript' src='/static/js/playdation.js'></script>
+
+<script type="text/javascript"> 
+
+window.fbAsyncInit = function() { 
+  FB.init({appId: '{%fb_app_id%}', status: true, cookie: true, xfbml: true, channelUrl  : 'http://{%www_host%}/channel.html'});
+}; 
+
+(function() { 
+  var e = document.createElement('script'); 
+  e.type = 'text/javascript'; 
+  e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js'; 
+  e.async = false; 
+  document.getElementById('fb-root').appendChild(e);
+}()); 
+
+$(document).ready(function(e) {
+  try {
+    Track.record('Viewed Read More Page');
+  }
+  catch (e) {}
+
+});
+
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,409 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Facebook Connect{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="forms_wrapper">
+ 
+      <div class="welcome_wrapper">
+      {% if fb_profile %}
+
+        <div class="welcome_col">
+          <div class="left_img">
+            <img src="http://graph.facebook.com/{{ fb_profile.id }}/picture?type=square" alt="" width="58" height="58" />
+           </div>
+          <h1>Congratulations {{ profile.first_name }}! You are now connected.</h1>
+        </div>
+      {% else %}
+      {% if message %}
+        <br><br>
+        <div class="welcome_col">
+          <h3 style="color:red">{{ message }}</h3>
+        </div>
+
+      {% endif %}
+      {% endif %}
+
+
+        {% if signup %}
+        <h2>The next step is to add your little ones.</h2>
+        {% else %}
+        <h2>Add your little ones.</h2>
+        {% endif %}
+
+
+
+      </div>
+
+
+    <form method="POST" id="add_children_form" action="">
+      {{ child_formset.management_form }}
+        <div class="children_forms">
+          {% for form in child_formset.forms %}
+          <div class="child_form">
+          <a href="#" class="cancel" style="display:none;">x</a><br>
+          <ul class="form_wrapper no_bg">
+            <li>
+              <label>Name:</label>
+              <input id="id_{{form.prefix}}-first_name" type="text" name="{{form.prefix}}-first_name" class="input_text short first_name required"  value="{% if form.first_name.data %}{{ form.first_name.data }}{% endif %}" />             
+              <input id="id_{{form.prefix}}-last_name" type="hidden" name="{{form.prefix}}-last_name" value="{% if form.last_name.data %}{{ form.last_name.data }}{% endif %}" />
+            </li>
+            <li class="gender">
+              <label>Gender:</label>
+              <span class="genderbox">
+              <input class="gender_rdo" {% ifequal form.gender.data 'male' %}checked="checked"{% endifequal %} id="id_{{form.prefix}}-gender_0" value="male" name="{{form.prefix}}-gender" type="radio" />
+              <label>Male</label>
+              <input class="gender_rdo" {% ifequal form.gender.data 'female' %}checked="checked"{% endifequal %} id="id_{{form.prefix}}-gender_1" value="female" name="{{form.prefix}}-gender" type="radio"/>
+              <label>Female</label>
+              </span>
+            </li>
+            <li>
+              <label>DOB:</label>
+              {{ form.birthdate}}
+            </li>
+            <li>
+              <label>School:</label>
+              <input id="fake_id_{{form.prefix}}-school" name="{{form.prefix}}-schoolname" type="text" class="input_text long school"  value=""/>
+              <input id="id_{{form.prefix}}-school" name="{{form.prefix}}-school" type="hidden" class="input_text long real_school"  value=""/>
+
+            </li>
+            <li class="relation_child">
+              <span>What's your relationship with this child?</span>
+              <span>
+              <input class="relation_rdo" 
+              {% ifequal form.relation.data 'parent' %}
+               checked="checked"
+              {% else %}
+              {% ifnotequal form.relation.data 'caregiver' %}
+               checked="checked"              
+              {% endifnotequal %}
+              {% endifequal %} 
+              id="id_{{form.prefix}}-relation_0" value="parent" name="{{form.prefix}}-relation" type="radio"/>
+              <label>Parent</label>
+              </span>
+              <span>
+              <input class="relation_rdo" {% ifequal form.relation.data 'caregiver' %}checked="checked"{% endifequal %} id="id_{{form.prefix}}-relation_1" value="caregiver" name="{{form.prefix}}-relation" type="radio"/>
+              <label>Caregiver/Other</label>
+              </span> 
+             </li>
+          </ul>
+          </div>
+           {% if form.errors %}<div class="signup-errors">{% for key,value in form.errors.items %}<p>{{ key|title }} - {{ value.as_text }}</p>{% endfor %}</div> {% endif %}
+          {% endfor %}
+        </div>
+        <div class="add_new"><a id="add_more" href="#">+ Add Another Child</a></div>
+        <div class="common_wrapper bottom">
+          <div class="col_left"> 
+             <span>
+               <input type="submit" value=" " class="input_button" />
+             </span> 
+<!--             <span class="skip"><a href="{% url home %}">Skip</a> (not recommended)</span> --> 
+           </div>
+        </div>
+       </form>
+    </div>
+    <div class="mainbtm">
+      <div class="mbright"> </div>
+<img src='http://fbads.adparlor.com/conversion.php?adid=589' alt='AP_pixel' height='1' width='1' />
+    </div>
+  </div>
+</div>
+     
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.10.custom.css' /> 
+
+<style>
+.ui-autocomplete-loading { background: white url('/static/images/ui-anim_basic_16x16.gif') right center no-repeat; }
+#friend { width: 25em; }
+</style>
+
+{% endblock %}
+
+
+
+{% block extra_body %}
+<script src="/static/js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+
+  function add_autocomplete(element) {
+    element.autocomplete({
+      source: function( request, response ) {
+        $.ajax({
+          url: "{% url search_school_zip %}",
+          dataType: "json",
+          data: {
+            'q':request.term,
+          },
+          success: function( data ) {
+              response( $.map( data, function( item ) {
+                return {
+                     label: item.label,
+                     value: item.value,
+                }
+              }));
+          },
+        });
+      },
+      minLength: 2,
+      select: function( event, ui ) {
+        event.preventDefault();
+        var real_school = $(this).siblings(".real_school");
+        real_school.val(ui.item.value);
+        $(this).val(ui.item.label);
+        $(this).focusout();
+        // console.log(
+        //   ui.item ?
+        //   "Selected: " + ui.item :
+        //   "Nothing selected, input was " + this.value);
+  
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
+  }
+
+  add_autocomplete($( ".school" ));
+
+
+  function watermark(parent) {
+    if (! parent) {
+      parent = $("body");
+    }
+
+    parent.find(".first_name").each(function() {
+      $(this).watermark("First Name Only");
+    });
+
+    parent.find(".last_name").each(function() {
+      $(this).watermark("(if different)");
+    });
+    parent.find(".school").each(function() {
+      $(this).watermark("Start typing your child's school");
+    });
+
+  }
+
+  function cloneMore(item, selector, type) {
+    var newElement = $(item).clone(false);
+    var total = $(selector).length;
+//    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    newElement.find(':input').each(function() {
+        var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+        var id = 'id_' + name;        
+
+        var val = $(this).attr("title")
+
+        $(this).attr({'name': name, 'id': id})
+        
+        if (! ( $(this).hasClass("relation_rdo")  || $(this).hasClass("gender_rdo") ) ) {
+          $(this).val(val);
+        }
+
+        if ( $(this).hasClass('school') ) {
+           add_autocomplete($(this));
+        }
+
+        if (! $(this).hasClass("relation_rdo") ) {
+          $(this).removeAttr('checked');
+        }
+    });
+    newElement.find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+        $(this).attr('for', newFor);
+    });
+    newElement.find(".tips").remove();
+    newElement.find(".error_tip").removeClass('error_tip');
+
+    total++;
+    var total_selector = '#id_' + type + '-TOTAL_FORMS';
+    $(total_selector).val(total);
+
+    $("a.cancel").hide(); 
+
+    var cancel = newElement.find(".cancel");
+
+    cancel.click(function(e) { 
+       e.preventDefault();
+       var child_form = $(this).parents("div.child_form");
+       child_form.remove();
+       if ($(selector).length > 1) {
+         var last_item = $(item);
+         var cancel = last_item.find(".cancel");
+         cancel.show();
+       }
+    });
+
+    newElement.find(".cancel").show();
+
+    var prev_element = $(item);
+    prev_element.after(newElement);
+
+    watermark(newElement);
+  }
+
+
+  $('#add_more').click(function(event) {
+      event.preventDefault();
+      cloneMore('div.child_form:last', 'div.child_form', 'child');
+  });
+
+  function set_right(element) {
+    element.removeClass("error_tip");
+  }
+  
+  function set_wrong(element) {    
+    element.addClass("error_tip");
+  }
+
+  function set_right_multiple(selector) {
+      $(selector).each(function() {
+        set_right($(this));           
+      });    
+  }
+  
+  function set_wrong_multiple(selector) {
+      $(selector).each(function() {
+        set_wrong($(this));           
+      });
+  }
+
+  function set_wrong_radio(selector) {
+      set_wrong($(selector+":first").parent());
+  }
+
+  function set_right_radio(selector) {
+      set_right($(selector+":first").parent());
+  }
+
+  function check_radio_checked(selector) {
+     var checked = false;
+     $(selector).each(function() {
+        if ($(this).attr('checked') == true) {
+          checked = true;
+        }       
+     });
+     return checked;
+  }
+
+  var tip=$("<span class=\"tips\" style=\"left:100px;\"></span>");
+
+  function clone_tip(tip_contents) {
+    var new_tip = tip.clone();
+    new_tip.html("<b>"+tip_contents+"</b>");
+    return new_tip;    
+  }
+
+
+  function create_tip(element, tip_contents, style) {
+    var new_tip = clone_tip(tip_contents);
+    if (style) {
+      new_tip.attr('style',style);      
+    }
+
+    element.after(new_tip);
+  }
+
+  function remove_tip(element) {
+    element.siblings(".tips").remove();    
+  }
+
+
+  function style_for_ele(ele) {
+    var position = ele.position();
+    var width = ele.width();
+    var left = position.left + (width / 2);
+    return 'left: '+left+'px;';
+  }
+
+
+  watermark()
+  $(".input_text").focus(function() { set_right($(this));  remove_tip($(this));  });
+  $(".gender_rdo").change(function() { set_right($(this).parent()); remove_tip($(this).parent());  });
+  $(".select_not_zero").change(function() {  set_right($(this)); remove_tip($(this));   } );
+  
+
+  $("#add_children_form").submit(function(event) {
+
+    var acf = $(this);
+    acf.find(".tips").remove();
+    acf.find(".error_tip").removeClass('error_tip');
+
+    var success = true
+    $(".child_form").each(function() { 
+
+      var form_div = $(this);
+
+      var ele = form_div.find(".first_name");
+      if (! ele.val()) {
+           set_wrong(ele);
+           create_tip(ele, "Enter a first name please")
+           success = false;
+           return false;
+      };
+
+      var checked = false;
+      var first_rdo = '';
+      form_div.find(".gender_rdo").each(function() { 
+        if (! first_rdo) { first_rdo = $(this); }
+        if ($(this).attr('checked') == true) {
+          checked = true;                  
+        }
+      });
+
+      if (! checked) {
+        set_wrong(first_rdo.parent());
+        create_tip(first_rdo.parent(), "Please enter a gender", 'top: -35px;');                
+        success=false;
+        return false;
+      }
+
+      form_div.find(".select_not_zero").each(function() {
+        var ele = $(this);
+        if (ele.val() == '0') {
+          set_wrong(ele);
+          create_tip(ele, "You forgot this", style_for_ele(ele));
+          success=false;
+          return false;
+        }
+      });
+
+      return success;
+
+    });
+
+    if (! success) { watermark(); }
+
+    return success;
+
+  });
+
+    
+
+});
+</script>
+
+<script type="text/javascript"> 
+try {
+  Track.record('Viewed Signup Add Children Page');
+}
+catch (e) { }
+</script>
+
+
+{% endblock %}
+

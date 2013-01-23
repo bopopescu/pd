@@ -1,0 +1,250 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+
+
+  <div id="content">
+    <div class="one_col_block">
+      <div class="col_top possible_friend">
+        <div class="heading">
+           <h1>Possible Friends</h1>
+            <ul class="top_links">        
+          
+            {% for child in manage_playlist_children %}
+              <li>
+                {% if not forloop.first %}
+                 |
+                {% endif %}
+                <b>{% ifequal child.profile.id current_child.profile.id %}
+                {{ child.profile.first_name }}
+                {% else %}
+                <a href="{% url suggested_friends child.profile.id %}">{{ child.profile.first_name }}</a>
+                {% endifequal %}</b></li>  
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="link_arrow large"><a href="#" id="left_arrow" class="left_arrow on" style="display:none;">left</a><a href="#" id="right_arrow" class="right_arrow on" style="display:none;">right</a></div>
+        <div id="suggested_container" class="block_wrapper short">
+
+        </div>
+        <div id="no_suggestions" class="yellow_wrap" style="display:none;">
+          <p class="title">Oops.</p>
+          <p>We were unable to find any matches for your child at this time. <br />
+            In order to improve your chances, try inviting some friends<br />
+            to Playdation via <a href="{% url invite_email %}">email</a> or <a href="{% url invite_facebook %}">Facebook</a>.</p>
+        </div>
+
+      </div>
+      <!--col top end-->
+
+      <div id="glimpse" class="col_bottom_wrap"> <!-- <img src="/static/images/img_adv_grey.png" alt="" width="383" height="250" class="img_adv" /> -->
+        <div class="right_box"> <img src="/static/images/img_girl.png" alt="" width="44" height="60" class="img_right" />
+          <h2>A little glimpse into what's possible</h2>
+          <div class="info_text"><b>{{ profile.first_name }}</b>, here are some possible friends for you and your child.  <br />These suggestions are based on your existing contacts and other profile information that you provide.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block extra_body %}
+<script id="suggestion_template" type="text/html">
+  <div class="grey_block no_margin"><a href="#" class="close remove_suggestion">x</a>
+     <input type="hidden" class="suggestion_id" value="${suggestion_id}">
+     <input type="hidden" class="index" value="${index}">
+    <ul>
+      <li>
+        <div class="img_left"><img src="${adult_pic}" alt="" width="33" height="33" /></div>
+        <div class="text_right"><span>${adult_fname}</span> <span>${adult_lname}</span> </div>
+      </li>
+      <li>
+        <div class="img_left current"><img src="${child_pic}" alt="" width="33" height="33" /></div>
+        <div class="text_right"><strong>${child_age} year old ${child_gender}</strong><span>${child_school}</span> </div>
+      </li>
+    </ul>
+<div class="form_box add_friend">
+  <a href="#" rel="${child_id}" sel="far" class="add_friend_link"><img src="/static/images/add-friend.png" alt="" width="83" height="20" /></a>
+</div>
+
+  </div>
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.min.js"></script> 
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+
+<script type='text/javascript' src='{{ STATIC_URL }}js/add_friend_overlay.js'></script>
+
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+  var current_child_id = {{ current_child.profile.id }};
+  {% autoescape off %}
+  var suggested_friends = {{ suggested_list }};
+  {% endautoescape %}
+
+
+  var children_hash = {};
+  var manage_playlist_children = [
+    {% for child in manage_playlist_children %}
+     { "id": "{{ child.profile.id }}", 
+       "name": "{{ child.profile.first_name }}"
+     },
+    {% endfor %}
+  ]; 
+
+
+  var left_arrow = $("#left_arrow");
+  var right_arrow = $("#right_arrow");
+
+  function populate_suggested_friends(container, suggested_friends, offset, limit) {
+    var start = offset;
+
+    var max = suggested_friends.length;
+
+    if (max == 0) {    
+     container.hide();
+     $("#no_suggestions").show();
+     $("#glimpse").hide();
+     return true;
+    }
+
+    if (start >= max) {
+      start = start - limit;
+      if (start < 0) { start = 0; }
+      offset = start;
+    }
+
+    var end = offset+limit;
+    var current = start;
+
+    container.empty();
+
+    container.find("div.grey_block").remove()
+    
+    while (current < end) {
+      if (! suggested_friends[current]) {
+        break;
+      }
+      var record = suggested_friends[current]
+      var data = {
+        'adult_pic': record["parents"][0]["small_profile_pic"],
+        'adult_fname': record["parents"][0]["first_name"],
+        'adult_lname': record["parents"][0]["last_name"],
+        'adult_id': record["parents"][0]["id"],
+        'child_pic': record["child"]["small_profile_pic"],
+        'child_fname': record["child"]["first_name"],
+        'child_school': record["child"]["school"],
+        'child_gender': record["child"]["gender"],
+        'child_age': record["child"]["age"],
+        'child_id': record["child"]["id"],
+        'suggestion_id': record["suggestion_id"],
+        'index': current,        
+      };
+
+      children_hash[data["child_id"]]=data;
+
+      var sugg_div = $("#suggestion_template").tmpl(data)  
+
+
+      sugg_div.find(".remove_suggestion").click(function(e) {
+        e.preventDefault();
+        var suggestion_id = $(this).siblings(".suggestion_id").val();
+        var index = $(this).siblings(".index").val();
+
+        suggested_friends.splice(index,1);
+
+        var ds = { 
+          'suggestion_id':suggestion_id,
+        };
+
+        var response = ajax_call("{% url remove_friend_suggestion %}", ds);
+
+        populate_suggested_friends($("#suggested_container"), suggested_friends, offset, limit);
+      });
+
+      sugg_div.find(".add_friend_link").click(function(e) {
+        e.preventDefault();
+
+        var child_id = $(this).attr('rel');
+
+        var child_age = children_hash[child_id]["child_age"];
+        var index = $(this).siblings(".index").val();
+
+            
+        var settings = {
+          'parents': [ { 'id':children_hash[child_id]["adult_id"], 'name':children_hash[child_id]["adult_fname"] +' ' + children_hash[child_id]["adult_lname"] }],
+          'children': manage_playlist_children,
+          'child_id': child_id,
+          'child_age': child_age,
+          'from_child':current_child_id,
+          'callback': function(response) {
+            if (response) {
+              suggested_friends.splice(index,1);
+              populate_suggested_friends($("#suggested_container"), suggested_friends, offset, limit);
+            }
+          }
+        };
+
+        $(this).add_friend_overlay(settings);
+    
+      });
+
+      container.append(sugg_div);
+      current = current + 1;
+    }
+
+    left_arrow.hide();
+    right_arrow.hide();
+
+    if (offset > 0) {
+        left_arrow.show();
+    }
+
+    if ( current  <  suggested_friends.length) {
+        right_arrow.show();
+    } 
+    
+  }
+
+  var offset = 0;
+  var limit = 3;
+
+  $("a.right_arrow.on").live('click', function(e) {
+    e.preventDefault();
+    offset = offset+limit;
+    populate_suggested_friends($("#suggested_container"), suggested_friends, offset, limit);
+  });
+
+  $("a.left_arrow.on").live('click', function(e) {
+    e.preventDefault();
+
+    offset = offset-limit;
+    populate_suggested_friends($("#suggested_container"), suggested_friends, offset, limit);
+  });
+
+  populate_suggested_friends($("#suggested_container"), suggested_friends, offset, limit);
+
+  
+
+
+
+});
+
+</script>
+
+
+{% endblock %}
+
+

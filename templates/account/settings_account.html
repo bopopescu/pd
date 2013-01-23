@@ -1,0 +1,259 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Settings - Account" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+
+{% block body %}
+	<div id="content">
+		<div class="one_col_block">
+			<div class="heading narrow">
+				<h1>Settings - Account</h1>
+			</div>
+
+			<div class="maincontent_wrap">
+				<div class="navigation">
+					<ul>
+						<li><a href="{% url settings_account %}" class="selected">Account</a> |</li>
+						<li><a href="{% url settings_privacy %}">Privacy</a> |</li>
+						<li><a href="{% url settings_communication %}">Communication</a></li>
+<!--						<li><a href="{% url settings_access %}">Access</a></li> -->
+					</ul>
+				</div>
+{% if message %}
+        <div class="col_setting">
+          <h2 style="color:red">{{ message }}</h2>
+        </div>
+{% endif %}
+
+				<div class="col_setting">
+					<h2>Basic Settings</h2>
+					<ul>
+						<li><span>Email:</span> {{ account_details.email }} </li>
+<!--						<li><span>Second Email:</span> Not yet specified ( <a href="#">edit</a> )</li> -->
+						<li><span>Password:</span> ********** ( <a href="{% url acct_passwd %}">request change</a> )</li>
+            <li>
+              <span>Location:</span> 
+              <span id="location" class="editable">{{ profile.zip_code.city }},{{ profile.zip_code.state }}</span> 
+              <span id="location_edit" style="display:none;">
+                <span id="location_edit_instruction" style="color:green"><br>Please enter new zip code:<br></span>
+                <span id="location_edit_error" style="color:red; display:none;"><br>Please enter a valid zip code:<br></span>
+                <input type="text" id="new_location" value="{{profile.zip_code.zip}}">
+                <button id='save_location'><img src="/static/images/btn-savesmall.png"></button>
+                <button id='discard_location'><img src="/static/images/btn-discardsmall.png"></button>
+              </span>
+            </li>
+					</ul>
+				</div>
+
+				<div class="col_setting">
+					<h2>Contact Settings</h2>
+					<ul>
+						<li>
+               <span>Mobile Number: </span><span id="phone" class="editable">{{ contact.phone|default:"" }}</span>
+						</li>
+<!--						<li> <span>Address:</span> 2 Park Avenue, New York NY 10301 ( <a href="#">edit</a> ) </li> -->
+						<li>
+							<p class="grey_text">Your phone number is only shared when confirming for playdates.</p>
+						</li>
+					</ul>
+				</div>
+        {% if not profile.fb_login %}
+				<div class="col_setting">
+					<h2>Account Connections</h2>
+                    {% if facebook %}
+					<p>To disconnect your Facebook Account, <a href="{% url fb_disconnect %}" class="red">Click here</a></p>
+					<p class="small"><span>Facebook connected as:</span> {{ facebook.name|default:"No Name" }} </p>
+                    {% else %}
+                    <p class="grey_text"> No account connections. <br>
+                      <a href="{% url settings_fb_login %}">Add Facebook Account</a> 
+                      </p>
+                    {% endif %}
+				</div>
+
+        {% endif %}
+        <div class="col_setting">
+          <h2>Settings for your children:</h2>
+
+          <span class="invite_choice_span">
+
+          {% for ac in children %}
+          <span class="child_block">
+          <h2>For {{ ac.child.first_name }}: </h2><br>
+          <b>Default Invitation Style: </b><br>
+
+          <ul class="invitelist">
+            <li class="male"><span><img src="/static/images/img_male_small.png" alt="" width="210" height="151" /></span>
+              <a href="#" class="select_invite" rel="1">select</a>
+              <span class="current_marker" style="{% ifequal ac.child.default_invite_id 1%}{%else%}display:none;{%endifequal%}">
+                (current)
+                </span>
+            </li>
+            <li class="female"><span><img src="/static/images/img_female_small.png" alt="" width="215" height="151" /></span>
+              <a href="#" class="select_invite" rel="2">select </a><span class="">
+                <span class="current_marker" style="{% ifequal ac.child.default_invite_id 2%}{%else%}display:none;{%endifequal%}">
+                (current)
+                </span>
+            </li>
+            <li class="children"><span><img src="/static/images/img_children.png" alt="" width="210" height="151" /></span>
+              <a href="#" class="select_invite" rel="3">select</a>
+              <span class="current_marker" style="{% ifequal ac.child.default_invite_id 3%}{%else%}display:none;{%endifequal%}">
+                (current)
+              </span>
+              </li>
+            <input type="hidden" class="child_id" value="{{ac.child.id}}">
+          </ul>
+
+          <a href="{% url remove_child ac.child.id %}" class="remove_child">- Remove Child</a><br><br>
+          <input type="hidden" class="child_id" value="{{ac.child.id}}">
+
+          <br>
+          </span>
+          {% endfor %}
+
+          </span>
+        </div>
+
+				<div class="col_setting last">
+					<h2>Deactivate Account</h2>
+					<p>To deactivate your account, <a id="deactivate_account" href="{% url deactivate_account %}" class="red">Click here</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.10.custom.css' />
+
+ <style type="text/css">
+  
+    .editable {
+      padding-right: 20px;
+      background:url(/static/images/pencil.png) no-repeat;
+      background-position:right center;
+      cursor: pointer;
+    }
+
+    .ui-autocomplete-loading { background: white url('/static/images/ui-anim_basic_16x16.gif') right center no-repeat; }
+    #friend { width: 25em; }
+
+  </style>
+
+{% endblock %}
+
+
+{% block extra_body %}
+
+<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script> 
+<script src="/static/js/jquery.editable-1.3.3.js" type="text/javascript" charset="utf-8"></script>
+<script type='text/javascript' src='/static/js/playdation.js'></script> 
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js" type="text/javascript"></script> 
+
+
+<script type="text/javascript"> 
+
+$(document).ready(function() {
+
+
+  function in_place_save(field, new_value) {
+    var url = '{% url profile_in_place_save %}';
+    var ds = {
+       'field':field,
+       'value':new_value,            
+    };
+  
+    var response = ajax_call(url, ds);
+    return response;          
+  }
+  
+  function save_phone(content) {
+    var field='phone';
+    var response = in_place_save(field, content.current);
+  }
+
+
+  $('#phone').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_phone, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+
+
+  $('#location').click(function(e) {
+    e.preventDefault();
+    $('#location').hide();
+    $('#location_edit').show();
+  });
+
+  $("#discard_location").click(function(e) {
+    $('#location_edit').hide();
+    $('#location').show();
+  });
+
+
+  $("#save_location").click(function(e) {
+    e.preventDefault();
+    var new_zip = $("#new_location").val();
+
+    var response = in_place_save('location', new_zip);
+    if (response["success"]) {
+      var new_location = response["new_location"];
+      var new_zip = response["new_zip"];
+  
+      $('#location').html(new_location);
+      $('#location_edit').hide();
+      $('#location').show();
+      $("#new_location").val(new_zip);
+    } else {
+     $("#location_edit_instruction").hide();
+     $("#location_edit_error").show();
+    }
+  });
+
+  $("a.remove_child").click(function(e) {
+    e.preventDefault();
+    var href = $(this).attr('href');
+    var confirm_yes = confirm('Are you sure you want to delete this child?');
+    if (confirm_yes == true) {
+      document.location.href=href;
+    };
+  });
+
+  $("#deactivate_account").click(function(e) {
+    e.preventDefault();
+    var href = $(this).attr('href');
+    var confirm_yes = confirm('Are you sure you want to deactivate your account?');
+    if (confirm_yes == true) {
+      document.location.href=href;
+    };
+  })
+
+
+  $(".select_invite").click(function(e) {
+    e.preventDefault();
+    var child_choice = $(this).attr('rel');
+    var parent_li = $(this).parent();
+    var child_input = parent_li.siblings(".child_id");
+    var child_id = child_input.val();
+    var child_choice_arr = [ child_id + ":" + child_choice  ];
+    var ds = { 'choices': child_choice_arr };
+    var response = ajax_call('/playdates/set_invite_choices', ds);
+    
+    parent_li.parent().find("span.current_marker").hide();
+    parent_li.find("span.current_marker").show();    
+    
+  });
+
+});
+
+
+
+</script>
+
+{% endblock %}

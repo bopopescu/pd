@@ -1,0 +1,635 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div id="maincontent">
+<!-- <div class="adv" style="font-size: 10px;"><span>Advertisement</span> - <a href="#">M.S. in Mathematics - Get an Advanced Mathematics Degree at Fairfield U. - Apply Online today!</a></div>-->
+      <div id="calendar_wrapper" class="calendar_wrap">
+      </div>
+
+		<div class="wrap_border">
+        <div class="form_col">
+          <div class="pic_avatar"><img src="{{ user.get_profile.get_profile.small_profile_pic }}" alt="" width="62" height="62" /></div>
+          <div class="form_share">
+            <form action="#" id="update_status_form" method="post">
+              <fieldset>
+                <input type="text" id="status" name="status" class="input_text" />
+                <p id="share_bottom"> With who: 
+                  {% for child in view_schedule_children %}
+                    <span>
+                      <input id="id_organizer_child_{{child.profile.id}}" class="oc" name="status_child" type="checkbox" value="{{ child.profile.id }}" {% if only_child %} checked="true" {%endif %}/>
+                      <label>{{ child.profile.first_name }}</label>
+                    </span> 
+                  {% endfor %}
+                </p>
+                <p class="bottom"> 
+                  <span id="no_children_selected" style="color:red;display:none;">Please select a child.</span>
+                  <span id="no_status_message" style="color:red;display:none;">Please enter a status.</span>
+                <span>
+
+                  <label>When:</label>
+                  <select id="status_when" name="status_when" class="short">
+                    <option value="0">Now</option>
+                    <option value="1">In an hour</option>
+                    <option value="2">In two hours</option>
+                    <option value="3">In three hours</option>
+                    <option value="4">In four hours</option>
+                    <option value="5">In five hours</option>
+                    <option value="6">In six hours</option>
+                    <option value="7">In seven hours</option>
+                    <option value="8">In eight hours</option>
+                  </select>
+                  </span> <span>
+                  <input type="submit" id="update_status" title="Please select some children" name="" value=" " class="btn_share" />
+                  </span> </p>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+
+            <div class="fliter" style="display:none;">
+                <div id="new_updates_div">
+                    <br>
+                    <a href="#" id="new_updates">More updates available</a>
+                </div>
+            </div>
+
+            <div id="updates"></div>
+            <a href="#" id="fewer_updates" style="display:none">View Fewer Updates</a><span id="separator" style="display:none"> | </span> <a href="#" id= "more_updates" class="more">View More Updates</a> 
+        
+        </div>
+    </div>        
+    <div id="sidebar">
+      <div class="schedule">
+          <h3 style="font-size:18px; font-weight:normal; padding-bottom:10px;">Plan Your Child's Social Life&trade;</h3>
+            <span class="link_purple_hp" style="float:left;"><a href="{% url new_playdate %}"> Make a Plan with Friends</a></span>
+        </div>
+<!--        
+        <div class="sadv"><img src="/static/images/sadv1.png" alt="" width="298" height="248" /></div>
+-->       
+<div id="possible_friends_div" class="playlist" style="display:none">
+        <h3>Possible Friends:</h3>
+       {% if manage_playlist_children|length > 1 %}
+            <select id="se2" name="se2">      
+              {% for child in manage_playlist_children %}
+                 <option id="option_{{child.profile.id}}" value="{{child.profile.id}}">{{ child.profile.first_name }}</option>
+              {% endfor %}
+            </select>
+       {% endif %}
+ 
+ 
+       <span id="suggested_friends_module">
+       </span>                
+            <p><a id="sf_view_more" href="{% url suggested_friends %}">view more</a></p>
+      </div>
+       
+        
+        <div class="inviting">
+          <h3>Invite Parents to Join</h3>
+            <p></p>
+            <p><a href="{% url invite_facebook %}"><img src="/static/images/btn-invitefb.png" alt="" /></a></p>
+            <p><a href="{% url invite_email %}"><img src="/static/images/btn-inviteemail.png" alt="" /></a></p>
+        </div>
+        {% if new_user %}
+<img src='http://engagement.adparlor.com/action.php?id=189&adid=589&vars=7djDxM/P1uDV4OfKs7SxjdbV1ObN4ebE3NXXz9jPwtjg1OTE58XK0Nni1Ky6vp7X3tnWwtbkwNrb5OTYs5aO1tfVtOfOqcC0' alt='ApPixel' />
+        {% endif %}
+<!--        <div class="stats">
+          <h3>Playdation Networks Stats</h3>
+            <p><strong>134,213</strong> playdates scheduled this year</p>
+            <p><strong>42,243</strong> members have joined Playdation</p>
+        </div>
+-->    
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+{% block extra_footer %}
+
+
+<div id="spinning_loading" class="overlay" style="display:none">
+  <div class="lightbox_wrapper">  
+    <div class="col_top"> 
+      <h1>Preparing your account.</h1> 
+        <div class="importing" style="text-align:center;">
+           <img src="/static/images/loading.gif" height="150" width="150">
+        </div>
+    </div>   
+  </div>
+</div>
+
+
+
+<div id="fb-root"></div> 
+
+<div id="facebook_invite" class="boverlay" style="display:none"> 
+  <div class="lightbox_wrapper"> <a href="#" id="close_fb_overlay_button" class="close_button"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a> 
+    <div class="invite_wrap"> 
+      <h1>Almost done!</h1> 
+      <p class="heading_text">Select parents below to add to your Playdation contacts.</p> 
+      <div style="width:740px;"> 
+        <fb:serverfbml width="740"> 
+          <script type="text/fbml"> 
+            <div style="display:block; width: 740px; padding:0; margin:0; float:left; border:0px dotted #CCC; background-image:url('http://www.playdation.net/static/images/inviterbg.png');background-repeat:no-repeat;background-position:right; ">
+       
+              <fb:request-form method="get" action="http://{{www_host}}/account/fb_invite_sent" content="Some of the other parents and I are using Playdation to schedule activities for the kids. Please Join Us! <fb:req-choice url='http://{{www_host}}/account/fb_invite_accepted?invited_by={{user.id}}' label='Yes' />" type="Playdation" invite="false" import_external_friends="false">
+              <div style="display:block; width: 315px; padding:0; margin:0; float:left; border:0px dotted #CCC;">
+                  <fb:multi-friend-selector condensed="true" selected_rows="10" showborder="true" actiontext="Invite to Playdation" exclude_ids="" email_invite="false" import_external_friends="false" />
+                  <fb:request-form-submit import_external_friends="false" />
+              </div>
+    
+              </fb:request-form>
+            </div>
+          </script> 
+        </fb:serverfbml> 
+      </div> 
+    </div> 
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+
+{% block extra_body %}
+
+<script id="suggested_template" type="text/html">
+<ul>
+  <li>
+    <a href="#" class="close remove_suggestion"></a>
+    <input type="hidden" class="suggestion_id" value="${suggestion_id}">
+    <div class="imgwrap">
+      <div class="img_left">
+                    <img width="33" height="33" alt="" src="${user_url}">
+      </div>
+                </div>
+                <strong>${user_fname} ${user_lname}</strong>
+               
+  </li>
+  <li>
+    <div class="imgwrap">
+      <div class="img_left">
+                    <img width="33" height="33" alt="" src="/static/images/img_p02.png">
+      </div>
+                </div>
+                <h1>${child_age}-Year Old ${child_gender}</h1>
+                <a href="#" rel="${child_id}" class="add_friend_link">+ Add friend for ${from_child_name}</a> 
+                <input type="hidden" class="from_child" value="${from_child}">
+                <input type="hidden" class="child_age" value="${child_age}">
+                <input type="hidden" class="adult_id" value="${user_id}">
+                <input type="hidden" class="adult_name" value="${user_fname} ${user_lname}">
+  </li>      
+</ul>
+</script>
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.min.js"></script> 
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+<script type='text/javascript' src='{{ STATIC_URL }}js/condensed_calendar.js'></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/friends_overlay.js"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/address_book_import.js"></script>
+<script type='text/javascript' src='{{ STATIC_URL }}js/add_friend_overlay.js'></script>
+ 
+<script src="{{ STATIC_URL }}js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/popup.js"></script> 
+
+<script type="text/javascript"> 
+
+var fb_user = {% if fb_user %} true {% else %} false {% endif %};
+
+if (fb_user) {
+ window.fbAsyncInit = function() { 
+  FB.init({appId: '{{fb_app_id}}', status: true, cookie: true, xfbml: true}); 
+ }; 
+
+ (function() { 
+    var e = document.createElement('script'); 
+    e.type = 'text/javascript'; 
+    e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js'; 
+    e.async = false; 
+    document.getElementById('fb-root').appendChild(e);
+  }()); 
+}
+
+$(document).ready(function() {
+
+
+
+
+
+
+
+
+
+/* /build updates */
+
+  var timestamp = {{ timestamp }};
+  var current_display_size = 10;  
+
+
+  function check_for_new_updates(callback) {
+    var ds = {};
+
+    if (timestamp) { ds["timestamp"] = timestamp; }
+    if (current_display_size) { ds["max_limit"] = current_display_size; }
+  
+    ajax_async_call("{% url ajax_get_updates %}", ds, 
+      function(data) {
+        var retrieved_updates = data["updates"]
+        if (retrieved_updates && (retrieved_updates.length > 0)) {
+           timestamp = response["timestamp"]
+           callback();
+        }
+    });
+  }
+
+  function build_update_ul(updates_div, updates) {
+    var new_ul = $("<ul id=\"updates_ul\" class=\"updatelists\"></ul>");
+    for (index in updates) {
+      var new_li=$("<li class=\"people\" style=\"display: block;\">"+updates[index]["html"]+"<a href='#' title='"+updates[index]["id"]+"' class='close del_c'>x</a><p>"+updates[index]["when"]+"</p></li>")
+      new_ul.append(new_li);
+    }
+    var new_div= $("<div id=\"updates\">");
+    new_div.append(new_ul);
+    updates_div.replaceWith(new_div);   
+
+    if (current_display_size > 11) {
+      $("#fewer_updates").show();
+      $("#separator").show();
+    } else {
+      $("#fewer_updates").hide();
+      $("#separator").hide();
+    }     
+
+    if ($("#fliter").is(":visible")) {
+      $("#fliter").toggle();      
+    }
+  }
+
+  function rebuild_ul() {
+    var ds = { "timestamp":0, "max_limit":current_display_size };
+    ajax_async_call("{% url ajax_get_updates %}", ds, function(data) {
+      updates = data["updates"]
+      timestamp = data["timestamp"]
+      if (current_display_size > updates.length) {
+         current_display_size = updates.length;
+      }
+
+      build_update_ul($("#updates"), updates);    
+    });  
+  }
+
+  setInterval(function() {
+    check_for_new_updates(function() {
+        if (! $("#new_updates").is(":visible")) {
+          $("#new_updates").toggle().slideDown("slow");      
+        }
+    })
+  }, 16000);
+
+  $('#new_updates').click(function(event) {       
+    event.preventDefault();
+    rebuild_ul()
+    $('#new_updates').toggle();
+  });
+
+  $('#more_updates').click(function(event) {       
+    event.preventDefault();
+    current_display_size = current_display_size + 10;
+    rebuild_ul()    
+  });
+
+  $('#fewer_updates').click(function(event) {       
+    event.preventDefault();
+    current_display_size = current_display_size - 10;
+    rebuild_ul()    
+  });
+
+  $('#updates_ul li a.del_c').live('click',function(e) {
+    e.preventDefault()
+    var id = $(this).attr('title');
+    var ds = { 'id': id };
+    var update_being_deleted = $(this)
+    ajax_async_call('{% url delete_update %}', ds, function(data) {
+      if (data["success"]) {
+       update_being_deleted.parent().remove();      
+      }      
+    });    
+  });
+
+  var ds = { "timestamp":0, "max_limit":current_display_size };
+
+  var updates = [];
+  var timestamp = 0;
+  ajax_async_call("{% url ajax_get_updates %}", ds, function(data) {
+    updates = data["updates"]
+    timestamp = data["timestamp"]
+    build_update_ul($("#updates"), updates);
+  });
+
+
+/* deal with status updates  */
+
+  $("#status").watermark("what are you doing for fun with the kids today?",'#747170');
+
+  $("#update_status").click(function(e) {
+    e.preventDefault();
+    // HERE
+
+    var ds = {};
+    var status_children = [];
+    $("#share_bottom input:checkbox[name=status_child]:checked").each(function() { 
+      status_children.push($(this).val());      
+    });
+
+    var status_field = $("#status");
+    var status = status_field.val();
+
+    
+    if (! status_children.length) {
+      $("#no_children_selected").show();
+      return false;      
+    } else {
+      $("#no_children_selected").hide();      
+    }
+
+    if (status.length == 0) {
+      $("#no_status_message").show();
+      return false;
+    } else {
+      $("#no_status_message").hide();
+    }
+    
+    var status_when = $("#status_when").val();
+
+    ds = {
+      'status_children':status_children,
+      'status':status,
+      'status_when':status_when,      
+    };
+
+    status_field.val('');
+    status_field.focusout();
+
+
+    var response = ajax_async_call("{% url update_status %}", ds, function(data) {
+      rebuild_ul();
+      timestamp=timestamp + 5;
+    });
+  });
+
+/* /deal with status updates  */
+
+
+/* /build updates */
+
+  $('#close_fb_overlay_button').click(function(event) {
+    event.preventDefault()
+    $("#facebook_invite").hide();
+    window.location.href = "{% url home %}";
+  });
+
+
+/* Populate Events in Condensed Schedule*/
+  var view_schedule_children = [
+          {% for child in view_schedule_children %}
+          { 'id':'{{child.profile.id}}', 'fname':'{{child.profile.first_name}}' } {% if not forloop.last %},{%endif%}
+          {% endfor %}  
+  ];
+
+  var days = [
+          {% for day in days %}
+          {'day':'{{day.day}}', 'suffix':'{{day.suffix}}', 'dow':'{{day.dow}}' } {% if not forloop.last %},{%endif%}  
+          {% endfor %}    
+  ];
+
+  var current_schedule_child_id = '{{current_child.profile.id}}';
+
+  var month = '{{ month }} {{ year }}';
+  var cw = $("#calendar_wrapper");
+  var options = {
+     'month'            : month,
+     'current_child_id' : current_schedule_child_id,
+     'children'         : view_schedule_children,
+     'days'             : days,
+     'get_events'       : function(child_id, callback) { return ajax_async_call('/home/get_condensed_calendar/'+child_id+'/', {}, callback); },
+  }
+
+  cw.condensed_calendar(options);
+/* /Populate Events in Condensed Schedule*/
+
+
+/* suggested friends */
+var manage_playlist_children = [
+  {% for child in manage_playlist_children %}
+    { "child_id": "{{ child.profile.id }}", "child_fname": "{{ child.profile.first_name }}", "child_gender": "{{ child.profile.gender }}", "child_age": "{{ child.profile.age }}" } {% if not forloop.net %},{%endif%}
+  {% endfor %}  
+];
+
+var suggested_friends = []
+var pf_child_id = 0;
+var pf_child_name = '';
+
+
+function populate_possible_friends(container, child_id, from_child_name) {
+  container.empty();
+  var limit=2;
+  var current = 1;
+  for (friend_idx in suggested_friends[child_id]) {
+    var user = suggested_friends[child_id][friend_idx]["parents"][0];
+    var child = suggested_friends[child_id][friend_idx]["child"];
+    var suggestion_id = suggested_friends[child_id][friend_idx]['suggestion_id'];
+
+    var user_data ={
+      'user_fname':user["first_name"], 
+      'user_lname':user["last_name"],
+      'user_url':user["small_profile_pic"],
+      'user_id':user["id"],
+      'child_age':child["age"],
+      'child_gender':child["gender"],
+      'child_id':child["id"],
+      'from_child':child_id,
+      'from_child_name': from_child_name,
+      'suggestion_id':suggestion_id,
+    }
+
+    var user_div = $("#suggested_template").tmpl(user_data)  
+    if (current == 2) { user_div.addClass('second'); }
+    container.append(user_div);
+    current = current + 1;
+    if (current > limit) {
+      break;
+    }
+  }
+}
+
+function repopulate_possible_friends() {
+  ajax_async_call("{% url get_suggested_friends %}", { }, function(data) {  
+    suggested_friends = data["suggested_friends"];
+
+    if (pf_child_id != 0) {
+      if (suggested_friends[pf_child_id].length == 0) {
+        pf_child_id = 0;
+      }
+    }
+
+    if (pf_child_id == 0) {    
+      for (chld_idx in manage_playlist_children) {
+        var temp_child_id = manage_playlist_children[chld_idx]["child_id"];
+        var temp_child_name = manage_playlist_children[chld_idx]["child_fname"]; 
+        if ((suggested_friends[temp_child_id]) && (suggested_friends[temp_child_id].length > 0)) {
+          pf_child_id = temp_child_id;
+          pf_child_name = temp_child_name;
+          break; 
+        }
+      }
+    }
+
+    if (pf_child_id > 0) {
+      $("#possible_friends_div").show();
+      var suggested_friends_base_url = '{% url suggested_friends %}';  
+      $("#sf_view_more").attr('href',suggested_friends_base_url+pf_child_id+'/');
+
+      populate_possible_friends($("#suggested_friends_module"), pf_child_id, pf_child_name );
+      $("#option_"+pf_child_id).attr('selected','selected');
+    } else {
+      $("#possible_friends_div").hide();
+    }
+  });
+}
+
+
+$(".remove_suggestion").live('click', function(e) {
+  e.preventDefault();
+  var suggestion_id = $(this).siblings(".suggestion_id").val();
+
+  var ds = { 
+    'suggestion_id':suggestion_id,
+  };
+
+  var response = ajax_async_call("{% url remove_friend_suggestion %}", ds, function(data) {
+    repopulate_possible_friends();
+  });
+
+});
+
+
+$(".add_friend_link").live('click', function(e) {
+     e.preventDefault();
+     var child_id = $(this).attr('rel');
+     var child_age = $(this).siblings(".child_age").val();
+     var from_child = $(this).siblings(".from_child").val();
+     var adult_id = $(this).siblings(".adult_id").val();     
+     var adult_name = $(this).siblings(".adult_name").val();
+
+     var add_friend_own_children = [];
+     for (idx in manage_playlist_children) {
+       add_friend_own_children.push({ 'id': manage_playlist_children[idx]["child_id"], 'name': manage_playlist_children[idx]["child_fname"] })
+     }
+
+     var settings = {
+        'parents': [ { 'id':adult_id, 'name':adult_name }],
+        'child_id': child_id,
+        'child_age': child_age,
+        'from_child':from_child,
+        'children': add_friend_own_children,
+        'callback': repopulate_possible_friends,
+     }
+     $(this).add_friend_overlay(settings);
+})
+
+if (manage_playlist_children.length > 1) {
+  $("#se2").live('change', function() {
+    pf_child_id = $(this).find(":selected").val();
+    pf_child_name = $(this).find(":selected").text(); 
+    populate_possible_friends($("#suggested_friends_module"), pf_child_id, pf_child_name);
+    $("#sf_view_more").attr('href',suggested_friends_base_url+pf_child_id+'/');
+  });
+}
+
+repopulate_possible_friends();
+
+/* / suggested friends */
+
+
+/* main */
+
+  var new_user = {% if new_user %} true {% else %} false {% endif %};
+  var fb_user = {% if fb_user %} true {% else %} false {% endif %};
+  var show_addr_book = {% if show_addr_book %} true {% else %} false {% endif %};
+
+  if (new_user) {
+  	 if (fb_user) {
+
+        var q = $("#facebook_invite");
+
+        var lw = q.find(".lightbox_wrapper");
+        lw.css('top',50); 
+        var maybe_new_height = 100 + lw.outerHeight();
+        var set_height = $(document).height();
+        if (maybe_new_height > set_height) {
+           set_height = maybe_new_height;
+        }   
+     
+        q.height(set_height+300);
+        q.fadeIn();
+ 
+        ajax_async_call("/home/import_facebook_friends/", { 'fb_friends':'1' }, function(data) {  });
+       
+  	 } else {
+
+        function run_import(type) {
+          if (type == 'email_list') {
+           show_addr_possible_friends_overlay(function() { })
+          } else {
+            show_addr_possible_friends_overlay(function() { 
+ 
+               $("body").email_invite_overlay( { 'loading_function': function(done) { 
+                 if (! done) { 
+                   $("#spinning_loading").show(); 
+                 } else { 
+                   $("#spinning_loading").hide(); 
+                 } 
+               }, });
+
+            })
+          }
+        }
+
+        function show_addr_possible_friends_overlay(next_step) {
+           var options = {
+             'get_data': function(callback) {  return ajax_async_call("/home/get_signup_friends/", { 'addr_friends':'1' }, callback); },
+             'loading_function': function(done) { if (! done) { $("#spinning_loading").show();} else { $("#spinning_loading").hide(); } },
+             'next_step': next_step,
+             'children': manage_playlist_children,
+             'fname': '{{ user.get_profile.first_name }}',
+           };
+          
+           $("body").friends_overlay(options);
+        }
+
+        var options = { 
+           'next_step': function() {   console.log("next step");  },
+           'run_import' : run_import,
+        };
+
+        $("body").address_book_import(options);
+  	 }
+  }
+});  
+  
+  
+</script>
+
+{% endblock %}

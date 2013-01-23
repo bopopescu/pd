@@ -1,0 +1,47 @@
+<script type="text/javascript" src="{{ uploadify_path }}swfobject.js"></script>
+<script type="text/javascript" src="{{ uploadify_path }}jquery.uploadify.js"></script>
+<div id="uploadify" class="multi-file-upload"><input id="fileInput" name="fileInput" type="file" /></div>
+<script type="text/javascript">// <![CDATA[
+$(document).ready(function() {
+$('#fileInput').uploadify({
+'uploader'  : '{{ uploadify_path }}uploadify.swf',
+// 'script'    : '{% url uploadify_upload album.id %}',
+'script'    : '{% url uploadify_upload album.id %}',
+'cancelImg' : '{{ uploadify_path }}cancel.png',
+'auto'      : true,
+'folder'    : '{{ upload_path }}',
+'multi'     : true,
+'fileDesc'  : 'Photos',
+'fileExt'   : '*.jpg;*.png;*.gif;',
+'onSelect' : upStart,
+'onAllComplete' : allComplete,
+'onError' : errors,
+'scriptData' : {'session_key': '{{session_key}}'},
+});
+});
+
+function errors(event, qid, file, error) {
+     console.log(error);
+}
+
+function upStart(event, data) {
+    $('#uploadify').trigger('UploadStarted', data);
+}
+
+function allComplete(event, data) {
+//    // Raise custom event
+    $('#uploadify').trigger('allUploadsComplete', data);
+
+
+
+//    $('#uploadify').load('{{ upload_complete_url }}', {
+//        'filesUploaded': data.filesUploaded,
+//        'errorCount': data.errors,
+//        'allBytesLoaded': data.allBytesLoaded,
+//        'speed': data.speed
+//    });
+}
+
+
+
+// ]]></script>

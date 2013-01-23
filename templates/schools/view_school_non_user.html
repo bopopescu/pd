@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Playdation - {{school.name}}</title>
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+<div id="container"> 
+  <!--Header Start-->
+  <div id="header">
+    <div id="logo"><a href="#"><img src="/static/images/slogo.png" alt="" /></a></div>
+    <span class="header_login">Already a Member ? <a href="{% url acct_login %}"> Login</a></span> </div>
+  <!--Header End-->
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading narrow">
+        <h1>{{ school.name }} <iframe src="http://www.facebook.com/plugins/like.php?app_id=122199454528907&amp;href=http%3A%2F%2F{{www_host}}%2Fschools%2Fview%2F{{school.id}}%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:73px; height:21px;" allowTransparency="true"></iframe>
+          </h1>
+      </div>
+
+      <!--heading end-->
+      <div class="maincontent_wrap">
+        <div class="map_wrap">
+          <div class="map">
+            <img src="http://maps.google.com/maps/api/staticmap?center={{school.lat}},{{school.lon}}&zoom=14&size=270x185&sensor=true&markers=color:red|label:C|{{school.lat}},{{school.lon}}">
+            </div>
+          <div class="add_info">
+            <p><span>Located in {{school.city}}, {{school.state}}, {{school.zip}}</span> <span>{{school.street}},<br>{{school.city}}, {{school.state}} {{school.zip}}</span> 
+              <!-- <span>There are 1,173 Parents associated with this school.</span> -->
+              <!-- <span>There are 3,255 Children associated with this school</span> --> </p>
+            <p><span><strong>Grade Level : </strong>{{school.level}}</span> <span><strong>Phone : </strong>{{school.phone}}</span> <span><strong>Type : </strong>{{school.type}}</span> </p>
+            <p><span><strong>School Summary : </strong></span>{{ school.summary }} </p> 
+          </div>
+        </div>
+        <!--photo wrap end--> 
+        <div class="school_info">
+          <div class="info_left">
+            <!-- <div class="yellow_block"> <span>23141341234 higschool road</span> <span>Located in Chicaco, IL, 78287</span> <span><strong>Website:</strong> 
+              <a href="#">andrewdavishs.org</a> <strong>Rating:</strong> </div> -->
+
+            <p><em>To learn more about Playdation.com, <a href="/">click here.</a></em></p>
+          </div>
+          <div class="signup">
+            <p> <a href="{% url signup_fb %}"><img src="/static/images/img_signup.png" alt="" width="147" height="42" /></a></p>
+            <p>Playdation is the free tool for 
+              managing your child's social life.</p>
+          </div>
+        </div>
+
+
+
+      </div>
+      <!--maincontent wrap end--> 
+
+
+    </div>
+    <!--one col block end-->
+    <div class="mainbtm" >
+<p style="color: #545454; font-size:77%; font: arial,helvetica,clean,sans-serif;text-align: left;">Source of school information: <a href="http://www.greatschools.org" target="_blank">GreatSchools.org</a><br>
+More information on {{school.name}}, click <a href="{{school.gsurl}}" target="_blank">here</a></p>
+    </div>
+
+
+  </div>
+</div>
+<!--Footer Start-->
+<div id="footer">
+  <div class="footer">
+    <ul>
+      <li><a href="#">About</a></li>
+      <li><a href="#">User Agreement</a></li>
+      <li><a href="#">Privacy Policy</a></li>
+    </ul>
+    <div class="copy">
+      <p>We don't play around when it comes to screening and privacy.</p>
+      <p><a href="#">Trademarks</a> belong to their respective owners. &copy; 2011 Playdation, Inc.</p>
+    </div>
+  </div>
+</div>
+<!--Footer End-->
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Login{% endblock %}
+
+
+{% block body %}
+    <div class="login_out">You have logged out. <a href="{% url acct_login %}">Sign back in.</a></div>
+
+  <div id="content">
+    <div class="one_col_block">
+      <div class="img_child"><img src="/static/images/img_log_out.png" alt="" width="672" height="337" /></div>
+<!--      <div class="adv_wrapper"><img src="/static/images/img_adv.png" alt="" width="728" height="90" /></div> -->
+    </div>
+    <div class="mainbtm">
+      <div class="mbright"> </div>
+    </div>
+  </div>
+{% endblock %}
+

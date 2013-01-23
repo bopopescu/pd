@@ -1,0 +1,152 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Settings - Privacy" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+	<div id="content">
+		<div class="one_col_block">
+			<div class="heading narrow">
+				<h1>Settings - Privacy</h1>
+			</div>
+
+			<div class="maincontent_wrap">
+				<div class="navigation">
+					<ul>
+						<li><a href="{% url settings_account %}">Account</a> |</li>
+						<li><a href="{% url settings_privacy %}" class="selected">Privacy</a> |</li>
+            <li><a href="{% url settings_communication %}">Communication</a></li>
+<!--						<li><a href="{% url settings_access %}">Access</a></li> -->
+					</ul>
+				</div>
+
+				<div class="form_setting">
+					<form action="#" method="post">
+						<fieldset>
+							<table border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<th class="col1"> </th>
+									<th class="col2"> Public within Playdation </th>
+									<th class="col3"> Approved Friends Only </th>
+									<th class="col4"> Fully Private </th>
+								</tr>
+
+								<tr>
+									<td class="col1">
+									My Child's Basic Profile*
+									</td>
+
+									<td class="col2">
+									<strong>Never</strong>
+									</td>
+
+									<td class="col3">
+									<input type="radio" name="basic_prof_privacy" value="playlist" {% ifequal child.basic_prof_privacy 'playlist' %}checked="true"{%endifequal%}/>
+									</td>
+
+									<td class="col4">
+									<input type="radio" name="basic_prof_privacy" value="private" {% ifequal child.basic_prof_privacy 'private' %}checked="true"{%endifequal%} />
+									</td>
+								</tr>
+
+								<tr>
+									<td class="col1">
+									My Child's Extended Profile**
+									</td>
+									<td class="col2">
+									<strong>Never</strong>
+									</td>
+									<td class="col3">
+									<input type="radio" name="ext_prof_privacy" value="playlist" {% ifequal child.ext_prof_privacy 'playlist' %}checked="true"{%endifequal%} />
+									</td>
+									<td class="col4">
+									<input type="radio" name="ext_prof_privacy" value="private" {% ifequal child.ext_prof_privacy 'private' %}checked="true"{%endifequal%} />
+									</td>
+								</tr>
+
+								<tr>
+
+									<td class="col1">
+									My Child's Friends
+									</td>
+
+									<td class="col2">
+									<strong>Never</strong>
+									</td>
+
+									<td class="col3">
+									<input type="radio" name="playlist_privacy" value="playlist" {% ifequal child.playlist_privacy 'playlist' %}checked="true"{%endifequal%} />
+									</td>
+
+									<td class="col4">
+									<input type="radio" name="playlist_privacy" value="private" {% ifequal child.playlist_privacy 'private' %}checked="true"{%endifequal%} />
+									</td>
+								</tr>
+
+								<tr class="">
+									<td class="col1">
+									My Child's Photos***
+									</td>
+
+									<td class="col2">
+									<strong>Never</strong>
+									</td>
+
+									<td class="col3">
+									<input type="radio" name="photo_privacy" value="playlist" {% ifequal child.photo_privacy 'playlist' %}checked="true"{%endifequal%}/>
+									</td>
+
+									<td class="col4">
+									<input type="radio" name="photo_privacy" value="private" {% ifequal child.photo_privacy 'private' %}checked="true"{%endifequal%} />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" class="">
+									<input type="checkbox" name="school_display" {% if school_display %}checked="true"{%endif%}/>
+									<label>Display my parent profile in my school listings.</label>
+									</td>
+								</tr>
+
+
+								<tr>
+
+									<td colspan="4" class="border_bottom last">
+
+<!--
+									<span>Privacy Settings Controlled by Other Parents</span>
+									<p><em>Billy Smith's are controlled by administrator, Bobby Smith</em></p>
+-->
+									<!-- <input name="" type="submit" value="Save" class="" /> -->
+                  <p>
+                    <input type="submit" name="" class="btn_save" value="" />
+                  </p>
+
+
+
+									</td>
+								</tr>
+
+							</table>
+						</fieldset>
+					</form>
+
+					<div class="explain">
+						<p> * Basic info includes: anonymous info plus your childrens' names, profile photos, school, grade level, caregivers, and 'About Me' information. Certain basic profile info will also be made available to those parents who you send friend requests to.</p>
+						<p> ** Extended info includes: all basic info plus your childrens' photo albums, your childrens' dietary restrictions, favorite foods, favorite TV shows/movies/books, favorite games/toys, 
+							languages spoken, sports, favorite activities, and any other profile information. </p>
+						<p> *** Applies only to photos that you've directly uploaded (except for your child's profile photo).</p>
+            <p> Note: Parent profile and anonymous child profile are public within Playdation in order for connections to be made.</p>
+            <p> Full privacy policy can be found <a href="{% url privacy_policy %}">here</a>.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

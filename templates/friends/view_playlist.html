@@ -1,0 +1,394 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+{% load util_tags %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+
+<div id="container">
+  
+  <div id="content">
+    <div id="maincontent" class="miscshell">
+
+{% if my_child %}
+      <div class="heading short">
+        <div class="heading_left">
+      <h1>My Children's Friends</h1>
+        </div>
+      </div>
+
+  {% if my_view_children|length > 1 %}
+
+  <ul class="top_links">        
+
+  {% for child in my_view_children %}
+    <li>
+      {% if not forloop.first %}
+       | 
+      {% endif %}
+      <b>{% ifequal child.profile.id current_child.profile.id %}
+        {{ child.profile.first_name }}
+        {% else %}
+        <a href="{% url view_playlist child.profile.id %}">{{ child.profile.first_name }}</a>
+        {% endifequal %}</b></li>  
+  {% endfor %}
+  </ul>
+  {% endif %}
+
+
+{% else %}
+    <h1>{{ current_child.profile.first_name }} Friend List</h1>
+
+{% endif %}
+      <div class="page_nav"> <span style="font-size:120%"><a class="prev" style="display:none" href="#">Prev</a> <a class="next" style="display:none" href="#">Next</a></span>
+        <div class="view_style pl_nav_bar"><span style="font-size:120%">You are viewing <span class="index_start"></span>-<span class="index_end"></span> </span><span class="view_all" style="font-size:120%"><a href="#" class="view_all">View All</a></span> </div>
+      </div>
+      <div id="profiles" class="profiles">
+        <div id="loading_div" class="importing" style="text-align:center;">           
+            <img src="/static/images/loading.gif" height="150" width="150">
+        </div>
+        <div id="no_friends" class="yellow_wrap" style="display:none;">
+          <p class="title">Oops.</p>
+          <p>You have not yet connected with any friends. <br /> <br />
+            Take a look at your <a href="{% url suggested_friends current_child.profile.id %}">Possible Friends</a>, or
+            try inviting some friends to Playdation either via <a href="{% url invite_email %}">email</a> or via <a href="{% url invite_facebook %}">Facebook</a>.</p>
+        </div>
+      </div>
+      <div class="page_nav"> <span style="font-size:120%"><a class="prev" style="display:none" href="#">Prev</a> <a class="next" style="display:none" href="#">Next</a></span>
+        <div class="view_style pl_nav_bar"><span style="font-size:120%">You are viewing <span class="index_start"></span>-<span class="index_end"></span> </span><span class="view_all" style="font-size:120%"><a href="#" class="view_all">View All</a></span> </div>
+      </div>
+    </div>
+
+    </div>
+<!--
+    <div class="mainbtm">
+      <div class="mbleft"><a href="#"><img src="/static/images/wiki.png" alt="" width="468" height="60" /></a></div>
+      <div class="mbright"></div>
+    </div>
+-->
+  </div>
+</div>
+
+<div class="loading" style="display:none; text-align:center;">           
+    <img src="/static/images/loading.gif" height="150" width="150">
+</div>
+
+
+{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block extra_body %}
+
+
+{%verbatim%}
+
+<script id="profile_template" type="text/html">
+  <div class="profile">
+    <div class="left_block">
+      {{if can_view_child_extended_profile}}
+      <a href="/profiles/view/child/${id}">
+      <p>${first_name}</p>
+      </a>
+      {{else}}
+      <p>${first_name}</p>
+      {{/if}}
+      <div class="img_block">
+      {{if can_view_child_extended_profile}}
+      <a href="/profiles/view/child/${id}">
+      {{/if}}
+        <span><img src="${medium_profile_pic}" alt="" width="125" height="125" /></span>
+      {{if can_view_child_extended_profile}}
+      </a>
+      {{/if}}
+        <ul class="parent_photo_list">
+        </ul>
+      </div>
+      <div class="form_box">
+        <span class="friend_status"></span>
+      </div>
+    </div>
+    <div class="right_block">
+      <div class="top_block">
+        <p class="parent_name_list">Parents: </p>
+        <p class="caregivers_list">Additional Caregiver(s):</p>
+      </div>
+      <div class="bottom_block">
+        <ul class="middle_section">
+          <li><strong>Age: </strong>${age}</li>
+          <li><strong>Gender: </strong>${gender}</li>
+          <li><strong>Attends: </strong>${school}</li>
+          <li><strong>Grade Level: </strong>${grade_level}</li>
+        </ul>
+        <div class="bottom_section">
+          <p style="display:none"> Playdate Requirements: ${playdate_requirements}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<script id="parent_photo_template" type="text/html">
+  <li>
+    <p><a href="/profiles/view/${id}"><img src="${medium_profile_pic}" alt="" width="50" height="50"/>${first_name}</a> 
+    <input type="hidden" class="to_user_id" value="${id}">
+    <input type="hidden" class="to_user_name" value="${name}">
+    <a href="#" class="grey_color send_message_link"style="color:#858585; font-size:11px; display:block; line-height:20px;">+ Message</a>
+    
+    </p>
+  </li>
+</script>
+
+<script id="name_list" type="text/html">
+        <a href="/profiles/view/${id}">${name}</a>
+</script>
+
+<script id="parent_option" type="text/html">
+          <option value="${id}">${name}’s</option>  
+</script>
+
+<script id="child_option" type="text/html">
+          <option value="${id}">${first_name}’s</option>
+</script>
+
+{%endverbatim%}
+
+
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.min.js"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.watermark.min.js" charset="utf-8"></script>
+<script type='text/javascript' src='{{ STATIC_URL }}js/add_friend_overlay.js'></script>
+<script type='text/javascript' src='{{ STATIC_URL }}js/send_message_overlay.js'></script>
+
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+  var current_child_id = {{ current_child.profile.id }};
+  var children_hash = {};
+
+  var children = [
+    {% for child in my_edit_children %}
+      { 'id':'{{child.profile.id }}', 'first_name':'{{child.profile.first_name}}' },
+    {% endfor %}
+  ];
+
+  var manage_playlist_children = [
+    {% for child in my_edit_children %}
+     { "id": "{{ child.profile.id }}", 
+       "name": "{{ child.profile.first_name }}"
+     },
+    {% endfor %}
+  ]; 
+
+
+  function construct_profile_div(data) {
+    var profile_div = $("#profile_template").tmpl(data);
+    return profile_div;
+  }
+
+  function construct_parent_photo_list(element,parents) {
+    var parent_photo_lis = [];
+
+    for (index in parents) {
+      var nli= $("#parent_photo_template").tmpl(parents[index])
+      element.append(nli);
+    }
+  }
+
+  function construct_parent_name_list(element,parents) {
+
+    for (index in parents) {
+      var na= $("#name_list").tmpl(parents[index])
+      if (index > 0) {
+        element.append($("<b> | </b>"));        
+      }
+      element.append(na);
+    }
+  }
+
+  function add_friend_callback(response, element) {
+    if (response) {
+      var success = $("<p>Friend Request Sent</p>");
+      element.replaceWith(success);
+    }         
+  }
+
+
+  var profiles_div = $("#profiles");
+
+  function construct_profile_container() {
+    var i = 0;
+
+    var loading_div = $("div.loading").clone();
+
+    get_profiles(start,limit+1, function(data) {
+
+      profiles = data;
+      var end = limit;
+
+      if (start == 0 ) {
+        $("a.next").show();
+        $("a.prev").show();
+      }
+
+      $(".pl_nav_bar").show();
+      $(".page_nav").show();
+
+      $("a.next").removeClass('active');
+      $("a.next").addClass('current');
+      $("a.prev").removeClass('active');
+      $("a.prev").addClass('current');
+
+      if (profiles.length > limit) {
+        $("a.next").removeClass('current');
+        $("a.next").addClass('active');
+        profiles = profiles.slice(0, limit);
+      } else {
+        end = profiles.length;
+      } 
+
+      if (start > 0) {
+        $("a.prev").removeClass('current');
+        $("a.prev").addClass('active');
+      }
+
+      if (limit == 999) {
+        $("a.view_all").addClass('current');
+      }
+
+     
+      $("span.index_start").html(start+1);
+      $("span.index_end").html(end);
+ 
+  	  var new_div = $("<div></div>");
+      while (i < profiles.length) {
+        if (! profiles[i]) {
+          break;         
+        }
+  
+        profiles[i]["child"]["index"]=i;
+        var profile_div = construct_profile_div(profiles[i]["child"]);
+        construct_parent_photo_list(profile_div.find(".parent_photo_list"), profiles[i]["parents"]);
+        construct_parent_name_list(profile_div.find(".parent_name_list"), profiles[i]["parents"]);
+        children_hash[profiles[i]["child"]["id"]] = profiles[i];
+  
+        var fs = profile_div.find("span.friend_status");
+        var data = profiles[i];
+        if (data["is_friend"]) {
+           fs.replaceWith($("<a class='purple_color' href='/playdates/new/"+data["key"]+"/' style='color: #8B1EDB; diplay: block; font-size: 12px; font-weight: bold; line-height: 25px;'>+ Make a Plan</a>"));
+        } else if (data["is_mine"]) {
+  //      fs.replaceWith("<p>is your child</p>")      
+        } else if (data["is_pending_sent"]) {
+          fs.replaceWith($("<span>Friend Request Sent</span>"));
+        } else if (data["is_pending_sent"]) {
+          fs.replaceWith($("<span>Friend Request Received</span>"));
+        } else {
+          var add_friend_link = $("<a href=\"#\" rel=\""+data["child"]["id"] +"\" class=\"add_friend_link\"><img src=\"/static/images/add-friend.png\" width=\"83\" height=\"20\" /></a>");         
+          fs.html(add_friend_link);
+  
+          add_friend_link.click(function(event) {
+            event.preventDefault();
+            var child_id = $(this).attr('rel');
+            var data = children_hash[child_id];
+            var child_age = data["child"]["age"];
+            var parents = [];
+  
+            for (parent_idx in data["parents"]) {
+              var parent = data["parents"][parent_idx];
+              parents.push({ 'id':parent["id"], 'name':parent["first_name"] + ' ' + parent["last_name"]});            
+            }            
+          
+            var settings = {
+              'parents': parents,
+              'children': manage_playlist_children,
+              'child_id': child_id,
+              'child_age': child_age,
+              'callback': add_friend_callback,
+              'element':$(this),
+            };
+    
+            $(this).add_friend_overlay(settings);
+            
+          }); 
+        }      
+  
+        new_div.append(profile_div);
+        i=i+1;
+      }        
+  
+      if (i > 0) {
+        profiles_div.empty();
+        profiles_div.append(new_div);
+      } else {
+        $("#loading_div").hide();
+        $("#no_friends").show();
+        $(".pl_nav_bar").hide();
+        $(".page_nav").hide();
+      }
+    });
+  }
+
+  function get_profiles(offset, limit, callback) {   
+
+    var ds = { 'offset':offset, 'limit': limit };
+
+    ajax_async_call('{% url get_profiles current_child.profile.id  %}', ds, callback);
+  }
+
+  var start=0;
+  var limit=5;
+  
+  var profiles = [];
+  
+  construct_profile_container();
+
+
+  $("a.next.active").live('click', function(event) {
+    event.preventDefault();
+    start=start+5;
+    construct_profile_container();
+  });
+
+  $("a.prev.active").live('click', function(event) {
+    event.preventDefault();
+    start=start-5;
+
+    construct_profile_container();
+  });
+
+  $("a.view_all").click(function(event) {
+    event.preventDefault();
+    start = 0;
+    limit = 999;
+
+    construct_profile_container();
+  });
+
+
+  $("a.send_message_link").live('click', function(e) {
+    e.preventDefault();
+    var to_user_id = $(this).siblings(".to_user_id").val();
+    var to_user_name = $(this).siblings(".to_user_name").val();
+    var settings = {
+      'name': to_user_name,
+      'to_user_id': to_user_id,
+    };
+    
+    $(this).send_message_overlay(settings);
+  });
+
+
+
+});
+
+</script>
+
+
+{% endblock %}

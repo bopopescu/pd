@@ -1,0 +1,168 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load account_tags %}
+{% load timezone_filters %}
+
+{% block body %}
+  <div id="content">
+    <div id="spinning_loading" class="overlay" style="display:none">
+      <div class="lightbox_wrapper">  
+        <div class="col_top"> 
+          <h1>Loading...</h1> 
+            <div class="importing" style="text-align:center;">
+               <img src="/static/images/loading.gif" height="150" width="150">
+            </div>
+        </div>   
+      </div>
+    </div>
+
+    <div id="address_book_import">
+      <div class="long"> 
+        <div class="two_col_block">
+          <br>
+          <h1>Add Friends &amp; Potential Playdates from your Address Book</h1>
+          <br>
+          <div class="main_text">
+            <form method="POST" action="/home/import_generic">
+              <div id="import_div" class="wrap_grey" style="overflow:hidden;">
+                <ul class="form_wrapper">
+                  <li>
+                    <label>Your Email Povider:</label>
+                    <select id="service" name="service">
+                      <option value="none" SELECTED >Select Provider</option>
+                      <option value="gmail">Gmail</option> 
+                      <option value="yahoo">Yahoo</option> 
+                      <option value="generic">Hotmail</option> 
+                      <option value="generic">AOL</option> 
+                    </select>
+                  </li>
+    
+                  <div id="isp_login_form" class="service_div" style="display:none">
+                    <li>
+                      <div class="nameinner">
+                        <label>Email:</label>
+                        <input type="text" id="email" class="input_text long" name="email" />
+                      </div>
+                    </li>
+      
+      
+                    <div id="isp_login_form_pwd">                
+                      <li>
+                      <div class="nameinner">
+                        <label>Password:</label>
+                        <input type="password" id="password" class="input_text long" name="password" />
+                      </div>
+                      </li>
+                    </div>
+                  </div>
+    
+                 </ul>
+              </div>
+              <p id="invite_by_email_p" class="invite_box"> Or, <a id="invite_by_email" href="#">invite by email</a> without importing your address book</p>
+              <p id="invite_from_address_p" class="invite_box" style="display:none;"> Or,  <a id="invite_by_address" href="#">import address book</a></p>
+              <div id="invite_box" class="wrap_grey" style="display:none;">
+              <p><label>Paste a list of comma separated email addresses here.</label></p>
+                <textarea id="email_list" name="email_list" cols="" rows=""></textarea>
+              </div>
+    
+    
+              <p>
+                <input name="" id="import_div_button" type="submit" value="" class="btn_continue" />
+                <span><a id="skip_address_book_import" href="#">Skip</a></span>
+                <span class="importing" style="margin-left:10px; display:none; text-align:center;">
+                   <img src="/static/images/loading.gif" height="40" width="40">
+                </span>            
+                
+              </p>
+            </form>
+          </div>
+          <img src="/static/images/img_comma.png" alt="" width="261" height="218" class="img_right" /> </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="email_invite_overlay" style="display:none">
+    <div class="long"> 
+      <div class="one_col_block book_page">
+        <h1 class="big">Here's the final step.</h1>
+        <p class="heading_text">Invite parents you already know and start receiving playdate invites for your children!</p>
+        <div class="select_links"><a href="#" id="prev" class="default">Previous</a> <a href="#" id="next" class="default">Next</a> <a href="#" id="select_all" class="default">Select All</a> <a href="#" id="select_none" class="default">Deselect All</a><span id="letter_navigation"></span></div>
+        <form id="email_invite_form" action="/home/invite_by_email/" method="post">
+          <ul id="email_invite_list" class="select_lists">
+            <div class="importing" style="text-align:center;">
+               <img src="/static/images/loading.gif" height="150" width="150">
+            </div>
+          </ul>
+          <div class="link_buttons">
+            <input name="" type="submit" value="" class="btn_done"/>
+            <input name="" id="skip_email_invite_overlay" type="button"  class="btn_skip"/>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<div id="done" style="display:none">
+  <div class="long"> 
+    <div class="one_col_block book_page">
+      <h1>Your invitations have been sent. Thanks!</h1> 
+      <br><br>
+      <p><a href="{% url home %}">Return Home</a></p>
+    </div> 
+  </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block extra_body %}
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/address_book_import.js"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/popup.js"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.min.js"></script> 
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+    function show_email_invite_overlay() {
+       var options = {
+         'import_now': true,
+         'loading_function': function(done) { if (! done) { $("#spinning_loading").show(); } else { $("#spinning_loading").hide(); } },
+         'div': $("#email_invite_overlay"),
+         'cancel': function() { window.location.href = "{% url home %}"; }
+       }
+
+       $("body").email_invite_overlay(options);
+       $("#email_invite_overlay").show();
+    }
+
+    function run_import(type) {
+      if (type == 'email_list') {
+        $("#spinning_loading").show();
+        response = ajax_call('/home/import_email_list/', {});
+        $("#spinning_loading").hide();
+        $("#done").show();
+      } else {
+        show_email_invite_overlay()
+      }
+    }
+
+    var options = { 
+       'next_step': function() {   console.log("next step");  },
+       'run_import' : run_import,
+       'loading_function': function(done) { if (! done) { $("#spinning_loading").show();} else { $("#spinning_loading").hide(); } },
+       'div': $("#address_book_import"),
+       'cancel': function() { window.location.href = "{% url home %}"; }
+    };
+
+    $("body").address_book_import(options);
+    $("#address_book_import").show();
+
+});
+</script>
+
+{% endblock %}

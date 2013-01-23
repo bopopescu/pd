@@ -1,0 +1,39 @@
+<span id="top_level">
+<div id="send_message_overlay_wrapper">
+<div id="send_message_overlay" class="boverlay">
+  <div class="lightbox_wrapper"> <a href="#" class="close_button close_send_message_overlay"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a>
+    <div class="invite_wrap">
+      <h1>Send a Message</h1>
+      <p class="heading_text">Send a message to ${name}.</p>
+          <div class="message_box">
+            <ul>
+              <li>
+                <label>Subject:</label>
+                <input id="subject" type="text" />
+              </li>
+              <li>
+                <label>Message:</label>
+                <textarea id="message" rows="" cols=""></textarea>
+              </li>
+            </ul>
+          </div>
+          <div class="add_bottom buttons">
+            <div class="btns">
+              <input type="hidden" id="to_user_id" value="${to_user_id}">
+              <input type="submit" id="send_message" name="" value="" class="btn_send"/>
+              <input type="reset" id="cancel_send_message" class="close_send_message_overlay btn_reset" name="" value="" />
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="message_sent_overlay" class="overlay">
+  <div class="lightbox_wrapper">
+    <div class="invite_wrap">
+      <h1>Message Sent</h1>
+      <br><br>
+    </div>
+  </div>
+</div>
+</span>

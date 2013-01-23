@@ -1,0 +1,34 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+
+    WSGIDaemonProcess mysite python-path=/var/www/playdation.net/env/lib/python2.6/site-packages
+    WSGIProcessGroup mysite
+    
+    WSGIScriptAlias / /var/www/playdation.net/playdation/deploy/pinax.wsgi
+
+    RewriteEngine on
+    RewriteCond %{HTTP_HOST} ^playdation\.net
+    RewriteRule ^(.*)$ http://www.playdation.net/$1 
+
+
+    <Directory /var/www/playdation.net/playdation/deploy>
+        Order deny,allow
+        Allow from all
+    </Directory>
+    
+    Alias /static/ /var/www/playdation.net/playdation/site_media/static/
+    Alias /site_media/ /var/www/playdation.net/playdation/site_media/
+    
+    <Directory /var/www/playdation.net/playdation/site_media/>
+    Order deny,allow
+    Allow from all
+    </Directory>
+
+    <Directory /var/www/playdation.net/playdation/site_media/static/> 
+    Order deny,allow
+    Allow from all
+    </Directory>
+
+
+    
+</VirtualHost>

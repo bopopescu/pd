@@ -1,0 +1,179 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading">
+        <div class="heading_left">
+          <h1>{{ owner.title }}</h1>
+          <p><strong>{{ album.title }}</strong></p>
+        </div>
+        <div class="links"><!--<span class="link_grey"><a href="#">Go Back to Photos Home</a></span>--><span class="link_lightblue"><a href="{% url view_album album.id %}">Go Back to Album</a></span></div>
+      </div>
+      <!--heading end-->
+      <div class="browse_photo">
+        <div class="control_btns">{% if prev %}<a href="{% url view_photo prev.id %}" class="prev"><img src="/static/images/img_prev.png" alt="" width="125" height="23" /></a> {%endif%} <!--<span class="middle_add"><a href="#">+ Add </a> a Caption for this photo</span>--> {% if next %}<a href="{% url view_photo next.id %}" class="next"><img src="/static/images/img_next.png" alt="" width="125" height="23" /></a>{% endif %} </div>
+        <!---control_btns end-->
+        <div class="photo_box"> <img src="{{ photo.original.url}}" alt="" />
+          <p><!--<strong>In this Photo:</strong> Sebastian, Michael, Kaitlyn, Christine, Peter, Jimmy, Midnight(the dog)--></p>
+        </div>
+        <!---photo_box end--> 
+      </div>
+      <!--browse photo end-->
+      <div class="comment_wrap">
+        <div class="add_time">Added February 2nd</div>
+        <div class="comment_box narrow">
+          <div class="comment_form">
+<!---            <div class="comment_img"><img src="/static/images/img_parents.jpg" alt="" width="50" height="50" /></div> -->
+
+            <div class="comment_text">
+              <form action="#" id="post_comment" method="post">
+                <fieldset>
+                  <input type="text" name="" id="comment" class="write_text" onfocus="if(this.value=='Write something')this.value=''" onblur="if(this.value=='')this.value='Write something'" value="Write something" />
+                  <input type="submit" name="" value=" " class="input_blue left" />
+<!--                  <span class="tips" style="left:0px; top:-36px;"><b>Please enter content</b></span> -->
+                </fieldset>
+              </form>
+            </div>
+            <!--comment text end--> 
+          </div>
+          <!--comment form end-->
+          <ul id="comments" class="comment_lists">
+          </ul>
+        </div>
+        <!--comment box end-->
+        
+        <div class="right_part">
+          <h2>From the Album:</h2>
+          <p>{{ album.title }} ( <a href="{% url view_album album.id %}">view</a> )</p>
+          <ul class="icon_links">
+<!--            <li><span><a href="#"><img src="/static/images/img_icon.png" alt="" width="33" height="27" /></a></span><span><a href="#" class="tag">tag</a></span></li> -->
+            <li><span><a href="#" class="share share_to_fb"><img src="/static/images/icon_share.png" alt="" width="33" height="27" /></a></span><span><a href="#" class="share share_to_fb">share</a></span></li>
+
+            {% if can_set_profile %}
+              {% if profile_pic %}
+                <li><span>Current Profile Pic</span></li>
+              {% else %}
+                <li><span><a href="{% url make_profile_pic photo.id %}" class="make_profile_pic"><img src="/static/images/set_profile_pic.png" alt="" width="33" height="27" /></a></span><span><a href="{% url make_profile_pic photo.id %}" class="make_profile_pic">{{ set_profile_language }}</a></span></li>
+              {% endif %}
+            {% endif %}
+
+            {% if can_delete %}
+            <li><span><a href="{% url delete_photo photo.id %}" class="delete"><img src="/static/images/icon_delete.png" alt="" width="33" height="27" /></a></span><span><a href="{% url delete_photo photo.id %}" class="delete">delete</a></span></li>
+            {% endif %}
+
+          </ul>
+        </div>
+        <!--right part end--> 
+      </div>
+    </div>
+    <div class="mainbtm">
+      <div class="mbright"> </div>
+    </div>
+  </div>
+
+  <div id="fb-root"></div>
+
+<script id="comment_tmpl_user" type="text/html">
+<li>
+  <div class="img_box"><img src="${small_profile_pic}" alt="" width="25" height="25" /></div>
+  <div class="text_box">
+    <p>${comment }</p>
+    <p class="name">${first_name } ${last_name}</p>
+  </div>
+</li>
+</script>
+
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+{% block extra_body %}
+
+<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script> 
+<script src="/static/js/jquery.editable-1.3.3.js" type="text/javascript" charset="utf-8"></script>
+<script type='text/javascript' src='/static/js/playdation.js'></script> 
+<script type='text/javascript' src='/static/js/share_to_fb.js'></script> 
+
+
+<script type="text/javascript"> 
+
+
+$(document).ready(function() {
+     var item_id = '{{ photo.id }}';
+
+     $(".share_to_fb").click(function(e) {
+         e.preventDefault();
+         var options = {
+             'photo_id':item_id,
+         };
+                  
+         $("body").share_to_fb(options);
+     })
+
+
+     $("#post_comment").submit(function(e) {
+         e.preventDefault();
+         var comment = $("#comment").val();
+         var type = 'Playdate';
+         var ds = {
+             'app_label':'photos',
+             'model':'Photo',
+             'id':item_id,
+             'comment':comment,
+         };
+    
+    
+         var response = ajax_call('{% url new_comment %}', ds);
+         
+         if (response["success"]) {
+             prepend_comment($("#comments"),response["comment"]);
+             $("#comment").val('');
+         }        
+     });
+
+
+    function get_comment_li(comment) {
+        var com_id = '#comment_tmpl_user';
+        var comment_li = $(com_id).tmpl(comment);        
+        return comment_li;
+    }
+
+    function populate_comments(container, comments) {
+        container.empty();
+        for (c_i in comments) {
+            var comment_li = get_comment_li(comments[c_i]);            
+            container.append(comment_li);        
+        }        
+    }
+
+    function prepend_comment(container, comment) {
+        var comment_li = get_comment_li(comment);
+        container.prepend(comment_li);        
+    }
+
+    var ds = {
+        'app_label':'photos',
+        'model':'Photo',
+        'id':item_id,
+    };
+
+    var response = ajax_call('{% url list_comments %}', ds);
+
+    var comments = response["comments"];
+
+    populate_comments($("#comments"),comments);
+              
+
+});
+</script> 
+
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+{% load uploadify_tags %}
+
+{% block head_title %}{% trans "Album" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading">
+        <div class="heading_left">
+          <h1>{{ album.title }}</h1>
+<!--          <p><strong>With: </strong> Sebastian, Michael, Kaitlyn, Christine</p> -->
+        </div>
+        <div class="links">  {% if can_upload %}<span class="link_purple"><a id="upload_more" href="#">Add More Photos</a></span>{% endif %}<!--<span class="link_grey"><a href="#">Back to Photos Home</a></span>--></div>
+      </div>
+      <!--heading end-->
+      <div class="photo_wrap">
+        <div class="text_by"><span>For: {{ album.owner_name }}</span>
+          <div class="right_text"><span class="add_photo"><!--<a href="#">+ Add a Caption for this Album</a>--></span></div>
+        </div>
+        <ul>
+  {% for photo in photos %}
+
+          <li>
+            <div class="photo_img" style="text-align:center;"><a href="{% url view_photo photo.id %}"><img src="{{photo.prof125.url}}"  /></a></div>
+          </li>
+
+  {% endfor %}
+
+<!--
+          <li>
+            <div class="photo_img"><img src="/static/images/img_photo.png" alt="" width="149" height="116" /></div>
+          </li>
+          
+-->
+        </ul>
+      </div>
+<!--      <div class="page_nav">
+        <div class="control_button"><span>Preview</span>|<span><a href="#">Next</a></span></div>
+        <ul>
+          <li><strong>Page</strong></li>
+          <li><a href="#" class="current">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+        </ul>
+        <div class="view_style"><span class="view_all"><a href="#" class="current">View All</a></span> </div>
+      </div> -->
+      <!--photo wrap end--> 
+    </div>
+    <div class="mainbtm">
+      <div class="mbright"></div>
+    </div>
+  </div>
+
+
+<div id="upload_more_div" class="overlay" style="display:none">
+  <div class="lightbox_wrapper long"> <a href="#" id="close_upload_more_div" class="close_button"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a>
+    <div class="one_col_block">
+      <h1 class="big">Upload photos to this album.</h1>
+      <p class="heading_text">Click 'Select Files' to choose the files to upload.</p>
+        <script type='text/javascript' src='/static/js/playdation.js'></script>
+        
+        {% multi_file_upload upload_url %}
+
+        <div id="loading" style="text-align:center;display:none;">
+           <img src="/static/images/loading.gif" height="150" width="150">
+        </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+{% block extra_body %}
+<script type='text/javascript' src='/static/js/playdation.js'></script> 
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+
+  var can_upload = '{{can_upload }}';
+  
+  if (can_upload) {  
+    $("#upload_more").click(function (e) {
+      e.preventDefault();
+      $("#upload_more_div").show();    
+    });
+  }
+
+
+  $("#uploadify").bind('UploadStarted', function() {
+    $("#upload_more_div #loading").show();
+  });
+
+  $("#uploadify").bind('allUploadsComplete', function() {
+    $("#upload_more_div #loading").hide();
+    $("#upload_more_div").hide();
+    location.reload(true);
+  });
+
+  $("#close_upload_more_div").click(function (e) {
+    e.preventDefault();
+    $("#upload_more_div").hide();    
+  })
+
+});
+
+
+</script>
+{% endblock %}

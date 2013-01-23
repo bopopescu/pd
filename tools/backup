@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DB_BACKUP="/home/ubuntu"
+DB_USER="playdation"
+DB_PASSWD="playdate123"
+DB_HOST=10.252.177.206
+
+mysqldump --host=$DB_HOST --user=$DB_USER --password=$DB_PASSWD --all-databases | bzip2 > $DB_BACKUP/mysql-`date +%Y-%m-%d`.bz2
+# mysqldump --user=$DB_USER --password=$DB_PASSWD --all-databases | bzip2 > $DB_BACKUP/mysql-`date +%Y-%m-%d`.bz2

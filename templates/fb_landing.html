@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Playdation</title>
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+{% load util_tags %}
+
+{% include "tracking.html" %}
+
+</head>
+<body id="page_home">
+<div id="container">
+
+  <div class="header">
+    <div class="logo"><a href="/"><img src="/static/images/img_logo1.png" alt="" width="498" height="131" /></a></div>
+  </div>
+  <!--header end-->
+
+<div id="content">
+
+    <div class="fb_two_block">
+        <div class="fb_lgb"><img src="/static/images/fb-pdgirl.jpg"></div>
+            </a>
+
+		<div class="fb_right_area">
+        <h1>Connect with parents <br />you already know.</h1>
+        <h2><a href="#" onclick="Track.record('Clicked on FB Connect on Homepage'); FacebookLogin.processLogin('http://{%www_host%}/account/connect_login', null, 'http://{%www_host%}/readmore.html', 'false'); return false;" style="border:0;"><img src="/static/images/fb-pagejoin.png"></a></h2>
+        <h2 class="trim">&nbsp;</h2>
+        <h3>Playdation is for fun parents only</h3>
+        </div>
+	</div><!--end two block-->
+
+</div><!--content end-->
+<div id="fb-root"></div>
+
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js'></script> 
+<script type='text/javascript' src='/static/js/playdation.js'></script>
+<script src="/static/js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+
+<script type="text/javascript"> 
+
+window.fbAsyncInit = function() { 
+  FB.init({appId: '{%fb_app_id%}', status: true, cookie: true, xfbml: true, channelUrl  : 'http://{%www_host%}/channel.html'}); 
+}; 
+
+(function() { 
+  var e = document.createElement('script'); 
+  e.type = 'text/javascript'; 
+  e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js'; 
+  e.async = false; 
+  document.getElementById('fb-root').appendChild(e);
+}()); 
+
+$(document).ready(function(e) {
+
+});
+
+</script>
+
+{% autoescape off %}
+{{ analytics_tracking }}
+{% endautoescape %}
+
+<script type="text/javascript"> 
+try {
+  Track.record('Viewed FB Landing Page');
+  Track.record('Viewed a Page with a Facebook registration button');
+}
+catch (e) {}
+</script>
+
+
+</body>
+</html>

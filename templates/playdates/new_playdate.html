@@ -1,0 +1,553 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+
+{% block head_title %}{% trans "Create Playdate" %}{% endblock %}
+
+{% block body %}
+
+  <div id="content">
+    <div class="two_block_wrapper">
+      <div class="invite_content">
+        <h1>You are about to make a plan with friends.</h1>
+{% if message %}
+<h3 style="color:red">{{message}}</h3><br>
+{% endif %}
+        <form id="playdate_form" action="#" method="post">
+          <div class="grey_wrap">
+            <h2><span>1</span> Who's Invited?</h2>
+            <ul>
+              {% if single_child %}
+              <li id="child_sel" style="display:none;">
+                <label>Your Children:</label>
+              {% for child in edit_schedule_children %}
+              <span>
+              <input id="id_organizer_child_{{child.profile.id}}" class="oc" type="checkbox" value="{{ child.profile.id }}" checked="true" />
+              <input id="fake_id_organizer_child_{{child.profile.id}}" class="ocr" name="organizer_child" type="hidden" value="{{ child.profile.id }}" />
+              <label>{{ child.profile.first_name }}</label>
+              </span>
+              {% endfor %}
+                
+              </li>
+              {% else %}
+              <li id="child_sel">
+                <label>Your Children:</label>
+              {% for child in edit_schedule_children %}
+              <span>
+              <input id="id_organizer_child_{{child.profile.id}}" class="oc" type="checkbox" value="{{ child.profile.id }}" />
+              <label>{{ child.profile.first_name }}</label>
+              </span>
+              {% endfor %}
+                
+              </li>
+              {% endif %}
+
+
+              <li id="no_kids_selected" {% if single_child %}style="display:none;"{% endif %}>
+                <label>Added So Far:</label>
+                Select your attending children above.
+              </li>
+
+              <span id="kids_selected" {% if not single_child %}style="display:none;" {%endif %}>
+              <li id="added_no_one">
+                <label>Added So Far:</label>
+                <input type="button" class="btn_invite invite_link" />
+              </li>
+              <li id="added_so_far" style="display:none;">
+                <label class="add_left">Added So Far:<br />
+                  <a href="#" class="invite_link">+ Invite More</a> </label>
+                <ul id="name_lists" class="name_lists">
+                </ul>
+              </li>
+              </span>
+            </ul>
+          </div>
+          <div class="grey_wrap">
+            <h2><span>2</span> What's the Plan?</h2>
+            <ul>
+              <li><span>
+                <label>When?:</label>
+                <input type="text" name="date" id="date" style="width:80px; margin-left:5px;" value="{{start_date}}">
+                </span><span style="margin-left:24px;">
+                <label>from:</label>
+                <input type="text" name="time_start" id="time_start" style="width:100px;" value="{{start_time}}">
+                <label>to:</label>
+                <input type="text" name="time_end" id="time_end" style="width:100px;" value="{{end_time}}">
+                </span></li>
+              <li>
+                <label>Where?:</label>
+                <select name="loc_select" id="loc_select" class="new_location">
+                  <option value="0"> New Location </option>
+                {% for loc in places %}
+                  <option value="{{ loc.id }}" title="{{ loc.address }}"> {{ loc.name }} </option>
+                {% endfor %}
+                </select>
+                <input name="address" type="text" class="text_address" id="address" style="width:294px;"/>
+                <div id="map_error" style="color:red;text-align:center;width:500px;margin:10px;display:none;"></div>
+              </li>
+              <li id="save_location_li">
+              <input id="loc_cbox" type="checkbox"/> Save location for future use
+              <span id="new_loc_span" style="display:none;padding-left:0px;">
+              Name: <input type="text" name="new_loc_name" id="new_loc_name" disabled="disabled">           
+              </span>
+              </li>
+              <li>
+                <label>Your Phone#:</label>
+                <input name="phone" id="phone" type="text" class="text_phone" value="{{phone|default:""}}"/>
+              </li>
+              
+
+              <li>
+                <label>Planned Activity:</label>
+                <select name="activity" class="new_location">
+                  {% for activity in activities %}
+                  <option value="{{activity.id}}">{{activity.name}}</option>
+                  {% endfor %}
+                </select>
+              </li>
+              <li>
+                <label>Additional Info:</label>
+                  <input name="details" id="details" type="text" class="text_detail" />
+              </li>
+         
+              
+              <!--<li>
+                <label>Is this Playdate a Dropoff?:</label>
+                <span>
+                <input type="radio" name="dropoff" value="yes" />
+                <label>Yes</label>
+                </span><span>
+                <input type="radio" name="dropoff" value="no" />
+                <label>No</label>
+                </span></li>-->
+            </ul>
+          </div>
+
+          <div class="bottom_wrapper">
+            <div class="invite_bottom">
+              <div id="errors" class="signup-errors" {% if errors %} {%else%}style="display:none;"{%endif%}>{% for error in errors %}<p>{{error}}</p>{% endfor %}</div>
+
+              <input id="form_submit" name="" value="" type="submit" class="btn_send" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="invite_sidebar">
+        <div class="img_map" id="map_canvas" style="width:155px;height:134px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.10.custom.css' /> 
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/calendrical.css' /> 
+
+
+<style>
+.ui-autocomplete-loading { background: white url('/static/images/ui-anim_basic_16x16.gif') right center no-repeat; }
+#friend { width: 25em; }
+</style>
+
+{% endblock %}
+
+
+
+{% block extra_body %}
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+<script src="{{ STATIC_URL }}js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js" type="text/javascript"></script> 
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<!--<script type='text/javascript' src='{{ STATIC_URL }}js/jquery-ui-timepicker-addon.js'></script> -->
+<script src="{{ STATIC_URL }}js/jquery.calendrical.js" type="text/javascript" charset="utf-8"></script> 
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.min.js"></script> 
+<script type='text/javascript' src='{{ STATIC_URL }}js/invite_select_overlay.js'></script>
+<script type='text/javascript' src='{{ STATIC_URL }}js/pd_inviter.js'></script>
+
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+  $("#date").calendricalDate({ 'usa': true });
+  $("#time_start, #time_end").calendricalTimeRange();  
+
+  $("#date").watermark("date");
+  $("#time_start").watermark("start time");
+  $("#time_end").watermark("end time");
+  $("#address").watermark("enter an address");
+  $("#friend").watermark("type ahead to select name");
+  $("#phone").watermark("your phone number");
+  $("#details").watermark("drop off and pickup info, what to bring, meals/snacks served, etc.");
+
+  function any_selected() {
+    var selected = false;
+    $("#child_sel span .oc").each(function(e) {
+      if ($(this).is(':checked')) {
+       selected = true; 
+      }
+    });
+    return selected;
+  }
+
+
+  $("#child_sel span .oc").change(function() {
+    if ($(this).is(':checked')) {
+      $("#no_kids_selected").hide();
+      $("#kids_selected").show();
+    } else if ((! any_selected()) && ( selected_length == 0 )) {
+      $("#kids_selected").hide();
+      $("#no_kids_selected").show();
+    }
+  });
+
+  $("#loc_cbox").change(function(e) {
+     if ($(this).is(':checked')) {
+       $("#new_loc_span").show();      
+       $("#new_loc_span").find("input").removeAttr('disabled');
+    } else {
+       $("#new_loc_span").find("input").attr('disabled','disabled');
+       $("#new_loc_span").hide();
+    }    
+  });
+
+
+  $("#loc_select").change(function(e) {
+    var selected_option = $(this).find(":selected")
+    if ( selected_option.val() == '0') {
+      $("#map_canvas").hide();
+      $("#save_location_li").show();
+
+    } else {
+      var addr = selected_option.attr('title');
+      $("#address").val(addr);
+      addr = addr.replace(/(\r\n|\n|\r)/gm,"");
+      $("#save_location_li").hide();
+
+      validate(addr, function(result) {
+        if (result["success"]) {
+          mapAddress(result["location"]);
+        }      
+      });
+    }
+  });
+
+  var geocoder = 0;
+  var map = 0;
+  
+  function validate(address, callback) {
+
+    if (! geocoder) {
+      geocoder = new google.maps.Geocoder();
+    }
+
+
+    geocoder.geocode({'address': address }, function(results, status) {
+      switch(status) {
+        case google.maps.GeocoderStatus.OK:
+          // document.getElementById('type').value = results[0].types[0];
+          // document.getElementById('result').value = results[0].formatted_address;
+          var result = {
+             'success':true,
+             'location':results[0],
+          };
+          callback(result);
+          break;
+        case google.maps.GeocoderStatus.ZERO_RESULTS:
+          var result = {
+             'success':false,
+             'reason':'invalid',
+          };
+          callback(result);
+          break;
+        default:
+          var result = {
+             'success':false,
+             'reason':'error',
+          };
+          callback(result);
+      }
+   });
+
+  }  
+
+  function mapAddress(result) {
+    if (! map) {
+      map = new google.maps.Map(document.getElementById("map_canvas"), { zoom:10, mapTypeId:google.maps.MapTypeId.ROADMAP });
+      marker = new google.maps.Marker();
+    }
+    marker.setPosition(result.geometry.location);
+    marker.setMap(map);
+    map.fitBounds(result.geometry.viewport);
+    $("#map_canvas").show();
+  }
+
+  $("#address").focusout(function() {
+    $("#map_error").hide();
+    var addr_val = $("#address").val();
+    addr_val = addr_val.replace(/(\r\n|\n|\r)/gm,"");
+    validate(addr_val, function(result) {
+      if (result["success"]) {
+        mapAddress(result["location"]);
+      } else {
+        $("#map_error").html("Google Maps can't find the address. Hope you know the place. :)")        
+        $("#map_error").show();
+      }      
+    });
+  });
+
+  var pdf = $("#playdate_form");
+  pdf.submit(function() {
+    var error_div = $("#errors");
+    error_div.empty();
+    error_div.hide();
+
+    var errors = [];
+    // check invitees
+
+    if (comma_list(".ocr").length == 0) {
+      errors.push($("<p>Please choose at least one of your own children.</p>"));
+    }
+
+    var num_invitees = 0;
+    pdf.find("input[name='invitee']").each(function() { num_invitees = num_invitees + 1; });
+    if (num_invitees < 1) {
+      errors.push($("<p>Please invite some people. Playdates are more fun that way!</p>"));
+    }    
+     // error here if no invitees
+     
+    var address = $("#address").val();
+    if (! address.length) {
+      errors.push($("<p>Please add an address for the playdate.</p>"));
+    }
+     // error here if blank
+     
+    var date = $("#date").val();
+    // error here if blank
+    if (! date.length) {
+      errors.push($("<p>Please add a date for the playdate.</p>"));
+    }
+
+    var time_start = $("#time_start").val();
+    // error here if blank
+    if (! time_start.length) {
+      errors.push($("<p>Please add a start time for the playdate.</p>"));
+    }
+
+    var time_end = $("#time_end").val();
+    // error here if blank
+    if (! time_end.length) {
+      errors.push($("<p>Please add an end time for the playdate.</p>"));
+    }
+
+    var phone = $("#phone").val();
+    var phone_re=/^[0-9\s\(\)\-]+$/;
+    
+    if (phone.search(phone_re) == -1) {
+      errors.push($("<p>Phone contains invalid characters.</p>"));
+    }          
+
+    if (errors.length) {
+      for (err_ind in errors) {
+        error_div.append(errors[err_ind]);
+      }
+      error_div.show();
+
+      $("#date").watermark("date");
+      $("#time_start").watermark("start time");
+      $("#time_end").watermark("end time");
+      $("#address").watermark("enter an address");
+      $("#friend").watermark("type ahead to select name");
+      $("#phone").watermark("your phone number");
+      $("#details").watermark("Dropoff and Pickup info, what to bring, what to wear, meals/snacks served, etc.");
+      return false;
+    }
+    return true;
+  });
+
+  var current_invitees = {};
+  var selected_length = 0;
+
+  function update_selected(selected) {
+
+    var ul = $("#name_lists");
+    var li_tmpl = '<li><a href="#" class="removeonclick" title="${key}">${name}</a></li>';
+    ul.empty();
+
+    selected_length = 0;
+    $.each( selected, function(index, invitee) {
+      add_to_hidden_fields(invitee["key"]);
+      var li = $.tmpl(li_tmpl, invitee);
+      ul.append(li);
+      selected_length = selected_length + 1;
+    });
+
+    gray_out_checkboxes(selected);
+
+    if (selected_length) {
+      $("#added_no_one").hide();
+      $("#added_so_far").show();
+      $("#no_kids_selected").hide();
+      $("#kids_selected").show();
+    } else {
+      $("#added_no_one").show();
+      $("#added_so_far").hide();
+    }
+    current_invitees = selected;
+
+  }
+
+  $("#playdate_form").find(".invite_link").click(function(e) {
+
+    var settings = {
+      'oc':comma_list(".ocr"),
+      'callback':function(selected) { 
+        update_selected(selected);
+      },
+      'current_list':current_invitees,
+      'fb_app_id':'{{fb_app_id}}',
+    };
+
+    $(this).pd_inviter(settings);
+
+  });
+
+  function add_to_hidden_fields(ival) {
+    var ele = $("#"+ival);
+    if (ele.length == 0 ) {
+      var nf = $("<input type='hidden' name='invitee' id='"+ival+"' value='"+ival+"'>");
+      $("#name_lists").append(nf);      
+    }
+  }
+
+  function remove_from_hidden_fields(ival) {
+    var ele = $("#"+ival);
+    ele.remove();
+  }
+
+
+  $(".removeonclick").live('click', function(e) {
+    e.preventDefault();
+    var key = $(this).attr('title');
+    remove_from_hidden_fields( key );
+    $(this).parent().remove();
+    delete current_invitees[key];
+    selected_length = selected_length - 1;
+    gray_out_checkboxes(current_invitees);
+
+    if (selected_length == 0) {
+      $("#added_so_far").hide();
+      $("#added_no_one").show();
+    }
+  });
+  
+  function gray_out_checkboxes(list_of_invitees) {
+    ungray_all_checkboxes();
+    var user_invite=/^\d+_\d+_\d+$/
+    $.each( list_of_invitees, function(index, invitee) {
+      if (user_invite.test(invitee["key"])) {
+        var parts = invitee["key"].split('_');
+        var child_id = parts[0];
+        gray_out_checkbox(child_id);
+      }
+    });
+  }
+
+
+  function gray_out_checkbox(child_id) {
+    var selector = '#id_organizer_child_'+child_id;
+    $(selector).attr('checked','true');
+    $(selector).attr('disabled','disabled');    
+    select_oc(child_id);
+    $("#no_kids_selected").hide();
+    $("#kids_selected").show();
+  }
+
+  function ungray_all_checkboxes() {
+    var selector = '.oc';
+    $(selector).each(function() {
+      $(this).removeAttr('disabled');
+    });
+  }
+
+
+  function select_oc(child_id) {
+    var selector = 'id_organizer_child_'+child_id;
+    var selector_hidden = 'fake_id_organizer_child_'+child_id;
+    if ($('#'+selector_hidden).length == 0 ) {
+      $('#'+selector).parent().append($("<input type='hidden' class='ocr' id='"+ selector_hidden +"' name='organizer_child' value='" + child_id + "' >") );
+    }
+  }
+
+  function unselect_oc(child_id) {
+    var selector = 'id_organizer_child_'+child_id;
+    var selector_hidden = 'fake_id_organizer_child_'+child_id;
+    if ($('#'+selector_hidden).length > 0 ) {
+      $('#'+selector_hidden).remove();
+    }
+  }
+
+  $(".oc").change(function() { 
+    var child_id = $(this).val();
+    if ($(this).attr('checked')) {
+      select_oc(child_id);
+    } else {
+      unselect_oc(child_id);
+    }
+  });
+
+  function comma_list(selector) {
+    var result = '';
+    $(selector).each(function(intindex) {
+      var ele = $(this);
+      if (result.length) {
+        result = result + ',';
+      }
+      result = result + ele.val();         
+    });     
+  
+    return(result);
+  }
+
+  var preinvite_key = false;
+  var preinvite_key_data = false;
+  var preinvite_oc = false;
+{% if key %}
+  preinvite_oc='{{oc}}';
+
+{% autoescape off %}
+  var preinvite_list = { '{{key}}': {{record}} };
+{% endautoescape %}
+  
+  update_selected(preinvite_list);
+
+{% endif %}  
+
+
+
+  {% if children_without_default_designs %}
+  var children_without_designs = [
+  {% for cv in children_without_default_designs %}
+    { 'id': '{{ cv.profile.id }}', 'first_name': '{{ cv.profile.first_name}}' }, 
+  {% endfor %}
+  ];
+  
+  var settings = {
+    'children':children_without_designs,    
+  };
+   $("body").invite_select_overlay(settings);
+
+  {% endif %}
+
+
+});
+
+</script>
+
+
+{% endblock %}

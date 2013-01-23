@@ -1,0 +1,34 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Beta Code Entry{% endblock %}
+
+
+{% block body %}
+
+  <div id="content" class="common">
+    <div class="two_col_block margin_top">
+      <div class="main_text">
+        <form action="{% url acct_beta %}" method="post">
+          <fieldset>
+            <div class="wrap_grey">
+              <ul>
+                <li>
+                  <label>Beta Code:</label>
+                  <input id="beta" type="text" name="beta" /> 
+                </li>
+              </ul>
+            </div>
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <input name="" type="submit" class="done"  value=""/>
+          </fieldset>
+        </form>
+
+      </div>
+      <img src="/static/images/img_login.png" alt="" width="373" height="296" class="img_right"/> </div>
+  </div>
+{% endblock %}

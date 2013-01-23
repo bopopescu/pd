@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{% block head_title_base %}{% if SITE_NAME %}{{ SITE_NAME }} : {% endif %}{% block head_title %}{% endblock %}{% endblock %}</title>
+
+{% block extra_head_base %}
+    {% block extra_head %}{% endblock %}
+{% endblock %}
+
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+
+{% load i18n ifsetting_tag account_tags util_tags %}
+
+{% include "tracking.html" %}
+
+</head>
+<body>
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js'></script> 
+
+<div id="container">
+  <!--Header Start-->
+  <div id="header">
+    <div id="logo"><a href="/"><img src="/static/images/slogo.png" alt="" /></a></div>
+  </div>
+  <!--Header End-->
+
+{% block body %}
+{% endblock %}
+
+<div class="push"></div>
+
+
+</div>
+
+<!--Footer Start-->
+<div id="footer">
+    <div class="footer">
+        <ul>
+            <li><a href="{% url about_us %}">About</a></li>
+            <li><a href="{% url user_agreement %}">User Agreement</a></li>
+            <li><a href="{% url privacy_policy %}">Privacy Policy</a></li>
+            <li><a href="http://blog.playdation.com"  target="_blank">Blog</a></li>
+        </ul>
+        <div class="copy">
+          <p>We don't play around when it comes to screening and privacy.</p>
+          <p><a href="{% url ip_policy %}">Trademarks</a> belong to their respective owners. ©2011 Playdation, Inc.</p>
+        </div>
+    </div>    
+
+{% block extra_footer %}{% endblock %}
+
+</div>
+<!--Footer End-->
+
+
+{% autoescape off %}
+{{ analytics_tracking }}
+{% endautoescape %}
+
+{% block extra_body %}
+
+{% endblock %}
+
+
+
+
+</body>
+</html>

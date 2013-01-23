@@ -1,0 +1,47 @@
+# base.txt is a pip requirements file which describes the necessary
+# distributions required to run this project. If you need something that is
+# project specific not listed here use project.txt. You can, of course, update
+# versions of distributions here if needed.
+
+--extra-index-url=http://dist.pinaxproject.com/dev/
+distribute==0.6.19
+
+Django==1.2.5
+Pinax==0.9a1
+
+django-debug-toolbar==0.8.3
+django-staticfiles==0.2.0
+
+django-mailer==0.2a1.dev1
+django-timezones==0.2.dev1
+django-ajax-validation==0.1.3
+pytz==2010h
+django-uni-form==0.7.0
+
+django-announcements==0.1.2
+django-pagination==1.0.7
+
+django-notification==0.1.4
+django-oembed==0.1.1
+South==0.7.3
+virtualenv==1.4.5
+simplejson==2.0.9
+
+django-authority==0.4
+gdata==2.0.14
+
+vobject==0.8.1c
+
+boto==2.0b4
+hg+http://bitbucket.org/david/django-storages/#egg=storages
+
+python-memcached==1.47
+django-ses==0.2
+
+django-imagekit==0.3.4
+python-dateutil==1.4.1
+
+django-indexer==0.3.0
+django-paging==0.2.4
+django-templatetag-sugar==0.1.0
+

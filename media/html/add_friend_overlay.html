@@ -1,0 +1,69 @@
+<span id="top_level">
+<div id="add_friend_overlay_wrapper">
+<div id="add_friend_overlay" class="boverlay">
+  <div class="lightbox_wrapper"> <a href="#" class="close_button"><img src="/static/images/img_close.png" id="close_overlay" alt="" width="34" height="35" /></a>
+    <div class="invite_wrap">
+      <h1>Add a Friend on Playdation</h1>
+      <div class="addfriend_form">
+        <form action="#" id="add_friend_form" method="post">
+          <fieldset>
+            <div class="green_box">
+              <label>You are adding</label>
+              <input type="hidden" id="to_child" value="${child_id}">
+              <select id="to_parent" name="parent">
+              </select>
+              <label>${child_age}-year-old to</label>
+              <select id="from_child" name="from_child">
+              </select>
+              <label>Friends</label>
+            </div>
+            <p class="heading_text">How does your child know this child?</p>
+            <span id="afo_error_span" style="color:red"></span>
+            <ul>
+              <li>
+                <input type="radio" name="how" value="3" selected="selected" />
+                <label>We are friends or have friends in common</label>
+              </li>
+              <li>
+                <input type="radio" name="how" value="1" />
+                <label>We attend the same school</label>
+              </li>
+              <li>
+                <input type="radio" name="how" value="2" />
+                <label>We live in the same neighborhood</label>
+              </li>
+              <li>
+                <input type="radio" name="how" value="5" />
+                <label>Other</label>
+              </li>
+            </ul>
+            <textarea name="how_text" id="how_text" cols="" rows=""></textarea>
+
+            <div class="add_bottom">
+              <div class="btns">
+                <input type="submit" name="" value="" class="btn_submit"/>
+                <input type="reset" id="cancel" name="" value="" class="btn_reset" />
+              </div>
+              <div class="friend_tip">
+                <h2>Friendly Tip:</h2>
+                <p>We like to encourage new friends but if you are just starting out we recommend adding only people you really know.</p>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="request_sent_overlay" class="overlay">
+  <div class="lightbox_wrapper">
+    <div class="invite_wrap">
+      <h1>Request Sent</h1>
+      <br><br>
+    </div>
+  </div>
+</div>
+
+</span>

@@ -1,0 +1,123 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Settings - Access" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+
+	<div id="content">
+		<div class="one_col_block">
+			<div class="heading narrow">
+				<h1>Settings - Access</h1>
+			</div>
+
+			<div class="maincontent_wrap">
+				<div class="navigation">
+					<ul>
+						<li><a href="{% url settings_account %}">Account</a> |</li>
+						<li><a href="{% url settings_privacy %}">Privacy</a> |</li>
+						<li><a href="#">Communication</a>|</li>
+						<li><a href="{% url settings_access %}"  class="selected">Access</a></li>
+					</ul>
+					<div class="right_select">
+						<form action="#" method="post">
+							<fieldset>
+								<label>You are viewing/editing access for:</label>
+								<select name="">
+									<option value="0">Sebastian</option>
+								</select>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+
+				<!--navigation end-->
+
+				<div class="col_setting access">
+					<div class="title_wrap">
+						<h3>You have previously granted Access to:</h3>
+						<span class="link_blue"><a href="#">Grant Access to Additional People</a></span> </div>
+					<ul>
+						<li><span>Parent:</span> Michael Opencorners( <a href="#">View details</a> )</li>
+						<li class="last"><span>Caregiver:</span> Michele Smith ( <a href="#">View details</a> )</li>
+					</ul>
+				</div>
+
+				<form action="#" method="post">
+					<fieldset>
+						<div class="col_setting detail">
+							<h3>Details:</h3>
+							<p>
+								<label>What level of access does this account have?</label>
+								<select>
+									<option value="0">Parent</option>
+								</select>
+							</p>
+							<ul>
+								<li>
+									<label>First Name:</label>
+									<input type="text" name="" class="error_tip" />
+									<span class="tips" style="left:98px; top:-40px;"><b>First Name</b></span> </li>
+								<li>
+									<label>Last Name:</label>
+									<input type="text"  name="" class="error_tip"/>
+									<span class="tips" style="left:98px; top:-40px;"><b>Last Name</b></span> </li>
+								<li>
+									<label>Email:</label>
+									<input type="text" name="" class="ipt_long error_tip" />
+									<span class="tips" style="left:98px; top:-40px;"><b>Email</b></span> </li>
+							</ul>
+							<p>
+								<input type="checkbox" name="" />
+								<label>Show Sebastian on this person's profile?</label>
+							</p>
+
+							<div class="check_wrap">
+								<p class="small"><a href="#">+ Customize Access</a></p>
+								<span>
+								<input type="checkbox" name="" />
+								<label>Modify Calendar and Playdates</label>
+								</span> <span>
+								<input type="checkbox" name="" />
+								<label>Modify Calendar and Playdates</label>
+								</span> <span>
+
+								<input type="checkbox" name="" />
+								<label>Modify Playlist</label>
+								</span> <span>
+								<input type="checkbox" name="" />
+								<label>Modify Calendar and Playdates</label>
+								</span> <span>
+								<input type="checkbox" name="" />
+
+								<label>Modify Calendar and Playdates</label>
+								</span> 
+
+                                <span>
+								<input type="checkbox" name="" />
+								<label>Modify Calendar and Playdates</label>
+								</span> 
+                                
+                                <span>
+								<input type="checkbox" name="" />
+								<label>Modify Calendar and Playdates</label>
+								</span> 
+                            </div>
+						</div>
+						<p>
+							<input type="submit" value="" class="btn_save" />
+						</p>
+
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

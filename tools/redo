@@ -1,0 +1,5 @@
+#!/bin/bash
+cd /var/www/playdation.net/playdation/
+git reset --hard
+git pull
+tools/rfcgi

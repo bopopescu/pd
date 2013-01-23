@@ -1,0 +1,27 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Facebook Special Link{% endblock %}
+
+{% block body %}
+  <div id="content" class="common">
+    <div class="forms_wrapper connect">
+      <div class="col_left playdaytion">
+        <p>This link is only for {{ fname }} {{ lname }}. You are not getting in if you aren't that person. Please login with Facebook to confirm your identity.</p>
+        <div class="link_wrapper">
+          <span>
+          <form class="connect-button" name="login" method="post" action="{% url pd_fb_login pd.id inv.id %}">
+            <input type="image" src="/static/images/img_facebook.png"/></form>
+          </span> 
+        </div>
+      </div>
+    </div>
+   <div class="mainbtm">
+      <div class="mbright"> </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

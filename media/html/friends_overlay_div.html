@@ -1,0 +1,68 @@
+<span id="top_level">
+<div id="div_wrapper" class="lightbox_wrapper">  
+  <div class="col_top"> 
+    <h1>Preparing your account.</h1> 
+      <div class="importing" style="text-align:center;">
+         <img src="/static/images/loading.gif" height="150" width="150">
+      </div>
+  </div>
+</div>
+
+
+<span id="possible_friends_wrapper">
+<div id="possible_friends" class="boverlay" style="display:none"> 
+  <div class="lightbox_wrapper"> <a href="#" id="close_friends_overlay_button" class="close_button"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a> 
+    <div class="col_top"> 
+      <h1>You are almost done! </h1> 
+      <p>${fname}, the next step is for you to add your child's friends. 
+        The parents and children shown below are already members of Playdation. 
+        Once added, you'll be able to begin scheduling playdates. </p> 
+      <h2>Each child has his/her own list of Friends on Playdation.</h2> 
+      <div id="arrow_div" class="link_arrow"><a href="#" id="left_arrow" class="left_arrow current">left</a><a href="#"  id="right_arrow" class="right_arrow">right</a></div> 
+      <div id="user_container" class="block_wrapper short"> 
+        <div class="importing" style="text-align:center;">
+           <img src="/static/images/loading.gif" height="150" width="150">
+        </div>
+      </div> 
+      <div class="link_buttons"> <a href="#" class="link_done" id="link_done">I'm Done</a><a href="#" class="link_skip" id="link_skip">Skip</a> </div> 
+    </div> 
+  </div> 
+</div> 
+</span>
+
+
+<span id="user_template">
+<div class="grey_block user_block"> 
+  <form action="#" class="user_friend_form" method="post">
+  <ul> 
+    <li> 
+      <div class="img_left"><img class="user_pic" src="" alt="" width="33" height="33" /></div> 
+      <div class="text_right"> <span>${user_fname}</span><span>${user_lname}</span> </div> 
+
+      <input type="hidden" class="to_user" name="to_user" value="${user_id}">
+    </li> 
+    <li> 
+      <div class="img_left current"><img src="/static/images/img_p02.png" alt="" width="33" height="33" /></div> 
+      <div class="text_right"> <strong>${child_age} year old ${child_gender}</strong> <span>${child_school}</span> </div> 
+      <input type="hidden" class="to_child" name="to_child" value="${child_id}">
+    </li> 
+  </ul> 
+
+  </form>
+</div> 
+</span>
+
+<span id="form_box">
+<div class="form_box" style="text-align:center">
+    <a href="#" class="input_btn" style="text-align:center"><img height="23" width="93" src="/static/images/add-friend.png" style="text-align:center"></a>
+<!--    <fieldset class="child_fieldset">
+      <input name="" type="button" class="input_btn" value=" " />
+    </fieldset> -->
+</div>
+</span>
+
+<span id="child_select">
+<select class="child_select" name="child">
+</select>
+</span>
+</span>

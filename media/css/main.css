@@ -1,0 +1,89 @@
+/* *************************** 
+  Site - playdotion-web
+  ---------------------------
+  StyleSheet Index
+  $1 - Global Styles
+  $2 - Website Structure Styles
+  $3 - Header Styles
+  $4 - Content Styles
+  $5 - Sidebar Styles
+  $6 - Footer Styles
+   ***************************/
+
+/* *************************** 
+   $1 GLOBAL Styles
+   ***************************/
+
+
+.newsocial {clear:both; float:left; padding:0; margin:17px auto 0 auto; font-family:arial; font-size:17px; color:#e2e2e2; width:350px; text-align:center; border:0px solid red;}
+
+.newsocial a {text-decoration:none; color:#4382bd;}
+.newsocial a:hover {text-decoration:underline; color:#043351;}
+
+
+
+
+* {
+	margin: 0;
+	padding: 0;
+}
+a {
+	color:#003e7e;
+	text-decoration:none;
+}
+a:hover{
+	color:#347307;
+	text-decoration:none;
+}
+img {
+	border:0;
+	vertical-align:middle;
+}
+fieldset {
+	border:none;
+}
+ul li {
+	list-style:none;
+}
+/* *************************** 
+   $2 Website Structure Styles
+   ***************************/
+body {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#000000;
+}
+
+#container {width:780px;margin:0 auto;}
+
+/* *************************** 
+   $3 Header Styles
+   ***************************/
+#header {padding:20px 0;text-align:center;}
+
+/* *************************** 
+   $4 Content Styles
+   ***************************/
+#content {width:760px;overflow:hidden;}
+.formbox{float:left;width:350px;background:url(../images/fbbottom.png) no-repeat left bottom;padding:0 0 60px;}
+.innerformbox{padding:25px 30px;width:290px;background:url(../images/fbtop.png) no-repeat;}
+.formbox h2{font-family:"Myriad Pro";font-size:17px;padding:1px 0 0 40px;color:#FFFFFF;height:22px;width:250px;overflow:hidden;text-indent:-999em;}
+.forminfo{padding:25px 0 10px;width:100%;}
+.forminfo label{color:#FFFFFF;font-weight:bold;font-size:15px;padding:0 0 10px;display:block;}
+.forminfo .ipt{width:260px;padding:9px 5px 8px;background:#E9E9E9;border:0 none;font-size:15px;color:#797979;display:block;margin:0 0 15px;}
+.forminfo .btn{overflow:visible;width:166px;height:25px;background:url(../images/submit.png) no-repeat;border:0 none;cursor:pointer;}
+
+.note{padding:10px 0;color:#f1c85f;font-size:15px;}
+
+#maincontent{width:390px;float:right;}
+h1{color:#ea8639;padding:0 0 10px;}
+h1 sup{font-weight:normal;font-size:12px;}
+p{color:#454545;line-height:24px;font-size:15px;padding:0 0 10px;}
+.bottom{width:100%;overflow:hidden;}
+.fl{float:left;}
+.fr{float:right;}
+.bottom .fl{font-size:15px;color:#949494;line-height:21px;}
+.bottom .fr{padding:10px 0 0;}
+.bottom .fr img{vertical-align:middle;margin:0 3px 0 15px;}
+.bottom .fr .t{color:#43badd;}
+.bottom .fr .f{color:#4167bd;}

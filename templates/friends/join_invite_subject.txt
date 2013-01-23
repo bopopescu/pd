@@ -1,0 +1,1 @@
+{{ actor.first_name }} has invited you to Playdation!

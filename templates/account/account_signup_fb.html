@@ -1,0 +1,138 @@
+
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Registration{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <h1 class="star">Sign up<span> Already a member? <a href="{% url acct_login %}">Login</a></h1>
+    <div class="two_col_block">
+      <div id="fb-root"></div>
+
+      <div class="info_facebook"><!-- <img src="images/img_info_box.png" alt="" width="600" height="415" /> -->
+         <fb:registration redirect-uri="http://{{www_host}}/account/signup_fb" 
+
+            fields="[{'name':'name', 'view':'prefilled'}, {'name':'first_name'}, {'name':'last_name'},{'name':'email'}, {'name':'gender'}, {'name':'birthday'},
+
+            {'name':'password'},
+
+            {'name':'zip_code','description':'What is your zip code?',
+
+            'type':'text'}]">
+ 
+         </fb:registration>
+
+      </div>
+
+
+
+      <div class="right_col" style='float:left'>
+        <div class="fun_info">
+          <h3>Everyone is having more fun at Playdation!</h3>
+          <ul>
+            <li><a href="#">Connect privately with other parents you know.</a> </li>
+            <li><a href="#">Create an approved friends list and social calendar for each of your children.</a> </li>
+            <li><a href="#"> Schedule playdates, after-school activities, birthday parties and much much more! </a> <br>
+                <br><span style="float:right;font-size:90%;"><a style="color:#EA8639;" href="{% url nl_home %}">Learn More</a></span>
+            </li>
+          </ul>
+        </div>
+         <span><img src="/static/images/img_play.jpg" alt="" width="299" height="198" /></span> </div>
+    </div>
+  </div>
+  <div class="mainbtm">
+    <div id="signup_notes">
+      Want to sign up without using your Facebook Credentials?<br />
+      Just click the <img src="/static/images/icon_close.png" width="11" height="11" alt="X" /> in the name field above to clear the form and fill in directly or just <a href="{% url acct_signup %}">click here</a>
+    </div>
+  </div>
+
+
+
+
+{% endblock %}
+
+{% block clobody %}
+  <div id="content">
+    <div class="forms_wrapper">
+      <div class="welcome_wrapper">
+        <div class="regtop"><strong>Sign up</strong><span style="margin-left:20px;">Already a Member？</span><a style="margin-left:10px;" href="{% url acct_login %}">Login</a><br>
+        </div>
+      </div>
+        <form id="signup_form" method="POST" action="{% url acct_signup %}">
+        <ul class="form_wrapper">
+
+
+      <script> 
+
+      function validate_zip(zip) {
+         var reg = /^\d{5}$|^\d{5}-\d{4}$/;
+         return (reg.test(zip));
+      }
+
+      function validate(form) {
+        errors = {};
+        if (! validate_zip(form.zip_code)) {
+          errors.zip_code = "The zip code is invalid";
+        }
+        return errors;
+      }
+
+      </script> 
+
+      <div id="fb-root"></div>
+      <div id="fb_register">
+         <fb:registration redirect-uri="http://{{www_host}}/account/signup_fb" 
+            fields="[{'name':'name', 'view':'prefilled'}, {'name':'first_name'}, {'name':'last_name'},{'name':'email'}, {'name':'gender'}, {'name':'birthday'},
+            {'name':'password'},
+            {'name':'zip_code','description':'What is your zip code?',
+            'type':'text'}]">
+         </fb:registration>
+      </div>
+      </div>
+        </ul>
+        {% if form.errors %}<div class="signup-errors">{% for key,value in form.errors.items %}<p>{{ key|title }} - {{ value.as_text }}</p>{% endfor %}</div> {% endif %}
+
+        <div class=" common_wrapper edit">
+          <div class="regbtmleft">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="mainbtm">
+    <div class="mbright"> </div>
+  </div>
+
+
+{% endblock %}
+
+
+{% block extra_body %}
+
+<script>
+
+var img = new Image();
+img.onerror = function () {
+  window.location.href="http://{{www_host}}/account/signup";
+}
+img.src = "http://facebook.com/favicon.ico";
+
+window.fbAsyncInit = function() { 
+  FB.init({appId: '{{fb_app_id}}', status: true, cookie: true, xfbml: true}); 
+}; 
+
+(function() { 
+  var e = document.createElement('script'); 
+  e.type = 'text/javascript'; 
+  e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js'; 
+  e.async = false; 
+  document.getElementById('fb-root').appendChild(e);
+}()); 
+
+</script>
+
+{% endblock %}

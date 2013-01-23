@@ -1,0 +1,475 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+{% load uploadify_tags %}
+
+{% block head_title %}{% trans "Plan Details" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+
+	<div id="content">
+		<div class="two_col_block">
+			<div class="leading">
+				<h1>Plan Details</h1>
+
+
+
+<!--		
+        <div class="navbar">
+					<ul>
+						<li><a href="#">Map</a>|</li>
+						<li><a href="#">Print</a>|</li>
+						<li><a href="#">Export to Calendar</a></li>
+					</ul>
+        </div> 
+-->
+			</div>
+			<!--leading end-->
+			<div class="sidebar">
+				<h3>Attending({{responses.yes|length }})</h3>
+				<ul>
+          {% for inv in responses.yes %}
+          {% if inv.is_user %}
+					<li><img src="{{ inv.child.child.photo.prof50.url }}" alt="" width="50" height="50"  class="img_left" />
+						<div class="name_box">{{ inv.child.child.first_name }}<span>{{ inv.adult.name }}'s Child</span>
+                            {% if inv.is_organizer %}
+                            (organizer)
+                            {% endif %}
+                        </div>
+					</li>
+          {% else %}
+          <li><b>{{ inv.to }} </b></li>
+          {% endif %}
+
+          {% endfor %}
+
+				</ul>
+				<h3>Unconfirmed({{responses.noresponse|length}})</h3>
+				<ul>
+          {% for inv in responses.noresponse %}
+          {% if inv.is_user %}
+          <li><img src="{{ inv.child.child.photo.prof50.url}}" alt="" width="50" height="50"  class="img_left" />
+			<div class="name_box">{{ inv.child.child.first_name }}<span>{{ inv.adult.name }}'s Child</span></div>
+          </li>
+          {% else %}
+          <li><b>{{ inv.to }} </b></li>
+          {% endif %}
+
+
+
+          {% endfor %}
+				</ul>
+				<h3>Not Attending({{ responses.no|length }})</h3>
+				<ul>
+          {% for inv in responses.no %}
+          {% if inv.is_user %}
+          <li><img src="{{ inv.child.child.photo.prof50.url }}" alt="" width="50" height="50"  class="img_left" />
+			<div class="name_box">{{ inv.child.child.first_name }}<span>{{ inv.adult.name }}'s Child</span></div>
+          </li>
+          {% else %}
+          <li><b>{{ inv.to }} </b></li>
+          {% endif %}
+          {% endfor %}
+				</ul>
+			</div>
+			<!--sidebar end-->
+			<div class="maincontent">
+{% if not is_organizer %}
+
+
+        {% for my_invite in my_invites %}
+        <div class="attending_wrap">
+          <div class="attending_top"> Is {{ my_invite.child }} attending? 
+            <a href="?set_status=2&invite_type={{my_invite.type}}&invite_id={{my_invite.id}}">{% if my_invite.yes %}<img src="/static/images/img_yes_blue.png" alt="" width="52" height="23" />{%else %}<img src="/static/images/img_yes_brown.png" alt="" width="52" height="23" />{%endif%}</a>
+            <a href="?set_status=3&invite_type={{my_invite.type}}&invite_id={{my_invite.id}}">{% if my_invite.no %}<img src="/static/images/img_no_blue.png" alt="" width="52" height="23" />{%else %}<img src="/static/images/img_no_brown.png" alt="" width="52" height="23" />{%endif%}</a>
+            <a href="?set_status=4&invite_type={{my_invite.type}}&invite_id={{my_invite.id}}">{% if my_invite.maybe %}<img src="/static/images/img_maybe_blue.png" alt="" width="70" height="23" />{%else %}<img src="/static/images/img_maybe_brown.png" alt="" width="70" height="23" />{%endif%}</a> 
+  
+            <a href="#" class="link_view" {% if not my_invite.yes %}style="display:none;"{%endif%}>+ View Details</a>
+
+          </div>
+
+          <div class="attending_form" {% if my_invite.set_status_yes %}{%else%}style="display:none;"{%endif%}> <a href="#" id="details_close" class="close close_optional_form">x</a>
+            <form class="save_optional_info_form" action="{% url save_optional_info pd.id %}" method="post">
+              <fieldset>
+                {% if set_status_yes %}
+                <h2>Great, you've just confirmed your attendance!</h2>
+                {% endif %}
+                <p>Optional:</p>
+                <ul>
+
+                  <li>
+                    <label>Contact #:</label>
+                    <input type="text" name="phone" class="text_short" value="{{my_invite.phone|default:""}}"/>
+                  </li>
+
+                  {% if my_invite.set_status_yes %}
+                  <li>
+                    <label>Comments:</label>
+                    <textarea class="status_update_comment" name="comment" cols=""  rows=""></textarea>
+                  </li>
+                  {% endif %}
+                  <li class="btn_bottom">
+                    <input type="hidden" name="inv_type" value="{{ my_invite.type }}">
+                    <input type="hidden" name="inv_id" value="{{ my_invite.id }}">
+                    <input type="submit" name="" class="submit_save" value="" />
+                    <input type="button" name="" class="btn_close close_optional_form" value="" />
+                  </li>
+                </ul>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+  {% endfor %}
+{% endif %}
+
+
+
+				<ul class="lists">
+                    <input type="hidden" id="event_date" value='{{pd.start|date:"n/d/Y"}}'>
+                    <input type="hidden" id="event_start" value="{{pd.start|date:"g:iA"}}">
+                    <input type="hidden" id="event_end" value="{{pd.end|date:"g:iA"}}">
+					<li><strong>Date &amp; Time:</strong> <span id="date" class="{% if is_organizer %} editable {% endif %}">{{ pd.start|date:"l F dS g:i A" }} - {{ pd.end|date:"g:i A" }}</span></li>
+					<li><strong>Location:</strong> <span id="address" class="{% if is_organizer %} editable {% endif %}"> {{ pd.address }} </span></li>
+					<li><strong>Organizer Phone Number:</strong><span id="phone" class="{% if is_organizer %} editable {% endif %}"> {{ pd.phone }}</span></li>
+{% if is_organizer %}					<li><strong>Attendee Numbers:</strong> ( <a id="view_attendee_numbers" href="#">Click here to view</a> )</li> {% endif %}
+          <li><strong>Proposed Activity:</strong> <span id="activity" class="{% if is_organizer %} editable {% endif %}">{{ pd.activity.name }}</span>  </li>
+          <li><strong>Additional Information:</strong> <span id="details" class="{% if is_organizer %} editable {% endif %}">{{ pd.details }}</span>  </li>
+					<li><strong>Status: </strong> {{ pd.status_verbose }} {% if is_organizer %}{% if not pd.canceled %} <a href="{% url cancel_playdate pd.id %}" class="red">Cancel this plan</a>{% endif %}{%endif %}</li>
+				</ul>
+
+				<div class="discussion">
+					<h1>Discussion</h1>
+					<form action="#" id="post_comment" method="post">
+						<fieldset>
+							<input name="" type="text" id="comment" class="write_input" />
+							<input name="" type="submit"  class="input_blue" value=""/>
+						</fieldset>
+					</form>
+					<ul id="comments">
+					</ul>
+				</div>
+        <div class="photo_wrap">
+          <br><br>
+          <h1>Photos</h1>
+          <div class="pagenation"><a href="{% url view_album album.id %}" class="current">View All</a><span></span></div>
+          <ul class="img_lists">
+  {% for photo in album.photos.all %}
+          <li><a href="{% url view_photo photo.id %}"><img src="{{photo.prof125.url}}" alt="" width="80" height="80" /></a></li>
+  {% endfor %}
+
+          </ul>
+          <p><a id="upload_more" href="#"><img src="/static/images/bg_upload.png" alt="" width="111" height="23" /></a></p>
+        </div>
+			</div>
+		</div>
+		<div class="mainbtm">
+			<div class="mbright"></div>
+		</div>
+	</div>
+
+
+  <div id="upload_more_div" class="overlay" style="display:none"> 
+    <div class="lightbox_wrapper long"> <a href="#" id="close_upload_more_div" class="close_button"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a> 
+      <div class="one_col_block"> 
+        <h1 class="big">Upload photos to this album.</h1> 
+        <p class="heading_text">Click 'Select Files' to choose the files to upload.</p> 
+          <script type='text/javascript' src='/static/js/playdation.js'></script> 
+          
+          {% multi_file_upload upload_url %}
+      
+          <div id="loading" style="text-align:center;display:none;"> 
+             <img src="/static/images/loading.gif" height="150" width="150"> 
+          </div> 
+      </div> 
+    </div> 
+  </div> 
+
+
+{% if is_organizer %}
+<div id="attendee_numbers_overlay" class="overlay" style="display:none"> 
+  <div class="lightbox_wrapper detail"> <a href="#" class="close_button attendee_numbers_overlay_close"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a> 
+    <h1>Contact Details</h1> 
+    <ul> 
+      {% for inv in responses.yes %}
+      {% if not inv.is_organizer %}
+          <li>{{ inv.to }} {% if inv.to_child %}<strong>({{ inv.child.profile.first_name }}'s Parent)</strong>{%endif%}<span>{{inv.phone|default:"Not Provided"}}</span><br>
+          </li> 
+
+      {% endif %}
+      {% endfor %}
+      <!-- <li class="last">Christina Plankoff <span>917-776-0991</span></li>  -->
+    </ul> 
+    <p><a class="attendee_numbers_overlay_close" href="#"><img src="/static/images/img_close_button.png" alt="" width="100" height="42" /></a></p> 
+  </div> 
+</div> 
+{% endif %}
+
+<script id="comment_tmpl_user" type="text/html">
+<li>
+	<div class="discuss_img"><img src="${small_profile_pic}" alt="" /></div>
+	<div class="discuss_text">
+		<p><span>${first_name } ${last_name}:</span>${comment } <span class="time">${when}</span></p>
+	</div>
+</li>
+</script>
+
+<script id="comment_tmpl_email" type="text/html">
+<li>
+<!-- 	<div class="discuss_img"><img src="{{small_profile_pic}}" alt="" /></div> -->
+	<div class="discuss_text">
+		<p><span>${email}:</span>{{ comment }} <span class="time">${when}</span></p>
+	</div>
+</li>
+</script>
+
+
+
+
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.10.custom.css' />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}css/calendrical.css' />
+
+ <style type="text/css">
+  
+    .editable {
+      padding-right: 20px;
+      background:url(/static/images/pencil.png) no-repeat;
+      background-position:right center;
+      cursor: pointer;
+    }
+
+  </style>
+
+{% endblock %}
+
+
+{% block extra_body %}
+
+<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script> 
+<script src="/static/js/jquery.editable-1.3.3.js" type="text/javascript" charset="utf-8"></script>
+<script type='text/javascript' src='/static/js/playdation.js'></script> 
+<script src="{{ STATIC_URL }}js/jquery.calendrical.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+
+<script type="text/javascript"> 
+
+$(document).ready(function() {
+
+    var pd_id = {{ pd.id }};
+{% if is_organizer %}
+
+    function in_place_save(field, new_value) {
+      var url = '{% url playdate_in_place_save pd.id %}';
+      var ds = {
+         'field':field,
+         'value':new_value,            
+      };
+    
+      var response = ajax_call(url, ds);
+      return response;          
+    }
+
+    function save_activity(content) {
+      var field='activity';
+      var response = in_place_save(field, content.current);
+      location.reload(true);
+    }
+    
+    function save_address(content) {
+      var field='address';
+      var response = in_place_save(field, content.current);
+    }
+    
+    function save_details(content) {
+      var field='details';
+      var response = in_place_save(field, content.current);
+    }
+    
+    function save_phone(content) {
+      var field='phone';
+      var response = in_place_save(field, content.current);
+    }
+    
+    function create_date_edit(div) {
+        var old_div = div.clone(true);
+        var date_div = $("<div id='date_edit_div'></div>");
+        var cur_date = $("#event_date").val();
+        var cur_time_start = $("#event_start").val();
+        var cur_time_end = $("#event_end").val();
+        var date_date_span =  $("<span> <label>Date:</label> <input type='text' name='date' id='date_edit_date' value='"+cur_date+"' style='width:100px;'> </span>");
+        var date_time_span = $("<span><label>Time:</label><input type='text' name='time_start' id='time_edit_start' value='"+cur_time_start+"' style='width:100px;'><label>to:</label><input type='text' name='time_end' id='time_edit_end' value='"+cur_time_end+"' style='width:100px;'> </span>");
+        date_date_span.find("#date_edit_date").calendricalDate({ 'usa': true });
+        date_time_span.find("#time_edit_start, #time_edit_end").calendricalTimeRange();  
+        var save_button = $('<button id="save_edit_date"><img src="/static/images/btn-savesmall.png"></button>');
+        var discard_button = $('<button id="discard_edit_date"><img src="/static/images/btn-discardsmall.png"></button>');
+
+        save_button.click(function(e) { 
+            e.preventDefault();  
+            var new_date = $("#date_edit_date").val();
+            var new_start_time = $("#time_edit_start").val();
+            var new_end_time = $("#time_edit_end").val();
+            var ds = {
+                'date':new_date,
+                'time_start':new_start_time,
+                'time_end':new_end_time,
+            };
+
+            var url = '{% url playdate_in_place_save_date pd.id %}';
+            var response = ajax_call(url, ds)
+            if (response["success"]) {
+                $("#event_date").val(new_date);
+                $("#event_start").val(new_start_time);
+                $("#event_end").val(new_end_time);
+                old_div.html(new_date + " from " + new_start_time + " to " + new_end_time);
+                $("#date_edit_div").replaceWith(old_div);
+            }
+        });
+
+        discard_button.click(function(e) { e.preventDefault();  $("#date_edit_div").replaceWith(old_div); });
+
+        date_div.append(date_date_span).append(date_time_span).append(save_button).append(discard_button);
+        div.replaceWith(date_div);
+    }
+    
+    $('#address').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_address, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+    $('#details').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_details, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+    $('#activity').editable({type:'select', onSubmit:save_activity,
+                    options:{
+                        {% for activity in activities %}
+                        '{{activity.id}}':'{{activity.name}}',
+                        {% endfor %}
+                        }, cancel:'<img src="/static/images/btn-discardsmall.png">', submit:'<img src="/static/images/btn-savesmall.png">' })
+    $('#phone').editable({submit:'<img src="/static/images/btn-savesmall.png">', onSubmit:save_phone, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+
+    $('#date').click(function(e) { e.preventDefault(); create_date_edit($('#date'));  });
+
+
+    $("#view_attendee_numbers").click(function(e) {
+      e.preventDefault();
+      $("#attendee_numbers_overlay").show();
+    });
+    
+    $(".attendee_numbers_overlay_close").click(function(e) {
+      e.preventDefault();
+      $("#attendee_numbers_overlay").hide();
+    })
+
+
+{% endif %}
+
+    $("a.link_view").click(function(e) {
+      e.preventDefault();
+      $(this).parent().siblings(".attending_form").toggle();        
+    });
+
+    $(".close_optional_form").click(function(e) {
+      e.preventDefault();
+      $(this).parents(".attending_form").hide();
+    })
+
+
+    $("#post_comment").submit(function(e) {
+        e.preventDefault();
+        var comment = $("#comment").val();
+
+        if (comment.length > 1) {
+          var comment = $("#comment").val();
+          var type = 'Playdate';
+          var ds = {
+              'app_label':'playdates',
+              'model':'Playdate',
+              'id':pd_id,
+              'comment':comment,
+          };
+      
+      
+          var response = ajax_call('{% url new_comment %}', ds);
+           
+          if (response["success"]) {
+              prepend_comment($("#comments"),response["comment"]);
+              $("#comment").val('');
+          }        
+        }
+     });
+
+    function get_comment_li(comment) {
+        if (comment["email"]) {
+            var com_id = '#comment_tmpl_email';
+        } else {
+            var com_id = '#comment_tmpl_user';
+        }
+        var comment_li = $(com_id).tmpl(comment);        
+        return comment_li;
+    }
+
+    function populate_comments(container, comments) {
+        container.empty();
+        for (c_i in comments) {
+            var comment_li = get_comment_li(comments[c_i]);            
+            container.append(comment_li);        
+        }        
+    }
+
+    function prepend_comment(container, comment) {
+        var comment_li = get_comment_li(comment);
+        container.prepend(comment_li);        
+    }
+
+    var ds = {
+        'app_label':'playdates',
+        'model':'Playdate',
+        'id':pd_id,
+    };
+
+    var response = ajax_call('{% url list_comments %}', ds);
+
+    var comments = response["comments"];
+
+    populate_comments($("#comments"),comments);
+
+
+    var can_upload = '{{can_upload }}';
+    
+    if (can_upload) {  
+      $("#upload_more").click(function (e) {
+        e.preventDefault();
+        $("#upload_more_div").show();    
+      });
+    }
+    
+    $("#uploadify").bind('UploadStarted', function() {
+      $("#upload_more_div #loading").show();
+    });
+  
+    $("#uploadify").bind('allUploadsComplete', function() {
+      $("#upload_more_div #loading").hide();
+      $("#upload_more_div").hide();
+      location.reload(true);
+    });
+  
+    $("#close_upload_more_div").click(function (e) {
+      e.preventDefault();
+      $("#upload_more_div").hide();    
+    })
+
+    $(".save_optional_info_form").submit(function(e) {
+      var comment = $(this).find(".status_update_comment").val();
+      if (comment.length > 1) {
+         $("#comment").val(comment);
+         $("#post_comment").trigger('submit');
+      }
+      return true;
+    })
+            
+    $("#comment").watermark('Write something');
+
+});
+</script> 
+
+{% endblock %}

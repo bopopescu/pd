@@ -1,0 +1,270 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Signup{% endblock %}
+
+
+{% block body %}
+
+  <div id="content">
+    <div class="forms_wrapper edit">
+      <div class="welcome_wrapper">
+        <div class="regtop"><strong>Sign up</strong><span>Already a Member？</span><a style="margin-left:10px;" href="{% url acct_login %}">Login</a></div>
+      </div>
+        <form id="signup_form" method="POST" action="{% url acct_signup %}">
+        <ul class="form_wrapper">
+          <li>
+            <div class="nameinner">
+              <label>First Name:</label>
+              <input id="id_first_name" type="text" class="input_text short first_name required" name="first_name" value="{% if form.first_name.data %}{{ form.first_name.data }}{% endif %}" />
+            </div>
+            <div class="nameinner">
+              <label>Last Name:</label>
+              <input id="id_last_name" type="text" class="input_text last_name required" name="last_name" value="{% if form.last_name.data %}{{ form.last_name.data }}{% endif %}" />
+             </div>
+          </li>
+          <li class="gender">
+            <label>Gender:</label>
+            <span class="genderbox">
+            <input {% ifequal form.gender.data 'male' %}checked="checked"{% endifequal %} class="radio gender_rdo" type="radio" name="gender" value="male"/>
+            <label>Male</label>
+            <input {% ifequal form.gender.data 'female' %}checked="checked"{% endifequal %} class="radio gender_rdo" type="radio" name="gender" value="female" />
+            <label>Female</label>
+            </span>
+          </li>
+          <li>
+            <label>Email:</label>
+            <input type="text" id="id_email" class="input_text long email required" value="{% if form.email.data %}{{ form.email.data }}{% endif %}" name="email"/>
+          </li> 
+          <li>
+            <label>Password:</label>
+            <input type="password" id="id_password1" class="input_text long password1 password required" name="password1"/>
+          </li>
+          <li>
+            <label>Confirm Password:</label>
+            <input type="password" id="id_password2" class="input_text long password2 password required" name="password2" />
+          </li>
+          <li>
+            <label>Zip Code:</label>
+            {% if confirmation_key %}
+            <input type="hidden" name="confirmation_key" value="{{confirmation_key}}">
+            {% endif %}
+
+            <input type="text" id="id_zip_code" class="input_text short zip zip_code required" name="zip_code" value="{% if form.zip_code.data %}{{ form.zip_code.data }}{% endif %}" />
+          </li>
+        </ul>
+        {% if form.errors %}<div class="signup-errors">{% for key,value in form.errors.items %}<p>{{ key|title }} - {{ value.as_text }}</p>{% endfor %}</div> {% endif %}
+
+        <div class=" common_wrapper edit">
+          <div class="regbtmleft">
+            <p>By clicking Join Now Or using Playdation, you are indicating that you have read, understood, and agree to Playdation's <a href="{% url user_agreement %}">User Agreement</a> and <a href="{% url privacy_policy %}">Privacy Policy</a></p>
+            <input type="submit" value=" " class="btn" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="mainbtm">
+    <div class="mbright"> </div>
+  </div>
+
+
+
+
+
+
+
+        
+{% endblock %}
+
+{% block extra_body %}
+
+<script>
+
+$(document).ready(function () {
+
+  var tip=$("<span class=\"tips\" style=\"left:100px;\"></span>");
+
+  function check_passwords_match() {
+     return ($("#id_password2").val() == $("#id_password1").val())
+  }
+
+  function validate_email(email) {
+     var reg = /^([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,3})$/;
+     return (reg.test(email));
+  }
+
+  function check_email(element) {
+    if (validate_email(element.val())) {
+       set_right(element);
+     } else {
+       set_wrong(element);
+     }   
+  }
+
+  function validate_zip(zip) {
+     var reg = /^\d{5}$|^\d{5}-\d{4}$/;
+     return (reg.test(zip));
+  }
+
+  function check_zip(element) {
+    if (validate_zip(element.val())) {
+       set_right(element);
+     } else {
+       set_wrong(element);
+     }   
+  }
+
+  function check_required(supplied_value) {
+    return (supplied_value.length);
+  }
+  
+  function set_right(element) {
+    element.removeClass("error_tip");
+  }
+  
+  function set_wrong(element) {    
+    element.addClass("error_tip");
+  }
+
+  function set_right_multiple(selector) {
+      $(selector).each(function() {
+        set_right($(this));           
+      });    
+  }
+  
+  function set_wrong_multiple(selector) {
+      $(selector).each(function() {
+        set_wrong($(this));           
+      });
+  }
+
+  function set_wrong_radio(selector) {
+      set_wrong($(selector+":first").parent());
+  }
+
+  function set_right_radio(selector) {
+      set_right($(selector+":first").parent());
+  }
+
+  function check_radio_checked(selector) {
+     var checked = false;
+     $(selector).each(function() {
+        if ($(this).attr('checked') == true) {
+          checked = true;
+        }       
+     });
+     return checked;
+  }
+
+  function clone_tip(tip_contents) {
+    var new_tip = tip.clone();
+    new_tip.html("<b>"+tip_contents+"</b>");
+    return new_tip;    
+  }
+
+
+  function create_tip(element, tip_contents, style) {
+    var new_tip = clone_tip(tip_contents);
+    if (style) {
+      new_tip.attr('style',style);      
+    }
+
+    element.after(new_tip);
+  }
+
+  function remove_tip(element) {
+    element.siblings(".tips").remove();    
+  }
+
+
+
+  $("#id_email").blur(function() { 
+    if ( ! validate_email($(this).val())) { 
+      set_wrong($(this));
+    };   
+  });
+
+  $("#id_zip_code").blur(function() { 
+    if ( ! validate_zip($(this).val())) { 
+      set_wrong($(this));
+    };   
+  });
+
+  $("#id_password2").blur(function() { 
+    if (! check_passwords_match() ) { 
+      set_wrong($(this));
+    }  
+  });
+
+  // $(".input_text").focus(function() { set_right($(this)) });
+  // $(".gender_rdo").change(function() { set_right_radio(".gender_rdo") });
+
+  $(".input_text").focus(function() { set_right($(this));  remove_tip($(this));  });
+  $(".gender_rdo").change(function() { set_right($(this).parent()); remove_tip($(this).parent());  });
+
+
+
+
+  $("#signup_form").submit(function(event) {
+    var acf = $(this);
+    acf.find(".tips").remove();
+    acf.find(".error_tip").removeClass('error_tip');
+
+    var success = true;
+    if (! $("#id_first_name").val() ) {
+      set_wrong($("#id_first_name"));
+      create_tip($("#id_first_name"), "Enter a first name please")
+      return false;
+    }
+
+    if (! $("#id_last_name").val() ) {
+      set_wrong($("#id_last_name"));
+      create_tip($("#id_last_name"), "Enter a last name please")
+      return false;      
+    }
+
+    if (! check_radio_checked(".gender_rdo")) {
+      set_wrong_radio(".gender_rdo");
+      create_tip($(".gender_rdo:last").parent(), "Please enter a gender", 'top: -35px;')
+      return false;
+    }    
+
+    if (! validate_email($("#id_email").val())) {
+      set_wrong($("#id_email"));
+      create_tip($("#id_email"), "Please enter a valid email")
+      return false;      
+    }
+   
+    if (! ( 
+         ($("#id_password1").val()) && 
+         ($("#id_password2").val())  
+       ) ) {
+      set_wrong_multiple(".password");       
+      create_tip($("#id_password1"), "The passwords can not be blank")
+      return false;      
+    }
+
+    if (! check_passwords_match() ) {
+      set_wrong_multiple(".password");      
+      create_tip($("#id_password1"), "The passwords must match")
+      return false;      
+    }
+
+    
+    if (! validate_zip($("#id_zip_code").val())) {
+      set_wrong($("#id_zip_code"));
+      create_tip($("#id_zip_code"), "Please enter a valid zip code")
+      return false;      
+    }
+  
+    return true;  
+  });
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+from account.graphapi import GraphAPI
+
+from mydebug import *
+
+token='121631667910635|06254ef00a9b3b537d327c2e-1045167610|qnUmeaX7VvApskfkOt8J5hsh5yg'
+
+fb_api = GraphAPI(token)
+
+tolog("retrieving profile from FB")
+
+fb_profile = fb_api.get_object("me")
+
+tolog("got profile from FB")
+
+print str(fb_profile)

@@ -1,0 +1,37 @@
+<span id="top_level">
+<span id="share_to_fb_wrapper">
+<div id="share_to_fb" class="overlay" style="display:none"> 
+  <div class="lightbox_wrapper"> <a href="#" id="close_fb_share" class="close_button"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a> 
+    <div class="col_top"> 
+      <h1>Share this photo with your Facebook friends</h1> 
+      <span id="facebook_upload">
+
+      <p>Add a comment to post along with your photo:</p>
+      <input type="text" id="share_comment" size="60">
+      <input type="hidden" id="share_photo" value="${photo_id}">
+      <div class="link_buttons"> <a href="#" class="link_done" id="link_share">Share</a><a href="#" class="link_skip" id="link_cancel">Cancel</a> </div> 
+      <div id="loading" class="importing" style="text-align:center;display:none;">
+         <img src="/static/images/loading.gif" height="150" width="150">
+      </div>
+      </span>
+      <span id="facebook_connect" style="display:none;">
+      <div class="friends_zero">
+        <p class="title">Facebook account not connected.</p>
+        <p>
+          You have not yet connected your Facebook account to your Playdation account. Please connect your facebook account <a href="/account/connect_fb/pht/photo_id/${photo_id}/">here</a>.
+        </p>
+      </div>
+      </span>
+    </div> 
+  </div> 
+</div> 
+</span>
+<div id="shared" class="overlay">
+  <div class="lightbox_wrapper">
+    <div class="invite_wrap">
+      <h1>Photo posted!</h1>
+      <br><br>
+    </div>
+  </div>
+</div>
+</span>

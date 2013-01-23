@@ -1,0 +1,35 @@
+child --
+
+list of albums
+
+album --
+
+list of photos
+
+photo --
+
+can view?
+
+
+looking at a photo:
+owner_child:
+  can_view_photos?
+
+if not:
+tagged_child:
+  can_view_photos?
+  
+
+
+photos belonging to playdates:
+method on the owner object of photo album
+
+photos either go back to an album belonging to a child 
+if this, then childview.can_view_photos
+
+or
+
+photos go back to an album belonging to a playdate
+if this then album.can_view_photos
+
+

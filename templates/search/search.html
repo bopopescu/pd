@@ -1,0 +1,71 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Search Results" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_body %}
+{% endblock %}
+
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="heading">
+      <div class="heading_left">
+        <h1>You searched for {{ search_string }}</h1>
+      </div>
+    </div>
+    <!--heading end-->
+    <div class="search_result_wrap">
+      <div class="search_header">
+        <div class="search_box">
+          <form action="#" method="post">
+            <fieldset>
+              <label> Search Again:</label>
+              <input type="text" name="search_string" />
+            </fieldset>
+          </form>
+        </div>
+        <!--search box end-->
+        <div class="show_result"> <span>Showing All {{results|length}} Results</span>
+<!--          <div class="progress_bar"><img src="/static/images/img_passbar.png" alt="" width="208" height="13" /></div> -->
+        </div>
+        <!--show result--> 
+      </div>
+      <!--searcg header-->
+
+      <div class="result_wrap">
+{% if results %}
+        <div class="result_title yellow"> People Result for <span>"{{ search_string}}"</span> </div>
+        <!--restult title-->
+        <ul>
+  {% for result in results %}
+          <li>
+            <div class="info_left">
+              <div class="img_avatar"><img src="{{ result.get_profile.get_profile.medium_profile_pic }}" alt="" width="88" height="88" /></div>
+              <div class="desc">
+                <h3><a href="{% url view_profile result.id %}">{{ result.get_profile.first_name }} {{ result.get_profile.last_name }}</a></h3>
+                <span><strong>{{result.get_profile.first_name}}</strong> is a Parent located in {{ result.get_profile.zip_code.city }}, {{ result.get_profile.zip_code.state }}</span><!-- <span>Married to <a href="#">Michelle Opencorners</a></span>--> </div>
+            </div>
+            <!--info left-->
+            <div class="view"><span class="link_blue"><a href="{% url view_profile result.id %}">View Profile</a></span></div>
+          </li>
+  {% endfor %}
+        </ul>
+{% else %}
+        <div id="no_friends" class="yellow_wrap">
+          <p class="title">Oops.</p>
+          <p>Sorry but we couldn't find anyone by that name.  Please try a different spelling or search for someone else.</p>
+        </div>
+{% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

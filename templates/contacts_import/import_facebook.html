@@ -1,0 +1,65 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load account_tags %}
+{% load timezone_filters %}
+
+{% block body %}
+<div id="fb-root"></div> 
+
+<div id="content">
+  <div id="facebook_invite">
+      <div class="two_col_block">
+        <br><br>
+        <h1 class="big">Invite Facebook friends to join Playdation!</h1>
+        <br><br>
+        <p class="heading_text">Using the Facebook picker below, please select and invite fellow parents who you already know and whose children are candidates for future playdates.</p>
+        <br><br>
+        <div class="main_wrap" style="overflow:visible">
+          <div class="intro_text" style="margin-left:40px;">
+              <fb:serverfbml width="725px" > 
+              
+              <script type="text/fbml"> 
+              
+                <fb:request-form method="get" action="http://{{www_host}}/account/fb_invite_sent" content="Some of the other parents and I are using Playdation to set up playdates for the kids. Please Join Us! <fb:req-choice url='http://{{www_host}}/account/fb_invite_accepted?invited_by={{user.id}}' label='Yes' />" type="Playdation" invite="false">
+                  <div class="clearfix" style="padding-bottom: 10px;">
+                    <fb:multi-friend-selector rows="3" cols="3" showborder="true" actiontext="Invite to Playdation" exclude_ids="{{current_fb_users}}" bypass="cancel" email_invite="false" import_external_friends="false" />
+                  </div>
+                </fb:request-form>
+            
+              </script> 
+              </fb:serverfbml>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_body %}
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/popup.js"></script> 
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+
+ window.fbAsyncInit = function() { 
+  FB.init({appId: '{{ fb_app_id}}', status: true, cookie: true, xfbml: true}); 
+ }; 
+
+ (function() { 
+    var e = document.createElement('script'); 
+    e.type = 'text/javascript'; 
+    e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js'; 
+    e.async = false; 
+    document.getElementById('fb-root').appendChild(e);
+  }()); 
+
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,534 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+{% load util_tags %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+
+
+<div id="content" class="profile_box">
+	<div class="heading no_border">
+		<div class="heading_left">
+			<h1>{{ profile.first_name }} {{ profile.last_name }}'s Profile</h1>
+		</div>
+	</div>
+	<!--heading end-->
+<!--            is Married to <a href="#">Michelle Opencorners</a><br /> -->
+
+    <div class="profile_wrap">
+      <div class="column edit">
+        <form action="#" method="post">
+          <fieldset>
+            <div class="profile_block">
+              {% if me %}
+              <div class="profile_img"><img src="{{ profile.get_profile.medium_profile_pic }}" alt="" width="125" height="125" /><a href="{% url view_album profile.album.id %}" class="click_edit">Click to Edit</a></div>
+              {% else %}
+              <div class="profile_img"><a href="{% url view_album profile.album.id %}"><img src="{{ profile.get_profile.medium_profile_pic }}" alt="" width="125" height="125" /></a></div>
+
+              {% endif %}
+              <div class="profile_text">
+          <p>
+            <strong>{{ profile.first_name }}</strong> is located in {{ profile.zip_code.city }},{{ profile.zip_code.state }} <br />
+
+                  Children attend:<br> 
+                            {% for school in profile.schools %}
+                            {% if not school.pd %}
+                            <a href="{% url view_school school.id %}">{{ school.name }}</a><br>
+                            {% else %}
+                            {{ school.name }}<br>
+                            {% endif %}
+                            {% endfor %}  
+                         </p>
+
+{% if not me %}
+                <span class="link_dark_purple"><input type="hidden" class="to_user_name" value="{{profile.name}}"><input type="hidden" class="to_user_id" value="{{profile.user_id}}"><a href="#" id="send_message_link">Send a Message</a></span>  
+{% endif %}
+              </div>
+            </div>
+            <!--profile block end-->
+            <p>
+                {% if me %}<span id="add_a_profile_summary" {% if profile.about %}style="display:none;"{%endif%}>Add a profile summary</span>{%endif%}<span id="about" {% if me %}class="editable" {% endif %}>{% if not me %}{{ profile.about|default:"" }}{% else %}{{ profile.about|default:"" }}{%endif%}</span>
+            </p> 
+          </fieldset>
+        </form>
+      </div>
+
+
+		<!--column end-->
+    {% if view_playlist_children %}
+
+		<div class="column grey">
+			<div class="col_heading">
+				<select id="child_select" name="">
+                    {% for vpc in view_playlist_children %}
+					<option value="{{vpc.profile.id}}">{{vpc.profile.first_name}}'s Friends</option>
+                    {% endfor %}
+				</select>
+				<a href="#" id="friends_view_all" class="link_view_all">View all</a> </div>
+			<!--coltop heading-->
+			<div class="photo_lists">
+				<div class="control_btns"><a href="#" id="playlist_prev" class="prev off">Prev</a><a href="#" id="playlist_next" class="next off">next</a></div>
+				<ul id="friends_list">
+				</ul>
+			</div>
+    </div>
+
+    {% else %}
+    <div class="hintandtip">
+      <h2>Hints and Tips</h2>
+      <p>Interested in making a plan with 
+        {{ profile.first_name }} and {{ profile.possessive }} kids? <strong>It's simple!</strong> </p>
+      <p>If you want to contact {{ profile.first_name }} before trying to connect your children, simply send {{ profile.third_object }} a message. </p>
+      <p>If you know {{ profile.first_name }} and are ready to connect, just add one of {{ profile.possessive }} kids to your children's friends. </p>
+      <p>Once your request is approved by {{ profile.first_name }}, you will be able to start making plans.</p>
+    </div>
+    {% endif %}
+
+    {% if display_children %}
+		<!--column end-->
+		<div class="column yellow">
+			<div class="col_heading">
+				<h2>{{ profile.first_name }}'s Children <span>({{ display_children|length }})</span></h2> <span style="float:right;text-align:right;">{% if me %}<a href="{% url add_children %}">+ Add Child</a>{% endif%}</span>
+			</div>
+			<div class="photo_lists">
+				<div id="arrows" class="control_btns"><a href="#" id="child_prev" class="prev off">prev</a><a href="#" id="child_next" class="next off">next</a></div>
+				<ul id="child_list">
+				</ul>
+			</div>
+		</div>
+		<!--column end-->
+    {% endif %}
+
+    {% if photos %}
+
+		<div class="column grey">
+			<div class="col_heading">
+				<h2>{{ profile.first_name }}'s Children's Photos<span> ({{photos|length}})</span></h2>
+				<!-- <a href="#" class="link_view_all">View all</a> --> </div>
+			<!--coltop heading-->
+			<div class="photo_lists no_text">
+				<ul>
+                    {% for p in photos %}
+					<li><a href="{% url view_photo p.id %}"><img src="{{ p.prof125.url }}" alt="" width="101" height="101" /></a></li>
+                    {% endfor %}
+				</ul>
+			</div>
+		</div>
+    {% endif %}
+		<!--column end--> 
+	</div>
+	<!--profile wrap end-->
+</div>
+
+{%verbatim%}
+<script id="child_template" type="text/html">
+<li>
+{{if can_view_basic}}<a href={{if can_view_extended}}"/profiles/view/child/${child_id}">{{else}}"#" class="basic_profile_link" rel="${idx}">{{/if}}{{/if}}<span><img src="${child_pic}" alt="" width="65" height="65" /></span> <p>${child_fname} {{if child_fname == 'Private'}}<img class="private_child_info" src="/static/images/qmark.png">{{/if}}{{if can_view_basic}} </a> {{/if}} <span> ${child_age} yr-old ${child_gender}</span><span>{{if child_school != 'Private'}}${child_school}{{/if}}</span><span>{{if child_grade != 'Private'}} ${child_grade}{{/if}}</span> </p>{{if mine == false}}{{if friend  == false}}{{if pending_sent == true}} Friend Request Sent {{else}} {{if pending_received == true}} Friend Request Received {{else}} <a href="#" rel="${child_id}" class="add_friend_link"><img src="/static/images/add-friend.png" alt="" width="83" height="20" /></a> {{/if}} {{/if}} {{/if}} {{/if}} 
+</li>
+</script>
+
+
+
+<script id="friend_template" type="text/html">
+<li class="last"><span><img src="${child_pic}" alt="" width="50" height="50" /></span>
+	<p><a href="/profiles/view/${adult_id}">${adult_fname}</a> <a href="/profiles/view/${adult_id}">${adult_lname}'s</a><span>${child_age} yr-old ${child_gender}</span><strong> ${child_fname}</strong></p> {{if mine == false}} {{if friend == false}} {{if pending_sent == true}} Friend Request Sent {{else}} {{if pending_received == true}} Friend Request Received {{else}} <a href="#" rel="${child_id}" class="pl_add_friend_link"><img src="/static/images/add-friend.png" alt="" width="83" height="20" /></a> {{/if}} {{/if}} {{/if}} {{/if}}
+</li>
+</script>
+
+
+<script id="child_profile_template" type="text/html">
+      <div class="photo_block">
+        <div class="photo_top">
+          <div class="info_box">
+            <div class="pic_box"><img src="${child_pic}" alt="" width="65" height="65" /></div>
+            <p><strong>${child_fname}</strong><span>${child_age} yr-old ${child_gender} </span><span>${child_school}</span><span>${child_grade}</span></p>
+          </div>
+        </div>
+        <div class="require">
+          <h3>About:</h3>
+          <p>${about}</p>
+          <p> {{if mine == false}}{{if friend == false}}<a href="#" class="link_org"><span>Add Friend</span></a>{{/if}}{{/if}} {{if can_view_extended}}<a href="/profiles/view/child/${child_id}" class="link_org"><span>View Full Profile</span></a>{{/if}} <a href="#" id="close_details" class="link_dark_green"><span>Close Details</span></a></p>
+        </div>
+      </div>
+</script>
+
+{%endverbatim%}
+
+{% endblock %}
+
+{% block extra_head %}
+ <style type="text/css">
+  
+    .editable {
+      padding-right: 20px;
+      background:url(/static/images/pencil.png) no-repeat;
+      background-position:right center;
+      cursor: pointer;
+    }
+
+    .editable button {background:none; border:none; width:40px; cursor:pointer;}
+    .editable button:last-child {background:none; border:none; width:55px; cursor:pointer;}
+
+
+  </style>
+
+{% endblock %}
+{% block extra_body %}
+
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.js"></script> 
+<script type='text/javascript' src='{{ STATIC_URL }}js/add_friend_overlay.js'></script>
+<script type='text/javascript' src='{{ STATIC_URL }}js/send_message_overlay.js'></script>
+
+<script src="/static/js/jquery.editable-1.3.3.js" type="text/javascript" charset="utf-8"></script>
+
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+
+  $(".private_child_info").live("mouseenter", function(e) {
+    Tooltip.show($(this), 'Private', 'To assure user privacy and safety, children\'s names and school affiliations are not displayed, except to their friends and are subject to parent controlled privacy settings.');
+  });
+
+  var manage_playlist_children = [
+    {% for child in manage_playlist_children %}
+     { "id": "{{ child.profile.id }}", 
+       "name": "{{ child.profile.first_name }}"
+     } {% if not forloop.last %},{%endif%}
+    {% endfor %}
+  ]; 
+  
+
+  var children_hash = {}
+  
+  var children = [ 
+    {% for child in display_children %}
+     { "child_id": "{{ child.profile.id }}", 
+       "child_fname": "{{ child.profile.first_name }}", 
+       "child_gender": "{{ child.profile.gender }}", 
+       "child_age": "{{ child.profile.age }}", 
+       "child_pic": "{{ child.profile.small_profile_pic }}",
+       "child_school": "{{ child.profile.school.short_name}}",
+       "child_grade": "{{ child.profile.grade_level}}",
+       "can_view_extended": "{{child.can_view_child_extended_profile}}",
+       "can_view_basic": "{{child.can_view_child_basic_profile}}",
+       "pending_sent":"{{child.is_pending_sent}}",
+       "pending_received":"{{child.is_pending_received}}",
+       "about":"{{child.profile.about}}",
+       "mine":"{{child.is_child_mine}}",
+       "friend":"{{child.is_in_friends}}",
+     } {% if not forloop.last %},{%endif%}
+    {% endfor %}
+  ]; 
+
+  function fix_bool(ds, property) {
+    if (ds[property] == 'True') { ds[property] = true; } else { ds[property] = false; }   
+    return ds
+  }
+
+
+  for (child_idx in children) {
+    children[child_idx] = fix_bool(children[child_idx], 'pending_sent');
+    children[child_idx] = fix_bool(children[child_idx], 'pending_received');
+    children[child_idx] = fix_bool(children[child_idx], 'can_view_extended');
+    children[child_idx] = fix_bool(children[child_idx], 'can_view_basic');
+    children[child_idx] = fix_bool(children[child_idx], 'mine');
+    children[child_idx] = fix_bool(children[child_idx], 'friend');
+    children_hash[children[child_idx]["child_id"]]=children[child_idx];
+  }
+
+  var current_start_child = 0;
+  var current_quantity_child = 2;
+
+  
+  $("a.basic_profile_link").live('click', function(e) { 
+    e.preventDefault();
+    var child_idx = $(this).attr('rel');
+    var child_data = children[child_idx];
+    var child_div = $.tmpl($("#child_profile_template"), child_data);
+    var child_list_cache = $("#child_list").clone(true);
+    $("#child_list").replaceWith(child_div);
+    $("#arrows").hide();
+
+    child_div.find("#close_details").click(function(e) {
+      e.preventDefault();
+      $(".photo_block").replaceWith(child_list_cache);
+      $("#arrows").show();
+    })
+  });
+
+
+  function get_child_li(child_data) {
+    var child_li = $.tmpl($("#child_template"), child_data);
+
+    return child_li;
+  }
+
+  function populate_child_list(container, children, offset, limit) {
+    container.empty();
+    current = offset;
+    last = offset + limit;    
+
+    while ( current < last) {
+      if (! children[current]) {
+          break;
+      }
+      children[current]["idx"] = current;
+      container.append(get_child_li(children[current]));
+      current = current + 1;        
+    }
+
+    $("#child_next").addClass("off");
+    $("#child_prev").addClass("off");
+
+    $("#child_next").removeClass("on");
+    $("#child_prev").removeClass("on");
+
+    
+    if (children.length > last ) {
+        $("#child_next").removeClass("off");
+        $("#child_next").addClass("on");
+    }
+
+    if (offset > 0 ) {
+        $("#child_prev").removeClass("off");
+        $("#child_prev").addClass("on");
+    }
+  }
+
+  $("#child_next.on").live('click',function(e) {
+    e.preventDefault();      
+    current_start_child = current_start_child + current_quantity_child;
+    populate_child_list($("#child_list"), children, current_start_child, current_quantity_child);    
+  });
+
+  $("#child_prev.on").live('click', function(e) {
+    e.preventDefault();      
+    current_start_child = current_start_child - current_quantity_child;
+    populate_child_list($("#child_list"), children, current_start_child, current_quantity_child);    
+  });
+
+  $(".add_friend_link").live('click', function(e) {
+    e.preventDefault();
+
+    var child_id = $(this).attr('rel');
+    var child_age = children_hash[child_id]["child_age"];
+
+    var settings = {
+      'parents': [ { 'id':{{profile.user_id}}, 'name':'{{profile.first_name}} {{profile.last_name}}'}],
+      'children': manage_playlist_children,
+      'child_id': child_id,
+      'child_age': child_age,
+      'callback': update_friend_status, 
+      'element': $(this),
+    };
+
+    $(this).add_friend_overlay(settings);
+    
+  });
+
+  populate_child_list($("#child_list"), children, current_start_child, current_quantity_child);
+
+  function update_friend_status(status, element) {
+    if (status == true) {
+      element.replaceWith("<span>Friend Request Sent</span>");
+    }
+  }
+
+
+{% if view_playlist_children %}
+  function get_profiles(child_id, offset, limit) {   
+    var ds = { 'offset':offset, 'limit': limit };
+    return ajax_call('/friends/get_profiles/' + child_id + '/', ds);
+  }
+
+  function get_friend_li(child_data) {
+    var child_li = $("#friend_template").tmpl(child_data);
+    return child_li;
+  }
+
+
+  function populate_friends_list(container, child_id, offset, limit) {
+
+    var profiles = get_profiles(child_id, offset, limit+1 );
+
+    var current = 0;
+    var last = current + limit;
+    container.empty();
+    while (current < last) {
+        if (! profiles[current]) {
+            break;
+        }
+
+        var record = profiles[current];
+        var parent = record["parents"][0];
+        var child = record["child"];
+        var data = {
+            'adult_id':parent["id"],
+            'adult_fname':parent["first_name"],
+            'adult_lname':parent["last_name"],
+            'adult_pic':parent["small_profile_pic"],
+            'child_id':child["id"],
+            'child_fname':child["first_name"],
+            'child_age':child["age"],
+            'child_gender':child["gender"],
+            'child_pic':child["small_profile_pic"],
+            "mine":child["is_child_mine"],
+            "friend":child["is_in_friends"],
+            "pending_sent":child["pending_sent"],
+            "pending_received":child["pending_received"],
+        };
+
+        children_hash[data["child_id"]]=data;
+
+        var friend_li = get_friend_li(data);
+        var add_friend_link = friend_li.find("a.pl_add_friend_link");
+
+        add_friend_link.click(function(e) {
+          e.preventDefault();
+      
+          var child_id = $(this).attr('rel');
+          var child_age = children_hash[child_id]["child_age"];
+          var data = children_hash[child_id];
+          var element = $(this); 
+      
+          var settings = {
+            'parents': [ { 'id':data["adult_id"], 'name':data["adult_fname"] + " " + data["adult_lname"] }],
+            'children': manage_playlist_children,
+            'child_id': child_id,
+            'child_age': child_age,
+            'callback': update_friend_status,
+            'element': element,
+          };
+      
+          $(this).add_friend_overlay(settings);
+          
+        });
+
+        container.append(friend_li);
+
+        current = current + 1;
+    }      
+
+    $("#playlist_next").addClass("off");
+    $("#playlist_prev").addClass("off");
+
+    $("#playlist_next").removeClass("on");
+    $("#playlist_prev").removeClass("on");
+
+
+    if (profiles.length > limit ) {
+        $("#playlist_next").removeClass("off");
+        $("#playlist_next").addClass("on");
+    }
+
+    if (offset > 0 ) {
+        $("#playlist_prev").removeClass("off");
+        $("#playlist_prev").addClass("on");
+    }
+
+    if (current == 0) {
+      $("#friends_view_all").hide();
+      var no_friends_div = '<div class="friends_zero" style="height:100px;padding-left:20px;"><p class="title">No Friends Yet...</p><p> Review <a href="/friends/suggested/' + child_id + '">Possible Friends</a>, or invite parents you know to Playdation via <a href="/contacts/invite_email">email</a> or <a href="/contacts/invite_facebook">Facebook</a>.</p></div>';
+      container.append(no_friends_div);
+    }
+  }
+
+  $("#playlist_next.on").live('click',function(e) {
+    e.preventDefault();      
+    friends_current_start = friends_current_start + friends_current_limit;
+    populate_friends_list($("#friends_list"), child_id, friends_current_start, friends_current_limit );
+  });
+
+  $("#playlist_prev.on").live('click', function(e) {
+    e.preventDefault();      
+    friends_current_start = friends_current_start - friends_current_limit;
+    populate_friends_list($("#friends_list"), child_id, friends_current_start, friends_current_limit );
+  });
+
+
+
+
+  $("#child_select").change(function() {
+    friends_current_start = 0;
+    $("#friends_view_all").show();
+    child_id = $(this).find(":selected").val();
+    populate_friends_list($("#friends_list"), child_id, friends_current_start, friends_current_limit);
+    $("#friends_view_all").attr('href',friends_view_base_url+child_id+'/');
+  });
+  
+  var child_id = $("#child_select").find(":selected").val();
+  var friends_current_start = 0;
+  var friends_current_limit = 3;
+
+  populate_friends_list($("#friends_list"), child_id, friends_current_start, friends_current_limit );
+
+  var friends_view_base_url = '{% url view_playlist %}';
+  $("#friends_view_all").attr('href',friends_view_base_url+child_id+'/');
+
+    
+
+{% endif %}
+
+{% if me %}
+
+    function in_place_save(field, new_value, callback) {
+      var url = '{% url profile_in_place_save %}';
+      var ds = {
+         'field':field,
+         'value':new_value,            
+      };
+    
+      ajax_async_call(url, ds, callback);
+                
+    }
+    
+    function save_about(content) {
+      var field='about';
+      var response = in_place_save(field, content.current, function(data) {
+        if (content.current.length == 0) {
+          $("#add_a_profile_summary").show();
+        }
+      });
+    }
+    
+    function edit_about(content) {
+      $("#add_a_profile_summary").hide();
+    }
+
+    function cancel_about(content) {
+      $("#add_a_profile_summary").hide();
+      if (content.current.length == 0) {
+        $("#add_a_profile_summary").show();
+      }
+    }
+
+
+    $('#about').editable({type:'textarea', submit:'<img src="/static/images/btn-savesmall.png">', onCancel:cancel_about, onEdit:edit_about, onSubmit:save_about, cancel:'<img src="/static/images/btn-discardsmall.png">' });
+
+{% endif %}
+
+
+  $("#send_message_link").click(function(e) {
+    e.preventDefault();
+    var to_user_id = $(this).siblings(".to_user_id").val();
+    var to_user_name = $(this).siblings(".to_user_name").val();
+    var settings = {
+      'name': to_user_name,
+      'to_user_id': to_user_id,
+    };
+    
+    $(this).send_message_overlay(settings);
+  });
+
+
+});
+</script>
+
+{% endblock %}

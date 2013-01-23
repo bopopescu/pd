@@ -1,0 +1,94 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load oembed_tags %}
+{% load timezone_filters %}
+{% load account_tags %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading">
+        <div class="heading_left">
+          <h1>Message Received</h1>
+          <p><strong>Please reply or ingore this message for <span>You</span>:</strong> </p>
+        </div>
+        <div class="links"><span class="link_blue"><a href="{% url messages_inbox %}">Back to Inbox</a></span></div>
+      </div>
+      <!--heading end-->
+      <div class="maincontent_wrap no_reply"> <img src="/static/images/img_grey_box.png" alt="" width="300" height="250" class="img_right"/>
+        <div class="main_left">
+          <div class="yellow_box"> <img src="{{ message.sender.get_profile.photo.prof50.url }}" alt="" width="50" height="50" class="img_left" />
+            <div class="text_info">
+              <p><strong>From:</strong> {{ message.sender.get_profile.first_name }} {{ message.sender.get_profile.last_name }}</p>
+              <span><strong>Date:</strong> {{ message.sent_at|localtime:account.timezone|date:_("DATETIME_FORMAT") }}</span> </div>
+            
+            <!--text info end--> 
+          </div>
+          <!--yellow box end-->
+          <div class="subject"><strong>Subject:</strong> {{message.subject}}</div>
+          <!--subject end-->
+          <div class="message">
+            <p><strong>Message:</strong> 
+              {% autoescape off %}
+                {% oembed %}{{ message.body|linebreaksbr }}{% endoembed %}
+              {% endautoescape %}
+              </p>
+          </div>
+          <!--message end-->
+          <div class="message_btns"><a href="#" id="reply_link"><img src="/static/images/bg_replay.png" alt="" width="164" height="42" /></a> <a href="{% url messages_inbox %}"><img src="/static/images/img_ignore.png" alt="" width="164" height="42" /></a></div>
+{% if not message.replied %}
+          <div class="notice">You haven't replied to this message yet</div>
+{% endif %}
+
+        <div id="reply_div" class="comment_box" style="padding-top:20px;display:none;">
+            <div class="comment_form">
+              <div class="comment_img"><img src="images/img_parents.jpg" alt="" width="50" height="50" /></div>
+              <div class="comment_text">
+                <form action="{% url messages_reply message.id %}" method="post">
+                  <fieldset>
+                    <textarea name="body" cols="" rows="" onfocus="if(this.value=='Write something')this.value=''" onblur="if(this.value=='')this.value='Write something'">Write something</textarea>
+                    <input type="hidden" name="recipient" value="{{ message.sender.id }}">
+                    <input type="submit" name="" value=" " class="input_blue" />
+                  </fieldset>
+                </form>
+              </div>
+              <!--comment text end--> 
+            </div>
+        </div>
+
+
+        </div>
+        <!--main left end--> 
+      </div>
+      <!--mainconent wrap end--> 
+    </div>
+    <!--one col block end-->
+    <div class="mainbtm">
+      <div class="mbright"> </div>
+    </div>
+  </div>
+
+
+
+<!---        <p><a href="{% url messages_reply message.id %}">{% trans "Reply" %}</a></p> -->
+
+
+
+{% endblock %}
+
+{% block extra_body %}
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+  $("#reply_link").click(function(e) {
+    e.preventDefault();
+    $("#reply_div").show();    
+  })
+});
+</script>
+
+
+
+{% endblock %}

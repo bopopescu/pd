@@ -1,0 +1,17 @@
+Howdy,
+<br><br>
+                    
+Your friend {{ actor.name }} is using Playdation and would like you to join too!<br><br>
+
+Playdation makes it super easy and safe to schedule playdates for your children.<br><br>
+
+Click <a href="{{accept_url}}">here</a> to accept {{ actor.first_name}}'s invitation<br><br>
+
+Already a Playdation member?<br>
+Click <a href="{% url view_profile actor.user_id %}">here</a> to connect with {{ actor.name }}<br><br><br>
+
+-The Playdation Team<br><br>
+
+Please do not reply to this message; it was sent from an unmonitored email address.  This message was intended for {{ email }}.<br>
+Please remember to add mail@playdation.com to your address book to ensure deliverability of all future playdate invitations!<br>
+

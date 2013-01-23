@@ -1,0 +1,8 @@
+Hi user.get_profile.first_name, 
+
+Please confirm your Playdation account by clicking this link:
+{{ activate_url }}
+
+Once you confirm, you will have full access to Playdation and all future notifications will be sent to this email address.
+
+The Playdation Team

@@ -1,0 +1,139 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load oembed_tags %}
+{% load timezone_filters %}
+{% load account_tags %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading no_border">
+        <div class="heading_left">
+          <h1>Friend Request Received</h1>
+          <p>
+            <strong>Please confirm or ignore this Friend Request for <span>{{ to_child.profile.first_name }}:</span></strong> 
+          </p>
+        </div>
+        <div class="links"><span class="link_blue"><a href="{{return_url}}">Back to Messages</a></span></div>
+      </div>
+      <!--heading end-->
+      <div class="maincontent_wrap">
+        <div class="profile request">
+          <div class="left_block">
+            <p>{{ from_child.child.first_name }}</p>
+            <div class="img_block"><span><img src="{{ from_child.child.photo.prof125.url }}" alt="" width="125" height="125" /></span>
+              <ul>
+                {% for parent in from_parents %}
+                <li>
+                  <p><img src="{{ parent.get_profile.get_profile.small_profile_pic }}" alt="" width="50" height="50" />{{ parent.get_profile.name }} </p>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="two_block_wrapper">
+              <div class="form_box left_box">
+                <form action="#" method="post">
+                  <fieldset>
+                    <div class="form_bottom">
+                      <input name="" type="submit" class="input_btn" value=" " />
+                    </div>
+                  </fieldset>
+                </form>
+              </div>
+              <span class="icon_block">room for future icons</span> </div>
+            <!--two block wrapper end--> 
+          </div>
+          <!--left block end-->
+          <div class="right_block">
+            <div class="top_block">
+              <p>Parents: 
+              {% for parent in from_parents %}
+                {% if not forloop.first %}|{%endif%}
+                <a href="{% url view_profile parent.id %}">{{ parent.get_profile.first_name }} {{ parent.get_profile.last_name }}</a> 
+              {% endfor %}
+              </p>
+ 
+              {% if from_caregivers %}
+              {% for cg in from_parents %}
+              <p>Additional Caregiver(s):
+                {% if not forloop.first %}|{%endif%}
+               <a href="#">{{ cg.get_profile.first_name}} {{cg.get_profile.last_name}}</a>
+              {% endfor %}
+              </p>
+              {% endif %}
+            </div>
+            <!--top block end-->
+            <div class="bottom_block">
+              <ul class="middle_section">
+                <li><strong>Age: </strong>{{ from_child.profile.age }}</li>
+                <li><strong>Gender: </strong>{{ from_child.profile.gender }}</li>
+                <li><strong>Attends :</strong>{{ from_child.profile.school.name|default:"" }}</li>
+                <li><strong>Grade Level:</strong>{{ from_child.profile.grade_level|default:"" }}</li>
+              </ul>
+              <div class="bottom_section">
+                <p> {{ from_child.profile.about|default:""}}</p>
+              </div>
+            </div>
+          </div>
+          <!--right block end--> 
+          
+        </div>
+        <!--profile end-->
+
+        <div class="request_bottom">
+          <div class="links_btn"><a href="#" id="confirm_friend"><img src="/static/images/bg_confirm.png" alt="" width="147" height="42" /></a> <a href="{{return_url}}"><img src="/static/images/img_notnow.png" alt="" width="147" height="42" /></a></div>
+          <div class="request_detail">
+            {% if fi.message %}
+            <p><strong>Reason for request : </strong> <br>{{ fi.how_related_verbose }}
+            <p><strong>Details for this Request : </strong> <br>{{ fi.message }} </p>
+            <span>--{{ from_user.get_profile.first_name }} </span>
+            {% endif %}  
+          </div>
+        </div>
+      </div>
+      <!--maincontent wrap end--> 
+    </div>
+    <!--one col block end-->
+    <div class="mainbtm">
+      <div class="mbright"></div>
+    </div>
+  </div>
+
+<div id="message_sent_overlay" class="overlay" style="display:none;">
+  <div class="lightbox_wrapper">
+    <div class="invite_wrap">
+      <h1>Friend addition confirmed</h1>
+      <br><br>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block extra_body %}
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+  $("#confirm_friend").click(function(e) {
+    e.preventDefault();
+    var response = accept_friendship({{from_child.profile.id}},{{to_child.profile.id}});
+
+    var rso = $("#message_sent_overlay");
+    $("body").append(rso);
+    rso.fadeIn();
+    setTimeout(function() { 
+      rso.fadeOut(); 
+      window.location='{% url messages_inbox %}';      
+    }, 1000);
+  });
+});
+</script>
+
+
+
+{% endblock %}

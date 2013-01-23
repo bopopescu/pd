@@ -1,0 +1,120 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+<div id="content">
+  <div class="one_col_block">
+    <div class="heading short">
+      <div class="heading_left">
+        <h1>Contacts</h1>
+      </div>
+      <!-- <div class="links"><span class="link_grey"><a href="#">Add Contacts</a></span></div> -->
+    </div>
+
+<!--
+    <div class="contact_form">
+      <form action="#" method="post">
+        <fieldset>
+          <label>Find Contact <span>(just start typing)</span>:</label>
+          <input type="text" name=""/>
+          <span class="progress_bar"><img src="images/img_passbar.png" alt="" width="208" height="13" /></span>
+        </fieldset>
+      </form>
+    </div>
+-->
+
+    <div class="contact_column">
+{% if contacts %}
+{% for contact in contacts %}
+  {% ifequal contact.type 'pd' %}
+      <div class="info_part">
+        <div class="left_area">
+          <div class="img_box"><a href="{% url view_profile contact.profile.id %}"><img src="{{ contact.profile.medium_profile_pic }}" alt="" width="90" height="90" /></a></div>
+          <h2><a href="{% url view_profile contact.profile.id %}">{{ contact.name }}</a></h2>
+          <input type="hidden" class="to_user_id" value="{{contact.profile.id}}">
+          <input type="hidden" class="to_user_name" value="{{contact.profile.name}}">
+          <a href="#" class="grey_color send_message_link">+ Send Message</a> </div>
+        <ul>
+          {% for child in contact.children %}
+          <li>
+            <div class="img_box"> <a href="{% url view_child child.profile.id %}"><img src="{{ child.profile.small_profile_pic }}" alt="" width="50" height="50" /></a></div>
+            <h3><a href="{% url view_child child.profile.id %}">{{ child.profile.first_name }}</a></h3>
+            <strong>{{child.profile.age}} year old {{child.profile.gender}}</strong> <span>{{ child.profile.school.name|default:"" }}</span> <a href="{% url new_playdate_with_key child.key %}" class="purple_color">+ Make a Plan</a> 
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+  {% endifequal %}
+
+  {% ifequal contact.type 'fb' %}
+      <div class="info_part no_margin">
+        <div class="left_area">
+          <div class="img_box"><img src="http://graph.facebook.com/{{ contact.fbid }}/picture?type=square" alt="" width="90" height="90" /><a href="#" class="link_facebook"><img src="/static/images/img_facebook1.png" alt="" width="30" height="30" /></a></div>
+          <h2><a href="#">{{ contact.name }}</a></h2>
+          <!--<a href="#" class="grey_color">+ Send Message</a> --> <!--<a href="#" class="blue_color">+ Remind to Join</a>--> <a href="{% url new_playdate_with_key contact.key %}" class="purple_color">+ Make a Plan</a><a href="{% url remove_contact contact.id contact.type %}" class="purple_color">- Remove Contact</a></div>
+      </div>
+  {% endifequal %}
+
+  {% ifequal contact.type 'email' %}
+
+      <div class="info_part">
+        <div class="left_area no_img">
+          <h2>{{contact.name}}</h2>
+          <span>{{contact.email}} (<a href="mailto:{{contact.email}}">Send Message</a>)</span> <!--<a href="#" class="blue_color">+ Remind to Join</a>--> <a href="{% url new_playdate_with_key contact.key %}" class="purple_color">+ Make a Plan</a> <a href="{% url remove_contact contact.id contact.type %}" class="purple_color">- Remove Contact</a></div>
+      </div>
+  {% endifequal %}
+{% endfor %}
+{% else %}
+        <div id="no_friends" class="yellow_wrap">
+          <p class="title">Oops.</p>
+          <p>You have not yet added anyone to your Contacts. <br />
+            Contacts are added each time you add friends for your children, or when you invite someone to use Playdation. <a href="{% url new_playdate %}">Make a Plan</a> or invite some friends to Playdation via <a href="{% url invite_email %}">email</a> or <a href="{% url invite_facebook %}">Facebook</a> and see for yourself!</p>
+        </div>
+{% endif %}
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block extra_body %}
+<script type='text/javascript' src='{{ STATIC_URL }}js/playdation.js'></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.js"></script> 
+<script type='text/javascript' src='{{ STATIC_URL }}js/send_message_overlay.js'></script>
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+
+  $("a.send_message_link").click(function(e) {
+    e.preventDefault();
+    var to_user_id = $(this).siblings(".to_user_id").val();
+    var to_user_name = $(this).siblings(".to_user_name").val();
+    var settings = {
+      'name': to_user_name,
+      'to_user_id': to_user_id,
+    };
+    
+    $(this).send_message_overlay(settings);
+  })
+});
+</script>
+
+
+{% endblock %}
+
+

@@ -1,0 +1,313 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Plan Details" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+	<div id="content">
+		<div class="two_col_block">
+			<div class="leading">
+				<h1>Plan Details</h1>
+
+<!--				<div class="navbar">
+					<ul>
+						<li><a href="#">Map</a>|</li>
+						<li><a href="#">Print</a>|</li>
+						<li><a href="#">Export to Calendar</a></li>
+					</ul>
+				</div>
+-->
+			</div>
+
+			<!--leading end-->
+      <div class="sidebar">
+        <h3>Attending({{responses.yes|length }})</h3>
+        <ul>
+          {% for inv in responses.yes %}
+          {% if inv.is_user %}
+          <li><img src="{{ inv.child.child.photo.prof50.url }}" alt="" width="50" height="50"  class="img_left" />
+			<div class="name_box">{{ inv.child.child.first_name }}<span>{{ inv.adult.name }}'s Child</span>
+                            {% if inv.is_organizer %}
+                            (organizer)
+                            {% endif %}
+                        </div>
+          </li>
+          {% else %}
+          <li><b>{{ inv.to }} </b></li>
+          {% endif %}
+
+          {% endfor %}
+
+        </ul>
+        <h3>Unconfirmed({{responses.noresponse|length}})</h3>
+        <ul>
+          {% for inv in responses.noresponse %}
+          {% if inv.is_user %}
+          <li><img src="{{ inv.child.child.photo.prof50.url}}" alt="" width="50" height="50"  class="img_left" />
+			<div class="name_box">{{ inv.child.child.first_name }}<span>{{ inv.adult.name }}'s Child</span></div>
+          </li>
+          {% else %}
+          <li><b>{{ inv.to }} </b></li>
+          {% endif %}
+
+
+
+          {% endfor %}
+        </ul>
+        <h3>Not Attending({{ responses.no|length }})</h3>
+        <ul>
+          {% for inv in responses.no %}
+          {% if inv.is_user %}
+          <li><img src="{{ inv.child.child.photo.prof50.url }}" alt="" width="50" height="50"  class="img_left" />
+			<div class="name_box">{{ inv.child.child.first_name }}<span>{{ inv.adult.name }}'s Child</span></div>
+          </li>
+          {% else %}
+          <li><b>{{ inv.to }} </b></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+			<!--sidebar end-->
+			<div class="maincontent">
+{% if not is_organizer %}
+
+
+        {% for my_invite in my_invites %}
+        <div class="attending_wrap">
+          <div class="attending_top"> Is {{ my_invite.child }} attending? 
+            <a href="?set_status=2&invite_type={{my_invite.type}}&invite_id={{my_invite.id}}">{% if my_invite.yes %}<img src="/static/images/img_yes_blue.png" alt="" width="52" height="23" />{%else %}<img src="/static/images/img_yes_brown.png" alt="" width="52" height="23" />{%endif%}</a>
+            <a href="?set_status=3&invite_type={{my_invite.type}}&invite_id={{my_invite.id}}">{% if my_invite.no %}<img src="/static/images/img_no_blue.png" alt="" width="52" height="23" />{%else %}<img src="/static/images/img_no_brown.png" alt="" width="52" height="23" />{%endif%}</a>
+            <a href="?set_status=4&invite_type={{my_invite.type}}&invite_id={{my_invite.id}}">{% if my_invite.maybe %}<img src="/static/images/img_maybe_blue.png" alt="" width="70" height="23" />{%else %}<img src="/static/images/img_maybe_brown.png" alt="" width="70" height="23" />{%endif%}</a> 
+
+          <a href="#" class="link_view" {% if not my_invite.yes %}style="display:none;"{%endif%}>+ View Details</a>
+
+        </div>
+
+          <div class="attending_form" {% if my_invite.set_status_yes %}{%else%}style="display:none;"{%endif%}> <a href="#" id="details_close" class="close close_optional_form">x</a>
+            <form class="save_optional_info_form" action="{% url save_optional_info pd.id %}" method="post">
+              <fieldset>
+                {% if set_status_yes %}
+                <h2>Great, you've just confirmed your attendance!</h2>
+                {% endif %}
+                <p>Optional:</p>
+                <ul>
+
+                  <li>
+                    <label>Contact #:</label>
+                    <input type="text" name="phone" class="text_short" value="{{my_invite.phone|default:""}}"/>
+                  </li>
+
+                  {% if my_invite.set_status_yes %}
+                  <li>
+                    <label>Comments:</label>
+                    <textarea class="status_update_comment" name="comment" cols=""  rows=""></textarea>
+                  </li>
+                  {% endif %}
+                  <li class="btn_bottom">
+                    <input type="hidden" name="inv_type" value="{{ my_invite.type }}">
+                    <input type="hidden" name="inv_id" value="{{ my_invite.id }}">
+                    <input type="submit" name="" class="submit_save" value="" />
+                    <input type="button" name="" class="btn_close close_optional_form" value="" />
+                  </li>
+                </ul>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+  {% endfor %}
+{% endif %}
+				<ul class="lists">
+					<li><strong>Date &amp; Time:</strong> <span id="date">{{ pd.start|date:"l F dS g:i A" }} - {{ pd.end|date:"g:i A" }}</span></li>
+					<li><strong>Location:</strong> <span id="address"> {{ pd.address }} </span></li>
+					<li><strong>Organizer Phone Number:</strong><span id="phone"> {{ pd.phone }}</span></li>
+          <li><strong>Proposed Activity:</strong> <span id="activity"">{{ pd.activity.name }}</span>  </li>
+          <li><strong>Additional Information:</strong> <span id="details">{{ pd.details }}</span>  </li>
+
+					<li><strong>Status: </strong> {{ pd.status_verbose }}</li>
+				</ul>
+
+        <div style="clear:both;"></div>
+
+				<div class="discussion" style="margin-top:30px;">
+					<h1>Discussion</h1>
+					<form action="#" id="post_comment" method="post">
+						<fieldset>
+							<input name="" type="text" id="comment" class="write_input" />
+                            <input type="hidden" id="email" name="email" value="{{ email }}">
+							<input name="" type="submit"  class="input_blue" value=""/>
+						</fieldset>
+					</form>
+					<ul id="comments">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<div id="suggest_signup" class="overlay" {% if not first_response %}style="display:none" {% endif %}>
+  <div class="lightbox_wrapper welcome_wrap"> <a href="#" class="close_button suggest_signup_close"><img src="/static/images/img_close.png" alt="" width="34" height="35" /></a>
+    <div class="one_col_block">
+      <h1>Welcome to Playdation!</h1>
+      <p class="heading">We recommend you create an account. It's fast and free!</p>
+      <ul>
+        <li>Connect privately with other parents you know. </li>
+        <li>Create an approved friends list for your children.</li>
+        <li>Schedule playdates, after-school activities and more.</li>
+      </ul>
+      <div class="btn_bottom"> <a href="{% url signup_fb %}"><img src="/static/images/bg_yes.png" alt="" width="292" height="42" /></a> <span><a href="#" class="suggest_signup_close"><strong>No,</strong> I'll do it later</a></span> </div>
+    </div>
+    <div class="img_boy"><img src="/static/images/img_boy.png" alt="" width="163" height="343" /></div>
+  </div>
+</div>
+
+
+
+
+
+<script id="comment_tmpl_user" type="text/html">
+<li>
+	<div class="discuss_img"><img src="${small_profile_pic}" alt="" /></div>
+	<div class="discuss_text">
+		<p><span>${first_name } ${last_name}:</span>${comment } <span class="time">${when}</span></p>
+	</div>
+</li>
+</script>
+
+<script id="comment_tmpl_email" type="text/html">
+<li>
+<!-- 	<div class="discuss_img"><img src="{{small_profile_pic}}" alt="" /></div> -->
+	<div class="discuss_text">
+		<p><span>${email}:</span>${comment} <span class="time">${when}</span></p>
+	</div>
+</li>
+</script>
+
+
+
+
+{% endblock %}
+
+{% block extra_head %}
+ <style type="text/css">
+  
+    .editable {
+      padding-right: 20px;
+      background:url(/static/images/pencil.png) no-repeat;
+      background-position:right center;
+      cursor: pointer;
+    }
+
+  </style>
+
+{% endblock %}
+
+
+{% block extra_body %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tmpl.min.js"></script> 
+<script src="/static/js/jquery.editable-1.3.3.js" type="text/javascript" charset="utf-8"></script>
+<script type='text/javascript' src='/static/js/playdation.js'></script> 
+<script src="/static/js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+
+<script type="text/javascript"> 
+
+$(document).ready(function() {
+
+    var pd_id = {{ pd.id }};
+
+    
+    $("#post_comment").submit(function(e) {
+        e.preventDefault();
+        var comment = $("#comment").val();
+
+        if (comment.length > 1) {
+            var email = $("#email").val();
+            var type = 'Playdate';
+            var ds = {
+                'app_label':'playdates',
+                'model':'Playdate',
+                'id':pd_id,
+                'comment':comment,
+                'email':email,
+            };
+      
+      
+            var response = ajax_call('{% url new_comment %}', ds);
+           
+            if (response["success"]) {
+                prepend_comment($("#comments"),response["comment"]);
+                $("#comment").val('');
+            }        
+        }
+     });
+
+    function get_comment_li(comment) {
+        if (comment["email"]) {
+            var com_id = '#comment_tmpl_email';
+        } else {
+            var com_id = '#comment_tmpl_user';
+        }
+        var comment_li = $(com_id).tmpl(comment);        
+        return comment_li;
+    }
+
+    function populate_comments(container, comments) {
+        container.empty();
+        for (c_i in comments) {
+            var comment_li = get_comment_li(comments[c_i]);            
+            container.append(comment_li);        
+        }        
+    }
+
+    function prepend_comment(container, comment) {
+        var comment_li = get_comment_li(comment);
+        container.prepend(comment_li);        
+    }   
+
+    var ds = {
+        'app_label':'playdates',
+        'model':'Playdate',
+        'id':pd_id,
+    };
+    var response = ajax_call('{% url list_comments %}', ds);
+    var comments = response["comments"];
+
+    populate_comments($("#comments"),comments);
+
+
+    $("a.link_view").click(function(e) {
+       e.preventDefault();
+       $(this).parent().siblings(".attending_form").toggle();        
+    });
+
+    $(".close_optional_form").click(function(e) {
+      e.preventDefault();
+      $(this).parent().hide();
+    })
+
+    $(".suggest_signup_close").click(function(e) {
+      e.preventDefault();
+      $("#suggest_signup").hide();
+    });
+    
+    
+    $("#save_optional_info_form").submit(function(e) {
+      var comment = $(this).find(".status_update_comment").val();
+      if (comment.length > 1) {
+         $("#comment").val(comment);
+         $("#post_comment").trigger('submit');
+      }
+      return true;
+    })
+            
+    $("#comment").watermark('Write something');
+              
+
+});
+</script> 
+
+{% endblock %}

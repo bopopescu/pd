@@ -1,0 +1,30 @@
+{% extends "site_registration_base.html" %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Playdation Facebook Connect{% endblock %}
+
+{% block body %}
+  <div id="content" class="common">
+    <div class="forms_wrapper connect">
+      <div class="col_left playdaytion">
+        <h1>{{ profile.first_name|title }}, welcome to Playdation!</h1>
+        <p>To get you started, lets first connect your Facebook account. 
+          This will make it much easier to setup your profile and find more playdates!</p>
+        <div class="link_wrapper">
+          <span>
+          <form class="connect-button" name="login" method="post" action="/account/acct_fb_login">
+            <input type="image" src="/static/images/img_facebook.png"/></form>
+          </span> 
+        <span><a href="{% url signup_add_children %}">Skip</a> (not recommended)</span> </div>
+        
+      </div>
+    </div>
+   <div class="mainbtm">
+      <div class="mbright"> </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+{% load uni_form_tags %}
+
+{% block head_title %}{% trans "Welcome" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading">
+        <div class="heading_left">
+          <h1>{{ album.title }}</h1>
+<!--          <p><strong>With: </strong> Sebastian, Michael, Kaitlyn, Christine</p> -->
+        </div>
+        <div class="links"><span class="link_purple"><a href="#">Add More Photos</a></span><span class="link_grey"><a href="#">Back to Photos Home</a></span></div>
+      </div>
+      <!--heading end-->
+      <div class="photo_wrap">
+        <div class="text_by"><span>By: <a href="#">{{ album.created_by.get_profile.first_name }} {{ album.created_by.get_profile.last_name }}</a></span>
+          <div class="right_text"><span class="add_photo"><a href="#">+ Add a Caption for this Album</a></span></div>
+        </div>
+        <ul>
+  {% for photo in album.photos.all %}
+
+          <li>
+            <div class="photo_img" style="text-align:center;"><a href="{% url view_photo photo.id %}"><img src="{{photo.prof125.url}}"  /></a></div>
+          </li>
+
+  {% endfor %}
+
+<!--
+          <li>
+            <div class="photo_img"><img src="/static/images/img_photo.png" alt="" width="149" height="116" /></div>
+          </li>
+          
+-->
+        </ul>
+      </div>
+      <div class="page_nav">
+        <div class="control_button"><span>Preview</span>|<span><a href="#">Next</a></span></div>
+        <ul>
+          <li><strong>Page</strong></li>
+          <li><a href="#" class="current">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+        </ul>
+<!--        <div class="view_style"><span class="view_all"><a href="#" class="current">View All</a></span> </div> -->
+      </div>
+      <!--photo wrap end--> 
+    </div>
+    <div class="mainbtm">
+      <div class="mbright"></div>
+    </div>
+  </div>
+
+
+
+
+	{% if me %}
+<p>
+	Upload New File:<br>
+</p>
+
+    <form class="uniForm" id="edit-profile" method="POST" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+        <fieldset class="inlineLabels">
+            {{ photo_form|as_uni_form }}
+            <div class="form_block">
+                <input type="hidden" name="action" value="upload" />
+                <input type="submit" value="{% trans "Upload" %}" />
+            </div>
+        </fieldset>
+    </form>
+
+
+	{% else %}
+	NOT MY ALBUM
+
+
+	{% endif %}	
+
+	
+	{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+{% block extra_body %}
+{% endblock %}

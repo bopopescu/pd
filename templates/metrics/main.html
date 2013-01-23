@@ -1,0 +1,130 @@
+{% extends 'site_registration_base.html' %}
+
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block head_title %}Privacy Policy{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="leading grey">
+        <h1><span>Statistics</span> {{ report.name }}</h1>
+      </div>
+      <ul class="breadcrumb">
+        <li><strong>You are here:</strong></li>
+        <li><a href="#">Statistics Home</a> &gt;</li>
+        <li>Facebook Connect Logins by new users</li>
+      </ul>
+      <div class="three_col_block">
+        <div class="left">
+          <form action="#" method="post">
+            <fieldset>
+              <input type="hidden" name="day" value="{{report_date.day}}">
+              <input type="hidden" name="month" value="{{report_date.month}}">
+              <input type="hidden" name="year" value="{{report_date.year}}">
+
+              <label>Jump to another section:</label>
+              <select name="report_id" onchange="this.form.submit()">
+                {% for dreport in reports %} 
+                <option {%if report.id == dreport.id %}selected="selected"{%endif%} value="{{ dreport.id }}">{{dreport.name}}</option>
+                {% endfor %}
+              </select>
+            </fieldset>
+          </form>
+        </div>
+        <div class="middle">
+          <ul>
+            {% for metric in metrics %}
+            <li><span>{{ metric.when|date:"h:i A" }}</span>{{metric.count}} {% if metric.group %}({{metric.group}}){% endif%}</li>
+            {% endfor %}
+            <li><span>Total for the day:</span>{{count_all}}</li>
+
+          </ul>
+        </div>
+        <div class="right">
+          <div class="date_wrap">
+            <p>You are viewing {{ report_date|date:"D, M d, Y" }}</p>
+          </div>
+          <form action="#" method="post">
+            <input type="hidden" name="report_id" value="{{report.id}}">
+
+            <fieldset>
+              <ul>
+                <li>
+                  <label>Day: </label>
+                  <select name="day" class="long_select">
+                    <option value="0"></option>
+                    <option {% if report_date.day == 1 %}selected='selected'{%endif%} value="1">1</option>
+                    <option {% if report_date.day == 2 %}selected='selected'{%endif%} value="2">2</option>
+                    <option {% if report_date.day == 3 %}selected='selected'{%endif%} value="3">3</option>
+                    <option {% if report_date.day == 4 %}selected='selected'{%endif%} value="4">4</option>
+                    <option {% if report_date.day == 5 %}selected='selected'{%endif%} value="5">5</option>
+                    <option {% if report_date.day == 6 %}selected='selected'{%endif%} value="6">6</option>
+                    <option {% if report_date.day == 7 %}selected='selected'{%endif%} value="7">7</option>
+                    <option {% if report_date.day == 8 %}selected='selected'{%endif%} value="8">8</option>
+                    <option {% if report_date.day == 9 %}selected='selected'{%endif%} value="9">9</option>
+                    <option {% if report_date.day == 10 %}selected='selected'{%endif%} value="10">10</option>
+                    <option {% if report_date.day == 11 %}selected='selected'{%endif%} value="11">11</option>
+                    <option {% if report_date.day == 12 %}selected='selected'{%endif%} value="12">12</option>
+                    <option {% if report_date.day == 13 %}selected='selected'{%endif%} value="13">13</option>
+                    <option {% if report_date.day == 14 %}selected='selected'{%endif%} value="14">14</option>
+                    <option {% if report_date.day == 15 %}selected='selected'{%endif%} value="15">15</option>
+                    <option {% if report_date.day == 16 %}selected='selected'{%endif%} value="16">16</option>
+                    <option {% if report_date.day == 17 %}selected='selected'{%endif%} value="17">17</option>
+                    <option {% if report_date.day == 18 %}selected='selected'{%endif%} value="18">18</option>
+                    <option {% if report_date.day == 19 %}selected='selected'{%endif%} value="19">19</option>
+                    <option {% if report_date.day == 20 %}selected='selected'{%endif%} value="20">20</option>
+                    <option {% if report_date.day == 21 %}selected='selected'{%endif%} value="21">21</option>
+                    <option {% if report_date.day == 22 %}selected='selected'{%endif%} value="22">22</option>
+                    <option {% if report_date.day == 23 %}selected='selected'{%endif%} value="23">23</option>
+                    <option {% if report_date.day == 24 %}selected='selected'{%endif%} value="24">24</option>
+                    <option {% if report_date.day == 25 %}selected='selected'{%endif%} value="25">25</option>
+                    <option {% if report_date.day == 26 %}selected='selected'{%endif%} value="26">26</option>
+                    <option {% if report_date.day == 27 %}selected='selected'{%endif%} value="27">27</option>
+                    <option {% if report_date.day == 28 %}selected='selected'{%endif%} value="28">28</option>
+                    <option {% if report_date.day == 29 %}selected='selected'{%endif%} value="29">29</option>
+                    <option {% if report_date.day == 30 %}selected='selected'{%endif%} value="30">30</option>
+                    <option {% if report_date.day == 31 %}selected='selected'{%endif%} value="31">31</option>
+                  </select>
+                </li>
+
+                <li>
+                  <label>Month:</label>
+                  <select name="month" class="long_select">
+                    <option value="0"></option>
+                    <option {% if report_date.month == 1 %}selected='selected'{%endif%} value="1">Jan</option>
+                    <option {% if report_date.month == 2 %}selected='selected'{%endif%} value="2">Feb</option>
+                    <option {% if report_date.month == 3 %}selected='selected'{%endif%} value="3">Mar</option>
+                    <option {% if report_date.month == 4 %}selected='selected'{%endif%} value="4">Apr</option>
+                    <option {% if report_date.month == 5 %}selected='selected'{%endif%} value="5">May</option>
+                    <option {% if report_date.month == 6 %}selected='selected'{%endif%} value="6">Jun</option>
+                    <option {% if report_date.month == 7 %}selected='selected'{%endif%} value="7">Jul</option>
+                    <option {% if report_date.month == 8 %}selected='selected'{%endif%} value="8">Aug</option>
+                    <option {% if report_date.month == 9 %}selected='selected'{%endif%} value="9">Sep</option>
+                    <option {% if report_date.month == 10 %}selected='selected'{%endif%} value="10">Oct</option>
+                    <option {% if report_date.month == 11 %}selected='selected'{%endif%} value="11">Nov</option>
+                    <option {% if report_date.month == 12 %}selected='selected'{%endif%} value="12">Dec</option>
+                  </select>
+                </li>
+                <li>
+                  <label>Year:</label>
+                  <select name="year" class="long_select">
+                    <option value="0"></option>
+                    <option {% if report_date.year == 2011 %}selected='selected'{%endif%} value="2011">2011</option>
+                    <option {% if report_date.year == 2012 %}selected='selected'{%endif%} value="2012">2012</option>
+                    <option {% if report_date.year == 2013 %}selected='selected'{%endif%} value="2013">2013</option>
+                  </select>
+                </li>
+              </ul>
+              <li>
+              <input type="submit">
+              </li>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

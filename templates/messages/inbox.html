@@ -1,0 +1,77 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load account_tags %}
+{% load timezone_filters %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading short">
+        <div class="heading_left">
+          <h1>Inbox</h1>
+        </div>
+      </div>
+      <!--heading end-->
+      <div class="maincontent_wrap">
+        <div class="navigation">
+          <div class="dark_block">
+            <ul>
+              <li><a href="{% url messages_inbox %}" class="yellow">Inbox</a> |</li>
+              <li><a href="{% url messages_outbox %}">Sent Mail</a> |</li>
+              <li>
+                <form method="get">
+                  <fieldset>
+                    <select name="filter" onchange="this.form.submit()">
+                      <option value="0">All Communications</option>
+                      <option value="M" {% if filter == 'M' %}selected="true"{%endif%}>Messages</option>
+                      <option value="P" {% if filter == 'P' %}selected="true"{%endif%}>Playdate Requests</option>
+                      <option value="F" {% if filter == 'F' %}selected="true"{%endif%}>Friend Requests</option>
+                    </select>
+                    <input name="" type="submit" value="" class="btn_go" />
+                  </fieldset>
+                </form>
+              </li>
+            </ul>
+          </div>
+          <!--dark block end-->
+          <div class="middle_message">= messages you're already read</div>
+          <span>Showing All messages({{ message_list|length }})</span> </div>
+        <!--navigation-->
+{% if message_list %}
+        <ul class="message_lists">
+      {% for message in message_list %}
+          <li>
+            <div class="message_info">
+              <div class="message_img"></div>
+              <div class="message_text {% if not message.new %}current{% endif %}">
+                <h2><a href="{% url message_detail message.id %}?return=inbox">{{message.category_verbose}}</a>
+                  from {{ message.sender.get_profile.first_name }} received
+                  <span>on {{ message.sent_at|localtime:account.timezone|date:_("DATETIME_FORMAT") }}</span></h2>
+                <p><strong>Subject: </strong>{{message.subject}}</p>
+              </div>
+              <!--message text end--> 
+            </div>
+            <!--message info end-->
+            <div class="message_links"> <span class="link_lightblue"><a href="{% url message_detail message.id %}?return=inbox">View Details</a></span> {% if message.deleteable %}<span class="link_red"><a href="{% url messages_delete message.id %}?return=inbox">Delete</a> </span>{% endif %} </div>
+          </li>
+
+      {% endfor %}
+        </ul>
+{% else %}
+        <div class="yellow_wrap" style="float:left;">
+          <p class="title">Oops.</p>
+          <p>Sorry but no messages could be found.  <a href="{% url new_playdate %}">Make a Plan</a> or invite friends via <a href="{% url invite_email %}">email</a> or <a href="{% url invite_facebook %}">Facebook</a> to increase the number of invitations you receive.</p>
+        </div>
+{% endif %}
+      </div>
+      <!--maincontent wrap end--> 
+    </div>
+    <!--one col block end-->
+  </div>
+
+
+
+
+
+{% endblock %}

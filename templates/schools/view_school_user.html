@@ -1,0 +1,85 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}Playdation - {{ school.name }}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading narrow">
+        <h1>{{ school.name }} <iframe src="http://www.facebook.com/plugins/like.php?app_id=122199454528907&amp;href=http%3A%2F%2F{{www_host}}%2Fschools%2Fview%2F{{school.id}}%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:73px; height:21px;" allowTransparency="true"></iframe>
+          </h1>
+      </div>
+
+      <!--heading end-->
+      <div class="maincontent_wrap">
+        <div class="map_wrap">
+          <div class="map">
+            <img src="http://maps.google.com/maps/api/staticmap?center={{school.lat}},{{school.lon}}&zoom=14&size=270x185&sensor=true&markers=color:red|label:C|{{school.lat}},{{school.lon}}">
+            </div>
+          <div class="add_info">
+            <p><span>Located in {{school.city}}, {{school.state}}, {{school.zip}}</span> <span>{{school.street}}<br>{{school.city}}, {{school.state}} {{school.zip}}</span> 
+              <!-- <span>There are 1,173 Parents associated with this school.</span> -->
+              <!-- <span>There are 3,255 Children associated with this school</span> --> </p>
+            <p><span><strong>Grade Level : </strong>{{school.level}}</span> <span><strong>Phone : </strong>{{school.phone}}</span> <span><strong>Type : </strong>{{school.type}}</span> </p>
+            <p><span><strong>School Summary : </strong></span> 
+              {{school.summary}}           
+            </p>
+          </div>
+        </div>
+        <!--map wrap end-->
+        <!-- <div class="page_nav"> -->
+          <!-- <div class="control_button"><span>Previous</span>|<span><a href="#">Next</a></span></div> -->
+          <!-- <ul>
+            <li><strong>Page</strong></li>
+            <li><a href="#" class="current">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+
+          </ul> -->
+          <!-- <div class="view_style"><span class="view_all"><a href="#" class="current">View are viewing 1-5</a></span> </div> -->
+        <!-- </div> -->
+        <!--photo nav end-->
+        <ul class="feed_lists">
+{% for parent in parents %}
+          <li>
+            <div class="feed_left">
+              <div class="img_avatar"> <img src="{{ parent.small_profile_pic }}" alt="" width="44" height="44" /></div>
+              <div class="info">
+                <h2><a href="{% url view_profile parent.id %}">{{ parent.name }}</a></h2>
+                <p><span><strong>{{ parent.first_name }} </strong> is a parent located in {% if parent.zip_code %} {{ parent.zip_code.city }}, {{ parent.zip_code.state }} {% else %} Private {% endif %}</span> <!-- <span>Married to <a href="#">Michelle Opencorners</a></span> --> </p>
+              </div>
+            </div>
+            <span class="link_blue"><a href="{% url view_profile parent.id %}">View Profile</a></span> 
+          </li>
+{% endfor %}
+        </ul>
+        <!-- <div class="page_nav">
+          <div class="control_button"><span>Preview</span>|<span><a href="#">Next</a></span></div>
+          <ul>
+            <li><strong>Page</strong></li>
+            <li><a href="#" class="current">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+          </ul>
+          <div class="view_style"><span class="view_all"><a href="#" class="current">View are viewing 1-5</a></span> </div>
+        </div> -->
+        <!--photo wrap end--> 
+      </div>
+      <!--maincontent wrap end--> 
+    </div>
+    <!--one col block end-->
+    <div class="mainbtm" >
+<p style="color: #545454; font-size:77%; font: arial,helvetica,clean,sans-serif;text-align: left;">Source of school information: <a href="http://www.greatschools.org" target="_blank">GreatSchools.org</a><br>
+More information on {{school.name}}, click <a href="{{school.gsurl}}" target="_blank">here</a></p>
+    </div>
+
+  </div>
+{% endblock %}

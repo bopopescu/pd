@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cmrl xmlns:dotgo="http://dotgo.com/cmrl/1.0" account='xs9aq-gcx8a-fhklz-30kr3'>
+
+  <match pattern="">
+    <message><content>Playdation.com<br />
+      Welcome to Playdation!<br />
+      <br />
+      Reply:<br />
+      <a query="playdation about" /> What is Playdation?<br />
+      <a query="playdation feed" /> Get Your Feed<br />
+      <a query="playdation status" /> Update Your Status<br />
+      <br />
+      Ex:<br />
+      2
+    </content></message>
+  </match>
+
+  <match pattern="About">
+    <message><content>Playdation.com<br />
+    Playdation is a tool for parents to easily manage the social calendar of their kids
+    </content></message>
+  </match>
+
+  <match pattern="Status">
+    <message>
+    <content>
+        Set your status. Example: "We are at the park with Charlie. We'll be here for two hours"
+    </content>
+    <input name="set_status">
+        <engine href="http://www.playdation.net/m/setstatus" />
+    </input>
+    </message>
+  </match>
+
+  <match pattern="Feed">
+    <message><content>Your Playdation Feed:</content></message>
+  </match>
+
+</cmrl>

@@ -1,0 +1,124 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "Settings - Account" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block body %}
+
+  <div id="content">
+    <div class="one_col_block">
+      <div class="heading narrow">
+        <h1>Settings - Communication</h1>
+      </div>
+      <!--heading end-->
+      <div class="maincontent_wrap">
+
+        <div class="navigation">
+          <ul>
+            <li><a href="{% url settings_account %}">Account</a> |</li>
+            <li><a href="{% url settings_privacy %}">Privacy</a> |</li>
+            <li><a href="{% url settings_communication %}" class="selected">Communication</a></li>
+<!--            <li><a href="{% url settings_access %}">Access</a></li> -->
+          </ul>
+        </div>
+        <!--navigation end-->
+        <div class="form_setting">
+          <form action="#" method="post">
+            <fieldset>
+              <div class="col_setting">
+                <h2>Required to use Playdation</h2>
+                <p>
+                  <input type="checkbox" checked="true" disabled="disabled" />
+                  <input type="hidden" name="playdate_invite" {% if settings.playdate_invite %}value="true" {% endif %} />
+                  <label>Send me a message when someone sends my child an activity invitation.</label>
+                </p>
+              </div>
+              <div class="col_setting">
+                <h2>Activity Related</h2>
+                <p>
+                  <input type="checkbox" name="playdate_attendee_related" {% if settings.playdate_attendee_related %}checked="true" {% endif %} />
+                  <label>Send me messages related to activities that your children have been invited to.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="playdate_host_related"  {% if settings.playdate_host_related %}checked="true" {% endif %} />
+                  <label>Send me messages related to activities that you have organized.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="playdate_suggested"  {% if settings.playdate_suggested %}checked="true" {% endif %} />
+                  <label>Send me messages related to possible activities that have been identified for your children.</label>
+                </p>
+              </div>
+              <div class="col_setting">
+                <h2>Friend List Related</h2>
+                <p>
+                  <input type="checkbox" name="possible_friend"   {% if settings.possible_friend %}checked="true" {% endif %} />
+                  <label>Notify me when possible new friends for my children have been found.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="friend_related"  {% if settings.friend_related %}checked="true" {% endif %} />
+                  <label>Send me messages related to friend requests.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="user_messages"  {% if settings.user_messages %}checked="true" {% endif %} />
+                  <label>Send me direct messages from other parents.</label>
+                </p>
+              </div>
+              <div class="col_setting">
+                <h2>Reminders</h2>
+                <p>
+                  <input type="checkbox" name="pending_friend_reminder" {% if settings.pending_friend_reminder %}checked="true" {% endif %} />
+                  <label>Remind me periodically regarding pending friend requests.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="pending_playdate_reminder"   {% if settings.pending_playdate_reminder %}checked="true" {% endif %} />
+                  <label>Remind me periodically when an activity invite is sent to me.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="playdate_24hour"  {% if settings.playdate_24hour %}checked="true" {% endif %} />
+                  <label>Remind me 24 hours before a scheduled activity.</label>
+                </p>
+                <p>
+                  <input type="checkbox" name="update_calendar_reminder"  {% if settings.update_calendar_reminder %}checked="true" {% endif %} />
+                  <label>Remind me periodically to update my children's social calendar.</label>
+                </p>
+              </div>
+              <div class="col_setting">
+                <h2>Marketing Related</h2>
+                <p>
+                  <input type="checkbox" name="special_offers" {% if settings.special_offers %}checked="true" {% endif %} />
+                  <label>Send me periodic special offers from your marketing partners.</label>
+                </p>
+              </div>
+              <div class="col_setting">
+                <h2>Facebook Communication</h2>
+                <p>
+                  <input type="checkbox" name="facebook"  {% if settings.facebook %}checked="true" {% endif %}  />
+                  <label>Post content to Facebook based on certain actions.</label>
+                </p>
+              </div>
+              <div class="col_setting last">
+                <h2>System Related</h2>
+                <p>
+                  <input type="checkbox" name="playdation" {% if settings.playdation %}checked="true" {% endif %}  />
+                  <label>Let me know when Playdation launches a new feature.</label>
+                </p>
+                <p>
+                  <input type="submit" name="" class="btn_save" value="" />
+                </p>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <!--form setting--> 
+      </div>
+      <!--maincontent wrap end--> 
+    </div>
+  </div>
+{% endblock %}

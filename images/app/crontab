@@ -1,0 +1,5 @@
+# m h  dom mon dow   command
+PINAX=/var/www/playdation.net/playdation
+* * * * * (cd $PINAX; ../env/bin/python manage.py send_mail >> $PINAX/cron_mail.log 2>&1)
+0 0 * * * (cd $PINAX; ../env/bin/python apps/friends/build_friend_suggestions.py >> $PINAX/cron_jobs.log 2>&1)
+0 * * * * (cd $PINAX; ../env/bin/python apps/metrics/run_metrics.py >> $PINAX/cron_jobs.log 2>&1)

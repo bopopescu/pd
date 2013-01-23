@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Playdation.com - Less reading, more playing.</title>
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="/static/css/stickyfooter.css" rel="stylesheet" type="text/css" media="screen" />
+{% load util_tags %}
+{% include "tracking.html" %}
+
+</head>
+<body id="page_home">
+<div id="container">
+{% autoescape off %}
+{{ analytics_tracking }}
+{% endautoescape %}
+  <div class="header">
+    <div class="logo"><a href="/"><img src="/static/images/img_logo1.png" alt="" width="498" height="131" /></a></div>
+  </div>
+  <!--header end-->
+  <div id="content" >
+    <div class="two_block">
+      <div class="context_box">
+
+          <h3> Here is just some of what Playdation has to offer….</h3>
+
+        <div class="brown_text">
+          <p><span><img src="/static/images/ico-check.png" align="absmiddle"/>Connect privately with parents</span> you already know, including: parents whose kids attend the same school as your children, parents that are Facebook friends or parents that are already in your address book.</p>
+        </div>
+        <div class="brown_text">
+          <p><span><img src="/static/images/ico-check.png" align="absmiddle"/>Create a friends list</span> for each of your children for which you have full control of the friend approval process.  Organize your child's friends with ease as each parent-child has a dedicated profile and the ability to message out to any parent directly.</p>
+        </div>
+        <div class="brown_text">
+          <p><span><img src="/static/images/ico-check.png" align="absmiddle"/>Schedule playdates</span> for your children for the coming week(s) ahead via our simple invitation system or make plans on the fly with our real-time status update. After the playdate, enjoy the ability to upload photos and comment on the event to archive your child's memories in a completely private and safe environment.</p>
+        </div>
+        <div class="brown_text">
+          <p><span><img src="/static/images/ico-check.png" align="absmiddle"/>View a social calendar</span> for each of your children showing when your kids are available to play and when they have upcoming playdates scheduled.  Our intelligent matching technology will provide you with suggestions as to when your child's friends are available to play in timeslots that work for you.</p>
+        </div>
+        <div class="brown_text">
+          <p><span><img src="/static/images/ico-check.png" align="absmiddle"/>Enjoy robust privacy settings</span> to control who sees what.  Your children's information is, by default, visible only to the parents of the friends that you have approved.   You always have full control to easily make any of this information entirely private.</p>
+        </div>
+        <div class="brown_text">
+          <p><span><img src="/static/images/ico-check.png" align="absmiddle" />Get fresh ideas</span> on where to go with your children or what to do with them on upcoming playdates.  Read the <a href="http://blog.playdation.com">Playdation Blog</a> to gain even further insight from fellow parents and playdate experts.</p>
+        </div>
+       
+          
+          <div class="brown_text" style="color:#383838;border-bottom:0;">
+            <p style="padding-bottom:0;"><span>And that's just the beginning...</span> We will regularly offer new features and functions to make this product indispensable for today's busy parent. We bet you're eager to get your play on so...</p>
+          </div>
+          
+           <h4> <a href="#" onclick="Track.record('Clicked on FB Connect on Homepage'); FacebookLogin.processLogin('http://{%www_host%}/account/connect_login', null, 'http://{%www_host%}/readmore.html', 'false'); return false;">Join Free Today!</a> | <a href="/" style="color:#afafaf;">Go Back</a> </h3>
+          
+
+      </div>
+
+
+      <span id="login_span" style="display:none;">
+      <div style="width:300px; height:208px; z-index:999; position:absolute; right:52px; margin:0; padding:0; background-color:#ffd666; border:1px solid #debb5b;">
+      
+      <div style="text-align:right; width:300px; float:left; padding:0; margin:0;"><a id="close_login_span" href="#"><img src="/static/images/ico-closelogin.png" border="0" /></a></div>
+      
+      <h1 style="float:left; clear:both; padding:0; margin:0 0 0 17px; width:200px;"><a href="#" onclick="FacebookLogin.processLogin('http://{%www_host%}/account/connect_login', null, 'http://{%www_host%}/readmore.html', 'false'); return false;"><img src="/static/images/btn-fblogin.png" border="0"></a></h1>
+      
+      <div style="float:left; color:#4f411c; font-family:verdana; font-size:9px; width:300px; border-top:1px solid #d0a737; padding:0; margin:20px 0 0 0;">
+      <span style="background-color:#e4bb4b; color:#4f411c; float:left; display:block; width:22px; text-align:center; line-height:20px; margin:0 0 0 18px; padding:0;">OR</span><span style="display:block; float:left; padding:0; width:200px; line-height:20px; margin:0 0 0 5px;">Login with your email and password:</span></div>
+      
+      <form action="{% url acct_login %}" method="post">
+      <h2 style="clear:both; float:left; padding:0; margin:10px 0 0 17px;"><input id="id_email" type="text" name="email" style="width:248px; height:19px; line-height:19px; padding:5px 5px; border:2px solid #e4bc50; background-color:#faf5e9;font-family:Arial; font-size:13px; color:#6b6b6b;" /></h2>
+      <h2 style="clear:both; float:left; padding:0; margin:7px 0 0 17px;"><input id="id_password" type="password" name="password" style="width:248px; height:19px; line-height:19px; padding:5px 5px; border:2px solid #e4bc50; background-color:#faf5e9; font-family:Arial; font-size:13px; color:#6b6b6b;" /></h2>
+      <h2 style="clear:both; float:left; padding:0; font-weight:normal; width:100px; margin:10px 0 0 18px; font-family:verdana; font-size:9px;"><a style="color:#bb5c36; text-decoration:none;" href="{% url acct_passwd_reset %}">Forget Password?</a></h2>
+      
+       <h2 style="float:right; padding:0; width:85px; margin:5px 0 0 0; font-family:verdana; font-size:9px;"><input type="image" src="/static/images/btn-pdlogin.png" border="0" /></h2>
+      </form>
+      
+      </div><!--end login div-->
+      </span>
+
+
+      <div class="right_area">
+        <div class="right_top">
+                <div class="yellow_part">
+            <h2>Only parents can join and it's free.</h2>
+            <a href="#" onclick="Track.record('Clicked on FB Connect on Homepage'); FacebookLogin.processLogin('http://{%www_host%}/account/connect_login', null, 'http://{%www_host%}/readmore.html', 'false'); return false;"><img src="/static/images/img_blown.png" alt="Sign Up" width="242" height="42" /></a>
+            <h3>I want to join but don’t have Facebook. <a href="{% url acct_signup %}">Click Here</a></h3>	   
+            </div>
+          <span>I am already a member. <a id="login_link" href="{% url acct_login %}">Login Here</a></span></div>
+        <div class="right_bottom">
+          <h2>Why our members love Playdation:</h2>
+          <blockquote>
+            <p>&quot;Scheduling playdates used to be so much work. Now I just click and schedule.&quot;</p>
+            <span>--<em>Debbie</em>, Mother of two</span> </blockquote>
+          <blockquote>
+            <p>&quot;After-school planning just got a whole lot easier!&quot;</p>
+            <span>--<em>Natalie</em>, Mother of three</span> </blockquote>
+            <blockquote>
+            <p>&quot;Playdation isn't just fun. It's really useful.&quot;</p>
+            <span>--<em>Isaac</em>, Father of one</span> </blockquote>
+        </div>
+        
+        <div class="photo-addition" style="margin-top:18px;"><img src="/static/images/readmorephoto.jpg" alt=""/></div>
+        
+      </div>
+    </div>
+    <!--<div class="bottom_part"> 
+          <span class="link_sns"><a href="http://www.facebook.com/playdation">facebook</a><a href="http://www.twitter.com/playdation">twitter</a><a href="http://blog.playdation.com">blog</a></span> 
+    </div> -->
+  </div>
+  <div class="push"></div>
+</div>
+<!--Footer Start-->
+<div id="footer">
+  <div class="footer" style="width:860px;">
+    <ul>
+      <li><a href="{% url about_us %}">About</a></li>
+      <li><a href="{% url user_agreement %}">User Agreement</a></li>
+      <li><a href="{% url privacy_policy %}">Privacy Policy</a></li>
+    </ul>
+    <div class="copy">
+      <p>We don't play around when it comes to screening and privacy.</p>
+      <p><a href="{% url privacy_policy %}">Trademarks</a> belong to their respective owners. ©2011 Playdation, Inc.</p>
+    </div>
+  </div>
+</div>
+<div id="fb-root"></div>
+
+<!--Footer End-->
+
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js'></script> 
+<script type='text/javascript' src='/static/js/playdation.js'></script>
+<script src="/static/js/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script> 
+
+<script type="text/javascript"> 
+
+window.fbAsyncInit = function() { 
+  FB.init({appId: '{%fb_app_id%}', status: true, cookie: true, xfbml: true, channelUrl  : 'http://{%www_host%}/channel.html'}); 
+}; 
+
+(function() { 
+  var e = document.createElement('script'); 
+  e.type = 'text/javascript'; 
+  e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js'; 
+  e.async = false; 
+  document.getElementById('fb-root').appendChild(e);
+}()); 
+
+$(document).ready(function(e) {
+  $("#login_link").click(function(e) {
+    e.preventDefault();
+    $("#login_span").fadeIn();
+    $("#register_span").hide();
+  });
+
+  $("#close_login_span").click(function(e) {
+    e.preventDefault();
+    $("#register_span").show();
+    $("#login_span").hide();
+  })
+
+  $("#id_email").watermark("email address");
+  $("#id_password").watermark("password");
+
+
+  try {
+    Track.record('Viewed Read More Page');
+    Track.record('Viewed a Page with a Facebook registration button');
+  }
+  catch (e) {}
+
+});
+
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

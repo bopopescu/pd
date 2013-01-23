@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Playdation</title>
+<link href="/static/css/main.css" rel="stylesheet" type="text/css" media="screen" />
+
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+
+    var clearMePrevious = '';
+    
+    // clear input on focus
+    $(".clearMeFocus").focus(function() {
+        if($(this).val()==$(this).attr('title')) {
+            clearMePrevious = $(this).val();
+            $(this).val('');
+        }
+    });
+    
+    // if field is empty afterward, add text again
+    $(".clearMeFocus").blur(function() {
+        if($(this).val()=='') {
+            $(this).val(clearMePrevious);
+        }
+    });
+
+});
+</script>
+
+
+<div id="container">
+	<!--Header Start-->
+	<div id="header">
+		<img src="/static/images/logo.png" alt="" />
+	</div>
+	<!--Header End-->
+	<div id="content">
+		<div class="formbox">
+			<div class="innerformbox">
+				<h2>2011 Pre-registration</h2>
+				<form action="" method="POST">
+					<div class="forminfo">
+						<label>Please Enter Your Info Below:</label>
+						<input type="text" class="ipt clearMeFocus" name="email" title="Email" value="{% if email %}{{email}}{% else %}Email{% endif %}" />
+                        <input type="text" class="ipt clearMeFocus" name="zip_code" title="Zip Code" value="{% if zip_code %}{{zip_code}}{% else %}Zip Code{% endif%}" />
+						<input type="submit" class="btn" value=" " />
+					</div>
+                    {% if submitted %}
+                    {% if not errors %}
+                    <script>
+                    $(document).ready(function () {
+                       $(".sm_link").fadeIn("slow"); 
+                    });
+                    </script>
+					<div class="note">Thanks! We'll notify you when we launch!</div>
+                    {% else %}
+                    <div class="note">
+                    {% for error in errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+				</form>
+			</div>
+
+		</div>
+
+        
+        
+		<div id="maincontent">
+			<h1>Your Child’s Social Life.<sup>TM</sup></h1>
+			<p>Are you tired of telephone tag or overwhelmed by emails <br />
+		    and texts focused on filling your child's social calendar?  <br />
+		    Do you long for simpler days when the concept of the modern "playdate" didn't exist and kids just bopped <br />
+		    around from house to house? </p>
+		  <p>Well the team here at Playdation can't turn back time, <br /> but we are launching a new application that promises to<br />
+	      help parents better organize their children’s social lives.<br> Enter your email address to join today! </p>
+	  <div class="bottom">
+				<span class="fl">Cheers,<br />The Playdation Team</span>
+				<span class="fr"><a href="http://www.twitter.com/playdation" class="t sm_link" style="display:none"><img src="/static/images/t.png" alt="Twitter" />Twitter</a><a href="http://www.facebook.com/playdation" class="f sm_link" style="display:none"><img src="/static/images/f.png" alt="Facebook" />Facebook</a></span>
+			</div>
+		
+
+		<!--Maincontent End-->
+
+        </div>
+
+                                                        <div class="newsocial"><a href="http://www.twitter.com/playdation" target="_blank">Twitter</a> &nbsp;|&nbsp; <a href="http://www.facebook.com/playdation" target="_blank">Facebook</a> &nbsp;|&nbsp; <a href="splash_about.html">About Us</a></div> 
+	</div>
+
+              
+</div>
+
+
+</body>
+</html>

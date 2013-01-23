@@ -1,0 +1,14 @@
+mysql-server mysql-common mysql-client libdbd-mysql-perl libmysqlclient-dev libmysqlclient16 libmysqlclient16-dev mysql-client memcached apache2 apache2-mpm-worker libapache2-mod-wsgi git-core mercurial curl python-setuptools djbdns
+
+curl -O https://github.com/pypa/pip/raw/master/contrib/get-pip.py
+sudo python get-pip.py
+
+sudo mkdir /var/www/playdation.net/playdation
+sudo chown braskin:braskin -p /var/www/playdation.net
+
+cd /var/www/playdation.net/playdation
+
+git init .
+git remote add playip git@184.73.230.35:/home/git/
+git pull playip
+git checkout -b local playip/dev

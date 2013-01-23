@@ -1,0 +1,136 @@
+{% extends "new_site_base.html" %}
+
+{% load i18n %}
+{% load ifsetting_tag %}
+
+{% block head_title %}{% trans "My Plans" %}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body %}
+	<div id="content">
+		<div class="one_col_block">
+			<div class="heading short">
+				<div class="heading_left">
+					<h1>My Children's Plans</h1>
+				</div>
+				<div class="links">
+				    <!--<span class="link_grey"><a href="#">View Calendar</a></span> -->
+                    <a href="{% url new_playdate %}" class="purple_color">+ Make a Plan</a>
+                </div>
+    
+			</div>
+			<!--heading end-->
+			<div class="maincontent_wrap">
+        {% if view_schedule_children|length > 1 %}
+				<div class="navigation">
+					<ul>
+						<li><b><a href="{% url list_playdates %}" {% if not current_child %}class="selected"{%endif%}>Show All</a></b> |</li>
+                        {% for child in view_schedule_children %}                        
+						<li>
+                        {% if not forloop.first %} | {% endif %}
+                        <b><a href="{% url list_playdates child.profile.id %}" {% ifequal child.profile.id current_child.profile.id %}class="selected"{%endifequal%}>{{child.profile.first_name}}</a></b></li>
+                        {% endfor %}
+					</ul>
+					<!--<span>Showing All 23 playdates</span>--> 
+				</div>
+        {% endif %}
+
+				<div class="playdates_wrap">
+          {% if not playdates %}
+        <div id="no_playdates" class="yellow_wrap"  {% if avail_list %}style="width:605px;float:left;padding:0 0 0 0;"{% else %}style="width:100%" {%endif%}>
+          <p class="title">Oops.</p>
+          <p >You have not yet scheduled any activities for your child. <br />
+            <a href="{% url new_playdate %}">Make a Plan</a> or indicate availability in your child's
+            <a href=" 
+            {% if not current_child %}
+            {% url view_calendar %}
+            {% else %}
+            {% url view_calendar current_child.profile.id %}
+            {% endif %}
+            "> calendar</a> now!</p>
+        </div>
+
+
+          {% else %}
+					<ul class="playdates">
+                        {% for playdate in playdates %}
+						<li>
+							<div class="avatar"> 
+                            {% for invite in playdate.invites %}
+                                {% if invite.childview %}
+                                    <img src="{{ invite.childview.profile.small_profile_pic}}" alt="" width="33" height="33" /> 
+                                {% endif %}
+                            {% endfor %}
+                            
+                            </div>
+							<div class="playdate_text">
+								<p class="leading"> <span>Activity with:</span>
+                                <span class="link_blue"><a href="{% url view_playdate playdate.playdate.id %}">View Details</a></span>
+
+                                {% for invite in playdate.invites %}
+                                    {% if invite.childview %}
+                                        <strong>                                    
+                                            {% ifequal user invite.to_user %}
+                                            Your 
+                                            {% else %}
+                                            <a href="{% url view_profile invite.to_user_id %}">{{ invite.to_user.get_profile.first_name }}'s</a>
+                                            {% endifequal %}
+                                             child, <a href="{% url view_child invite.childview.profile.id %}">{{ invite.childview.profile.first_name}}</a> 
+                                         </strong>
+                                    {% else %}
+                                         <strong>{{ invite.type }} - {{ invite.to }}</strong>
+                                    {% endif %}
+
+                                {% endfor %}                                
+                                
+                                </p>
+								<p><span>Date &amp; Time:</span><strong> {{ playdate.playdate.start|date:"l F dS g:i A" }}</strong></p>
+								<p><span>Location:</span> {{ playdate.playdate.address }}</p>
+								<p><span>Activity:</span> {{ playdate.playdate.details }} </p>
+								<p><span>Status:</span> {{ playdate.playdate.status_verbose }} </p>
+							</div>
+						</li>
+
+                        {% endfor %}
+					</ul>
+          {% endif %}
+
+                    {% if avail_list %}
+					<div class="suggest_block">
+						<div class="suggest_inner">
+							<div class="suggest_box">
+								<h2>Available for Activities:</h2>
+								<ul>
+                                        {% for avail in avail_list %}
+									<li> 
+                                        <span><em>On {{ avail.avail.start|date:"l" }},</em> {{ avail.avail.start|date:"F dS" }}</span>
+										<p><a href="{% url view_child avail.childview.profile.id %}">{{avail.childview.profile.first_name}} {{avail.childview.profile.last_name}}</a> is available at {{ avail.avail.start|date:"g:i A" }}.</p>
+										<span><a href="{% url new_playdate_with_key_and_time avail.childview.key avail.avail.start_epoch avail.avail.end_epoch %}" class="purple_color">+ Make a Plan</a></span> 
+                                    </li>
+                                        {% endfor %}
+                                    {% if more %}
+									<li class="last"><a href="?view_more={{view_more}}">Show More</a></li>
+                                    {% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+                {% endif %}
+				</div>
+			</div>
+			<!--maincontent wrap end--> 
+		</div>
+		<!--one col block end-->
+	</div>
+
+
+
+
+{% endblock %}
+
+
+
+{% block extra_body %}
+
+{% endblock %}

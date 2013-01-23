@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{% block head_title_base %}{% if SITE_NAME %}{{ SITE_NAME }} : {% endif %}{% block head_title %}{% endblock %}{% endblock %}</title>
+
+
+
+{% load i18n ifsetting_tag account_tags util_tags %}
+
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+
+{% include "tracking.html" %}
+
+{% block extra_head %}{% endblock %}
+
+<style type="text/css">
+
+  #newuvTab a {
+    background-color:#043250;background-image:url(http://cdn.uservoice.com/images/widgets/en/feedback_tab_white.png);background-repeat:no-repeat no-repeat;border-bottom-color:#E7685D;border-bottom-style:outset;border-bottom-width:1px;border-left-color:initial;border-left-style:none;border-left-width:initial;border-right-color:#E7685D;border-right-style:outset;border-right-width:1px;border-top-color:#E7685D;border-top-style:outset;border-top-width:1px;left:0;background-position:2px 50% !important;background-repeat:no-repeat no-repeat !important;display:block !important;height:98px !important;margin-bottom:0 !important;margin-left:0 !important;margin-right:0 !important;margin-top:-45px !important;padding-bottom:0 !important;padding-left:0 !important;padding-right:0 !important;padding-top:0 !important;position:fixed !important;text-indent:-9000px;top:45% !important;width:25px !important;z-index:100001 !important;
+  }
+
+  #newuvTab a:hover {
+    background-color:#06C;    
+  }
+
+</style>
+
+
+</head>
+<body>
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js'></script> 
+
+<div id="container">
+<!--Header Start-->
+<div id="header">
+  <div id="logo"><a href="{% url home %}"><img src="/static/images/slogo.png" alt="" /></a></div>
+      <div id="nav">
+        <div class="navleft">
+              <ul>
+                  <li {% if cat_home %} class="current" {% endif %}><a href="{% url home %}">Home</a></li>
+                  <li {% if cat_profile %} class="current" {% endif %}> <a href="{% url view_profile %}">Profile</a></li>
+                  <li {% if cat_friends %} class="current" {% endif %}><a href="{% url view_playlist %}">Friends</a></li>
+                  <li {% if cat_playdates %} class="current" {% endif %}><a href="{% url list_playdates %}">Plans</a></li>
+                  <li {% if cat_messages %} class="current" {% endif %}><a href="{% url messages_inbox %}">Mailbox{% if 1 %}<span style="font-size:85%;">({{ messages_inbox_count }})</span>{%endif%}</a></li>
+              </ul>
+              <div class="info">Welcome,<span><a href="{% url view_profile user.id %}">{{ user.get_profile.first_name }} {{ user.get_profile.last_name }}</a>.</span>{% if messages_inbox_count %} You have <a href="{% url messages_inbox %}">{{ messages_inbox_count }} new</a> messages{% endif %}</div>
+          </div>
+
+
+          <div class="navright">
+
+              <div class="navsearch">
+                  <div class="innerns">
+                      <form method="POST" action="{% url search %}">
+   	                  <select id="se" name="se"  style="background:#FFD666; color:#333333;border:0px;height:21px;padding-right:2px;width:73px;">
+                        <option>Parents</option>
+                      </select>
+                      <input type="text" class="ipt" name="search_string" />
+                      <input type="submit" class="btn" value=" " />
+                      </form>
+                  </div>
+              </div>
+
+              <div class="login"><a href="{% url contacts %}">Contacts</a> | <a href="{%url view_calendar %}">Calendar</a> | <a href="{% url settings_account %}">Settings</a> | <a href="{% url faq %}">Help</a> | <a href="{% url acct_logout %}" class="logout">Logout</a></div>
+    </div>
+  </div>
+</div>
+<!--Header End-->
+
+{% block body %}
+{% endblock %}
+
+<div class="push"></div>
+
+</div>
+
+
+<!--Footer Start-->
+<div id="footer">
+    <div class="footer">
+        <ul>
+            <li><a href="{% url about_us %}">About</a></li>
+            <li><a href="{% url user_agreement %}">User Agreement</a></li>
+            <li><a href="{% url privacy_policy %}">Privacy Policy</a></li>
+            <li><a href="http://blog.playdation.com" target="_blank">Blog</a></li>
+        </ul>
+        <div class="copy">
+          <p>We don't play around when it comes to screening and privacy.</p>
+          <p><a href="{% url ip_policy %}">Trademarks</a> belong to their respective owners. ©2011 Playdation, Inc.</p>
+        </div>
+    </div>    
+</div>
+<!--Footer End-->
+
+{% block extra_footer %}{% endblock %}
+
+
+{% autoescape off %}
+{{ analytics_tracking }}
+{{ user_message_top }}
+{% endautoescape %}
+
+{% block extra_body %}
+
+
+{% endblock %}
+
+
+
+<!-- <div id="uvTab" style="background: url('http://widget.uservoice.com/images/clients/widget2/tab-horizontal-dark.png') no-repeat scroll 0pt 50% rgb(204, 109, 0); border-width: 1px 1px medium; border-style: solid solid none; border-color: rgb(255, 255, 255) rgb(255, 255, 255) -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; -moz-border-image: none; border-radius: 4px 4px 0pt 0pt; box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.25) inset, 0pt 1px 2px rgba(0, 0, 0, 0.5); font: bold 14px/1em Arial,sans-serif; position: fixed; right: 10px; bottom: 0pt; z-index: 9999; margin-bottom: 0px; display: block;"> <a id="uvTabLabel" target="_blank" href="https://playdation.uservoice.com/forums/118561-feature-suggestions" style="display: block;padding: 6px 10px 2px 42px;text-decoration: none;"> <img style="border:0;" alt="feedback & support" src="http://widget.uservoice.com/dcache/widget/feedback-tab.png?t=feedback%20%26%20support&c=ffffff&r=0"></a></div> -->
+
+<div id="newuvTab">
+<a id="newuvTabe_href" target="_blank" href="https://playdation.uservoice.com/forums/118561-feature-suggestions">Uservoice</a>
+</div>
+  
+</body>
+</html>
