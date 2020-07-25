@@ -79,7 +79,7 @@ class CacheClass(BaseCache):
                 self.default_timeout if timeout is None else timeout)
     
     def close(self, **kwargs):
-        self._pool.master.disconnect_all()
+        self._pool.main.disconnect_all()
     
     @version_key_decorator
     def prepend(self, key, value):

@@ -88,8 +88,8 @@ def rollback():
 # Helpers. These are called by other functions rather than directly
 def upload_tar_from_git():
     require('release', provided_by=[deploy, setup])
-    "Create an archive from the current Git master branch and upload it"
-    local('git archive --format=tar master | gzip > $(release).tar.gz')
+    "Create an archive from the current Git main branch and upload it"
+    local('git archive --format=tar main | gzip > $(release).tar.gz')
     run('mkdir $(path)/releases/$(release)')
     put('$(release).tar.gz', '$(path)/packages/')
     run('cd $(path)/releases/$(release) && tar zxf ../../packages/$(release).tar.gz')
